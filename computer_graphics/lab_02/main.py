@@ -122,9 +122,9 @@ def check_scale(Window):
         ky = float(ky_entry.get())
         xc = float(xc_entry.get())
         yc = float(yc_entry.get())
-        if (kx < 0 or ky < 0):
-            box.showerror("Ошибка", "Отрицательные коэффициенты масштабирования недопустимы")
-            Ok = False
+       # if (kx < 0 or ky < 0):
+       #     box.showerror("Ошибка", "Отрицательные коэффициенты масштабирования недопустимы")
+       #     Ok = False
     except ValueError:
         box.showerror("Ошибка", """Для масштабирования рисунка необходимо ввести 
 коэффициенты изменения размера изображения вдоль осей 
