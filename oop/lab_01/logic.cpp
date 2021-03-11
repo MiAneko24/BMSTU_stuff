@@ -38,21 +38,23 @@ typedef struct
 
 error_code create_matrix(matrix_t &mat);
 
+void move(math_model_t &figure, changes_params_t &params);
+
 void print_mat(matrix_t &mat);
 
-error_code multiply_matrix(matrix_t &mat_1, matrix_t &mat_2, matrix_t &res)
+void multiply_matrix(matrix_t &mat_1, matrix_t &mat_2, matrix_t &res)
 {
-    error_code result = no_errors;
+   // error_code result = no_errors;
     res.n = mat_1.n;
     res.m = mat_2.m;
-    result = create_matrix(res);
-    for (int i = 0; i < res.n && !result; i++)
+   // result = create_matrix(res);
+    for (int i = 0; i < res.n; i++)
     {
         for (int j = 0; j < res.m; j++)
             for (int k = 0; k < mat_2.n; k++)
                 res.matrix[i][j] += mat_1.matrix[i][k] * mat_2.matrix[k][j];
     }
-    return result;
+   // return result;
 }
 
 void null_matrix(matrix_t &matrix)
@@ -141,11 +143,13 @@ error_code get_rotation_transform_matrix_t(matrix_t &transform_matrix, changes_p
     }
     if (!result)
     {
-        result = multiply_matrix(xy, yz, res);
-        if (!result)
-        {
-            result = multiply_matrix(res, xz, transform_matrix);
-        }
+        multiply_matrix(xy, yz, res);
+        multiply_matrix(res, xz, transform_matrix);
+        get_move_matrix(xy, params);
+        multiply_matrix(xy, transform_matrix, res);
+        for(int i = 0; i < DIMENSION; i++)
+            params.move[i] *= -1;
+        get_move_matrix(xy, )
     }
     free_matrix(xy);
     free_matrix(yz);
@@ -166,11 +170,46 @@ void print_mat(matrix_t &mat)
     printf("\n");
 }
 
-void get_scale_transform_matrix_t(matrix_t &transform_matrix, changes_params_t &params)
+void get_move_matrix(matrix_t &transform_matrix, changes_params_t &params)
 {
+    for (int i = 0; i < transform_matrix.n; i++)
+        transform_matrix.matrix[i][i] = 1;
     for (int i = 0; i < DIMENSION; i++)
-        transform_matrix.matrix[i][i] = params.k[i];
-    transform_matrix.matrix[DIMENSION][DIMENSION] = 1;
+        transform_matrix.matrix[transform_matrix.n - 1][i] = params.move[i];
+}
+
+error_code get_scale_transform_matrix_t(matrix_t &transform_matrix, changes_params_t &params)
+{
+    error_code result = no_errors;
+    matrix_t move = {
+        .matrix = NULL,
+        .n = MAT_SIZE,
+        .m = MAT_SIZE,
+    };
+    matrix_t res = move;
+    result = create_matrix(move);
+    if (!result)
+    {
+        result = create_matrix(res);
+    }
+    if (!result)
+    {
+        for (int i = 0; i < DIMENSION; i++)
+            transform_matrix.matrix[i][i] = params.k[i];
+        
+        transform_matrix.matrix[DIMENSION][DIMENSION] = 1;
+        get_move_matrix(move, params);
+        multiply_matrix(move, transform_matrix, res);
+        for (int i = 0; i < DIMENSION; i++)
+        {
+            params.move[i] *= -1;
+        }
+        get_move_matrix(move,params);
+        multiply_matrix(res, move, transform_matrix);
+    }
+    free_matrix(move);
+    free_matrix(res);
+    return result;
 }
 
 void free_math_model_t(math_model_t &figure)
@@ -371,13 +410,27 @@ error_code scale_points(matrix_t &mat, int index, matrix_t &transform_matrix)
     //result = transpose_matrix(prom);
     if (!result)
     {
-        result = multiply_matrix(prom, transform_matrix, res);
+        multiply_matrix(prom, transform_matrix, res);
     }
     for (int j = 0; j < MAT_SIZE && !result; j++)
         mat.matrix[index][j] = res.matrix[0][j];
     free_matrix(res);
     free_matrix(prom);
     return result;
+}
+
+void get_center_coords(changes_params_t &params, math_model_t &figure)
+{
+    for (int i = 0; i < figure.up_coords.n; i++)
+    {
+        for (int j = 0; j < DIMENSION; j++)
+        {
+            params.move[j] += figure.up_coords.matrix[i][j];
+            params.move[j] += figure.down_coords.matrix[i][j];
+        }
+    }
+    for (int j = 0; j < DIMENSION; j++)
+        params.move[j] /= figure.amount;
 }
 
 error_code scale(math_model_t &figure, changes_params_t &params)
@@ -391,7 +444,10 @@ error_code scale(math_model_t &figure, changes_params_t &params)
     };
     result = create_matrix(transform_matrix);
     if (!result)
+    {
+        get_center_coords(params, figure);
         get_scale_transform_matrix_t(transform_matrix, params);
+    }
     for (int i = 0; i < figure.amount / 2 && !result; i++)
     {
         result = transform_points(figure.up_coords, i, transform_matrix);
