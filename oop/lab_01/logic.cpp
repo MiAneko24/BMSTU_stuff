@@ -1,39 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <cmath>
-
-#define MAT_SIZE 4
-#define DIMENSION 3
-typedef enum
-{
-    no_errors,
-    error_input, 
-    error_file,
-    error_file_input,
-    error_memory,
-} error_code;
-
-typedef struct
-{
-    double move[DIMENSION] = {0};
-    double angle[DIMENSION] = {0};
-    double k[DIMENSION] = {0};
-    double center[DIMENSION] = {0};
-} changes_params_t;
-
-typedef struct 
-{
-    double **matrix;
-    int n;
-    int m;
-} matrix_t;
-
-typedef struct
-{
-    int amount;
-    matrix_t up_coords;
-    matrix_t down_coords;
-} math_model_t;
+#include "logic.h"
 
 
 error_code create_matrix(matrix_t &mat);
@@ -149,7 +114,8 @@ error_code get_rotation_transform_matrix_t(matrix_t &transform_matrix, changes_p
         multiply_matrix(xy, transform_matrix, res);
         for(int i = 0; i < DIMENSION; i++)
             params.move[i] *= -1;
-        get_move_matrix(xy, )
+        get_move_matrix(xy, params);
+        multiply_matrix(res, xy, transform_matrix);
     }
     free_matrix(xy);
     free_matrix(yz);
@@ -344,9 +310,8 @@ error_code transpose_matrix(matrix_t &mat)
     return result;
 }
 
-error_code transform_points(matrix_t &mat, int index, matrix_t transform_matrix)
+void transform_points(matrix_t &mat, int index, matrix_t transform_matrix)
 {
-    error_code result = no_errors;
     matrix_t prom = 
     {
         .matrix = &mat.matrix[index],
@@ -359,15 +324,11 @@ error_code transform_points(matrix_t &mat, int index, matrix_t transform_matrix)
         .n = 0,
         .m = 0,
     };
-    if (!result)
-    {
-        result = multiply_matrix(prom, transform_matrix, res);
-    };
-    for (int j = 0; j < MAT_SIZE && !result; j++)
+    multiply_matrix(prom, transform_matrix, res);
+    for (int j = 0; j < MAT_SIZE; j++)
         mat.matrix[index][j] = res.matrix[0][j];
     free_matrix(res);
     free_matrix(prom);
-    return result;
 }
 
 error_code rotate(math_model_t &figure, changes_params_t &params)
@@ -384,17 +345,15 @@ error_code rotate(math_model_t &figure, changes_params_t &params)
         result = get_rotation_transform_matrix_t(transform_matrix, params);
     for (int i = 0; i < figure.amount / 2 && !result; i++)
     {
-        result = transform_points(figure.up_coords, i, transform_matrix);
-        if (!result)
-            result = transform_points(figure.down_coords, i, transform_matrix);
+        transform_points(figure.up_coords, i, transform_matrix);
+        transform_points(figure.down_coords, i, transform_matrix);
     }
     free_matrix(transform_matrix);
     return result;
 }
 
-error_code scale_points(matrix_t &mat, int index, matrix_t &transform_matrix)
+void scale_points(matrix_t &mat, int index, matrix_t &transform_matrix)
 {
-    error_code result = no_errors;
     matrix_t prom = 
     {
         .matrix = &mat.matrix[index],
@@ -408,15 +367,11 @@ error_code scale_points(matrix_t &mat, int index, matrix_t &transform_matrix)
         .m = 0,
     };
     //result = transpose_matrix(prom);
-    if (!result)
-    {
-        multiply_matrix(prom, transform_matrix, res);
-    }
-    for (int j = 0; j < MAT_SIZE && !result; j++)
+    multiply_matrix(prom, transform_matrix, res);
+    for (int j = 0; j < MAT_SIZE; j++)
         mat.matrix[index][j] = res.matrix[0][j];
     free_matrix(res);
     free_matrix(prom);
-    return result;
 }
 
 void get_center_coords(changes_params_t &params, math_model_t &figure)
@@ -450,9 +405,8 @@ error_code scale(math_model_t &figure, changes_params_t &params)
     }
     for (int i = 0; i < figure.amount / 2 && !result; i++)
     {
-        result = transform_points(figure.up_coords, i, transform_matrix);
-        if (!result)
-            result = transform_points(figure.down_coords, i, transform_matrix);
+        transform_points(figure.up_coords, i, transform_matrix);
+        transform_points(figure.down_coords, i, transform_matrix);
     }
     free_matrix(transform_matrix);
     return result;
@@ -485,6 +439,29 @@ void print_model(math_model_t &figure)
         printf(")\n");
     }
     printf("\n");
+}
+
+error_code get_prospective_coords(math_model_t &figure)
+{
+    error_code result = no_errors;
+    matrix_t transform_mat = 
+    {
+        .matrix = NULL,
+        .n = MAT_SIZE,
+        .m = MAT_SIZE,
+    };
+    result = create_matrix(transform_mat);
+    if (!result)
+    {
+        transform_mat.matrix[2][3] = - 1 / CAMERA_Z;
+        for (int i = 0; i < figure.amount / 2; i++)
+        {
+            transform_points(figure.up_coords, i, transform_mat);
+            transform_points(figure.down_coords, i, transform_mat);
+        }
+    }
+    free_matrix(transform_mat);
+    return result;
 }
 
 int main(void)
