@@ -7,6 +7,7 @@ int main ( int lArgc, char * lArgv [ ] )
 //управляет её выполнением с помощью цикла обработки событий
 	QApplication lApplication ( lArgc, lArgv );
 	TransformWidget widget;
+	widget.setGeometry(100, 100, 200, 200);
 //	widget.setGeometry();
 	widget.show();
 	

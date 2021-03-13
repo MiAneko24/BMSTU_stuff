@@ -7,8 +7,19 @@
 
 #define MAT_SIZE 4
 #define DIMENSION 3
-
+#define PAIRS 2
+#define LINE 1
 #define CAMERA_Z 10
+
+enum action_number
+{
+    get_model,
+    save_model,
+    move_action,
+    rotate_action,
+    scale_action,
+    free_memory,
+};
 
 typedef enum
 {
@@ -17,6 +28,7 @@ typedef enum
     error_file,
     error_file_input,
     error_memory,
+    error_void,
 } error_code;
 
 typedef struct
@@ -37,12 +49,14 @@ typedef struct
 
 typedef struct
 {
-    int amount;
-    matrix_t up_coords; //Заменить верхние и нижние координаты на единое целое
-    matrix_t down_coords;
+    int points_amount = 0;
+    int connections_amount = 0;
+    matrix_t dimensional_coords; //Заменить верхние и нижние координаты на единое целое
     matrix_t prospect_coords;
     matrix_t connection; //Индексы соединенных ребрами вершин
 } math_model_t;
 
+
+error_code make_action(math_model_t &figure, changes_params_t &params, int action);
 
 #endif

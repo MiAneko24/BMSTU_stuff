@@ -7,6 +7,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QRegExpValidator>
 #include <QtWidgets/QGridLayout>
+#include "FigureView.h"
 #include "logic.h"
 #define VALID_EXP "^([\\+ | \\-][1-9][0-9]*[\\.][0-9]*|0)"
 
@@ -28,6 +29,7 @@ private slots:
 
 public: 
 	TransformWidget(QWidget *parent = nullptr);
+	~TransformWidget();
 	changes_params_t params;
 	math_model_t figure;
 	QLineEdit *dx_entry;
@@ -39,7 +41,7 @@ public:
 	QLineEdit *xy_angle_entry;
 	QLineEdit *yz_angle_entry;
 	QLineEdit *xz_angle_entry;
-
+	FigureView *view;
 
 };
 

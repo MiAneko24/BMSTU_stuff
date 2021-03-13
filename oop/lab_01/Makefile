@@ -37,7 +37,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = lab_01.out1.0.0
-DISTDIR = /home/mianeko/university_stuff/BMSTU_stuff/oop/lab_01/.tmp/lab_01.out1.0.0
+DISTDIR = /home/mianeko/github/BMSTU_stuff/oop/lab_01/.tmp/lab_01.out1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1
 LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
@@ -53,10 +53,16 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = interface.cpp \
-		TransformWidget.cpp moc_TransformWidget.cpp
+		TransformWidget.cpp \
+		logic.cpp \
+		FigureView.cpp moc_TransformWidget.cpp \
+		moc_FigureView.cpp
 OBJECTS       = interface.o \
 		TransformWidget.o \
-		moc_TransformWidget.o
+		logic.o \
+		FigureView.o \
+		moc_TransformWidget.o \
+		moc_FigureView.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -113,7 +119,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		.qmake.stash \
+		../.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -133,8 +139,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		lab_01.pro logic.h \
-		TransformWidget.h interface.cpp \
-		TransformWidget.cpp
+		TransformWidget.h \
+		FigureView.h interface.cpp \
+		TransformWidget.cpp \
+		logic.cpp \
+		FigureView.cpp
 QMAKE_TARGET  = lab_01.out
 DESTDIR       = 
 TARGET        = lab_01.out
@@ -202,7 +211,7 @@ Makefile: lab_01.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf 
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		.qmake.stash \
+		../.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -279,7 +288,7 @@ Makefile: lab_01.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf 
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
-.qmake.stash:
+../.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -314,8 +323,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents logic.h TransformWidget.h $(DISTDIR)/
-	$(COPY_FILE) --parents interface.cpp TransformWidget.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents logic.h TransformWidget.h FigureView.h $(DISTDIR)/
+	$(COPY_FILE) --parents interface.cpp TransformWidget.cpp logic.cpp FigureView.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -325,7 +334,6 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) $(TARGET) 
-	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 
@@ -347,14 +355,21 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -O2 -Wall -W -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_TransformWidget.cpp
+compiler_moc_header_make_all: moc_TransformWidget.cpp moc_FigureView.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_TransformWidget.cpp
+	-$(DEL_FILE) moc_TransformWidget.cpp moc_FigureView.cpp
 moc_TransformWidget.cpp: TransformWidget.h \
+		FigureView.h \
 		logic.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/mianeko/university_stuff/BMSTU_stuff/oop/lab_01/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/mianeko/university_stuff/BMSTU_stuff/oop/lab_01 -I/home/mianeko/university_stuff/BMSTU_stuff/oop/lab_01 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include TransformWidget.h -o moc_TransformWidget.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/mianeko/github/BMSTU_stuff/oop/lab_01/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/mianeko/github/BMSTU_stuff/oop/lab_01 -I/home/mianeko/github/BMSTU_stuff/oop/lab_01 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include TransformWidget.h -o moc_TransformWidget.cpp
+
+moc_FigureView.cpp: FigureView.h \
+		logic.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/mianeko/github/BMSTU_stuff/oop/lab_01/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/mianeko/github/BMSTU_stuff/oop/lab_01 -I/home/mianeko/github/BMSTU_stuff/oop/lab_01 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include FigureView.h -o moc_FigureView.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -373,15 +388,27 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 ####### Compile
 
 interface.o: interface.cpp TransformWidget.h \
+		FigureView.h \
 		logic.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o interface.o interface.cpp
 
 TransformWidget.o: TransformWidget.cpp TransformWidget.h \
+		FigureView.h \
 		logic.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o TransformWidget.o TransformWidget.cpp
 
+logic.o: logic.cpp logic.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o logic.o logic.cpp
+
+FigureView.o: FigureView.cpp FigureView.h \
+		logic.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o FigureView.o FigureView.cpp
+
 moc_TransformWidget.o: moc_TransformWidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_TransformWidget.o moc_TransformWidget.cpp
+
+moc_FigureView.o: moc_FigureView.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_FigureView.o moc_FigureView.cpp
 
 ####### Install
 

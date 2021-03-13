@@ -18,8 +18,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += logic.h TransformWidget.h
-SOURCES += interface.cpp TransformWidget.cpp
+HEADERS += logic.h TransformWidget.h FigureView.h
+SOURCES += interface.cpp TransformWidget.cpp logic.cpp FigureView.cpp
 
 # Указываем тип проекта
 TEMPLATE = app # app - Application, прикладная программа

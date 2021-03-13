@@ -3,6 +3,9 @@
 TransformWidget::TransformWidget(QWidget *parent)
 	: QWidget(parent)
 {
+	view = new FigureView(this, this->figure);
+	//view->resize(500, 500);
+
 	QLabel *move_label = new QLabel(tr("Смещение вдоль осей координат"), this);
 	QLabel *dx_label = new QLabel(tr("Вдоль OX:"), this);
 	QLabel *dy_label = new QLabel(tr("Вдоль OY:"), this);
@@ -13,10 +16,10 @@ TransformWidget::TransformWidget(QWidget *parent)
 	QLabel *ky_label = new QLabel(tr("Вдоль OY:"), this);
 	QLabel *kz_label = new QLabel(tr("Вдоль OZ:"), this);
 
-	QLabel *rotate_label = new QLabel(tr("Вращение относительно центра фигуры"), this);
-	QLabel *xy_angle_label = new QLabel(tr("Угол поворота относительно OX:"), this);
-	QLabel *yz_angle_label = new QLabel(tr("Угол поворота относительно OY:"), this);
-	QLabel *xz_angle_label = new QLabel(tr("Угол поворота относительно OZ:"), this);
+	QLabel *rotate_label = new QLabel(tr("Вращение относительно центра фигуры (в углах)"), this);
+	QLabel *xy_angle_label = new QLabel(tr("Поворот относительно OX:"), this);
+	QLabel *yz_angle_label = new QLabel(tr("Поворот относительно OY:"), this);
+	QLabel *xz_angle_label = new QLabel(tr("Поворот относительно OZ:"), this);
 	dx_entry = new QLineEdit(this);
 	dy_entry = new QLineEdit(this);
 	dz_entry = new QLineEdit(this);
@@ -42,8 +45,8 @@ TransformWidget::TransformWidget(QWidget *parent)
 	QPushButton *move_btn = new QPushButton("Переместить", this);
 	QPushButton *scale_btn = new QPushButton("Масштабировать", this);
 	QPushButton *rotate_btn = new QPushButton("Повернуть", this);
-	QPushButton *load_from_btn = new QPushButton("Загрузить фигуру из файла", this);
-	QPushButton *load_to_file_btn = new QPushButton("Сохранить фигуру в файл", this);
+	QPushButton *load_from_btn = new QPushButton("Загрузить фигуру", this);
+	QPushButton *load_to_file_btn = new QPushButton("Сохранить фигуру", this);
 
 	connect(move_btn, SIGNAL(clicked()), this, SLOT(moveClicked()));
 	connect(scale_btn, SIGNAL(clicked()), this, SLOT(scaleClicked()));
@@ -89,43 +92,201 @@ TransformWidget::TransformWidget(QWidget *parent)
 
 	mainLayout->addWidget(load_from_btn, 17, 1);
 	mainLayout->addWidget(load_to_file_btn, 17, 2);
-
+	mainLayout->addWidget(view, 0, 3, 17, 10);
 	setLayout(mainLayout);
 
 	setWindowTitle(tr("3D application"));
 }
 
+TransformWidget::~TransformWidget()
+{
+	make_action(this->figure, this->params, free_memory);
+}
+
 void TransformWidget::moveClicked()
 {
-    printf("Okaaaaaaaay\n");
-
-	if (dx_entry->text().isEmpty())
-		printf("Error\n");
+    error_code result = no_errors;
+	int i = 0;
+	bool dx_empty = dx_entry->text().isEmpty();
+	bool dy_empty = dy_entry->text().isEmpty();
+	bool dz_empty = dz_entry->text().isEmpty();
+	if (this->figure.points_amount == 0)
+		result = error_void;
 	else
 	{
-    	double got = dx_entry->text().toDouble();
-		printf("x = %lf\n", got);
-
+		if (dx_empty && dy_empty && dz_empty)
+			result = error_input;
+		if (!dx_empty)
+		{
+			this->params.move[i] = dx_entry->text().toDouble();
+			i++;
+		}
+		else
+		{
+			this->params.move[i] = 0;
+			i++;
+		}
+		if (!dy_empty)
+		{
+			this->params.move[i] = dy_entry->text().toDouble();
+			i++;
+		}
+		else
+		{
+			this->params.move[i] = 0;
+			i++;
+		}
+		if (!dz_empty)
+		{
+			this->params.move[i] = dz_entry->text().toDouble();
+			i++;
+		}
+		else
+		{
+			this->params.move[i] = 0;
+			i++;
+		}
+		if (!result)
+		{
+			result = make_action(this->figure, this->params, move_action);
+		}
 	}
+	if (!result)
+	{
+		view->figure = figure;
+		view->change_pic();
+	}
+	printf("error was %d\n", result);
 //	double got_x = this->dy_entry->text().toDouble();
 }
 
 void TransformWidget::scaleClicked()
 {
-
+	error_code result = no_errors;
+	int i = 0;
+	bool kx_empty = kx_entry->text().isEmpty();
+	bool ky_empty = ky_entry->text().isEmpty();
+	bool kz_empty = kz_entry->text().isEmpty();
+	if (this->figure.points_amount == 0)
+	{
+		if (kx_empty && ky_empty && kz_empty)
+			result = error_input;
+		if (!kx_empty)
+		{
+			this->params.k[i] = kx_entry->text().toDouble();
+			i++;
+		}
+		else
+		{
+			this->params.k[i] = 0;
+			i++;
+		}
+		if (!ky_empty)
+		{
+			this->params.k[i] = ky_entry->text().toDouble();
+			i++;
+		}
+		else
+		{
+			this->params.k[i] = 0;
+			i++;
+		}
+		if (!kz_empty)
+		{
+			this->params.k[i] = kz_entry->text().toDouble();
+			i++;
+		}
+		else
+		{
+			this->params.k[i] = 0;
+			i++;
+		}
+		if (!result)
+		{
+			result = make_action(this->figure, this->params, scale_action);
+		}
+	}
+	if (!result)
+	{
+		view->figure = figure;
+		view->change_pic();
+	}
+	printf("error was %d\n", result);
 }
 
 void TransformWidget::loadToClicked()
 {
+	error_code result = make_action(this->figure, this->params, save_model);
 
+	printf("error was %d\n", result);
 }
 
 void TransformWidget::rotateClicked()
 {
+	error_code result = no_errors;
+	int i = 0;
+	bool xy_empty = xy_angle_entry->text().isEmpty();
+	bool yz_empty = yz_angle_entry->text().isEmpty();
+	bool xz_empty = xz_angle_entry->text().isEmpty();
+	if (this->figure.points_amount == 0)
+		result = error_void;
+	else
+	{
+		if (xy_empty && yz_empty && xz_empty)
+			result = error_input;
+		if (!xy_empty)
+		{
+			this->params.angle[i] = xy_angle_entry->text().toDouble() * M_PI / 180;
+			i++;
+		}
+		else
+		{
+			this->params.angle[i] = 0;
+			i++;
+		}
+		if (!yz_empty)
+		{
+			this->params.angle[i] = yz_angle_entry->text().toDouble() * M_PI / 180;
+			i++;
+		}
+		else
+		{
+			this->params.angle[i] = 0;
+			i++;
+		}
+		if (!xz_empty)
+		{
+			this->params.angle[i] = xz_angle_entry->text().toDouble() * M_PI / 180;
+			i++;
+		}
+		else
+		{
+			this->params.angle[i] = 0;
+			i++;
+		}
+		if (!result)
+		{
+			result = make_action(this->figure, this->params, rotate_action);
+		}
+	}
 
+	if (!result)
+	{
+		view->figure = figure;
+		view->change_pic();
+	}
+
+	printf("error was %d\n", result);
 }
 
 void TransformWidget::loadFromClicked()
 {
-
+	error_code result = make_action(this->figure, this->params, get_model);
+	
+	if (!result)
+	{
+		view->figure = figure;
+		view->change_pic();
+	}
+	printf("Error %d\n", result);
 }
