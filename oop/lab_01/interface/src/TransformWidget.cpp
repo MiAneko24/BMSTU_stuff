@@ -1,4 +1,4 @@
-#include "TransformWidget.h"
+#include "../inc/TransformWidget.h"
 
 TransformWidget::TransformWidget(QWidget *parent)
 	: QWidget(parent)
@@ -111,11 +111,15 @@ void TransformWidget::moveClicked()
 	bool dy_empty = dy_entry->text().isEmpty();
 	bool dz_empty = dz_entry->text().isEmpty();
 	if (this->figure.points_amount == 0)
+	{
 		result = error_void;
+	}
 	else
 	{
 		if (dx_empty && dy_empty && dz_empty)
+		{
 			result = error_input;
+		}
 		if (!dx_empty)
 		{
 			this->params.move[i] = dx_entry->text().toDouble();
@@ -156,8 +160,8 @@ void TransformWidget::moveClicked()
 		view->figure = figure;
 		view->change_pic();
 	}
-	printf("error was %d\n", result);
-//	double got_x = this->dy_entry->text().toDouble();
+	else
+		error_hadling(result);
 }
 
 void TransformWidget::scaleClicked()
@@ -169,6 +173,10 @@ void TransformWidget::scaleClicked()
 	bool kz_empty = kz_entry->text().isEmpty();
 	if (this->figure.points_amount == 0)
 	{
+		result = error_void;
+	}
+	else
+	{
 		if (kx_empty && ky_empty && kz_empty)
 			result = error_input;
 		if (!kx_empty)
@@ -178,7 +186,7 @@ void TransformWidget::scaleClicked()
 		}
 		else
 		{
-			this->params.k[i] = 0;
+			this->params.k[i] = 1;
 			i++;
 		}
 		if (!ky_empty)
@@ -188,7 +196,7 @@ void TransformWidget::scaleClicked()
 		}
 		else
 		{
-			this->params.k[i] = 0;
+			this->params.k[i] = 1;
 			i++;
 		}
 		if (!kz_empty)
@@ -198,7 +206,7 @@ void TransformWidget::scaleClicked()
 		}
 		else
 		{
-			this->params.k[i] = 0;
+			this->params.k[i] = 1;
 			i++;
 		}
 		if (!result)
@@ -211,14 +219,15 @@ void TransformWidget::scaleClicked()
 		view->figure = figure;
 		view->change_pic();
 	}
-	printf("error was %d\n", result);
+	else
+		error_hadling(result);
 }
 
 void TransformWidget::loadToClicked()
 {
 	error_code result = make_action(this->figure, this->params, save_model);
-
-	printf("error was %d\n", result);
+	if (result)
+		error_hadling(result);
 }
 
 void TransformWidget::rotateClicked()
@@ -275,8 +284,8 @@ void TransformWidget::rotateClicked()
 		view->figure = figure;
 		view->change_pic();
 	}
-
-	printf("error was %d\n", result);
+	else
+		error_hadling(result);
 }
 
 void TransformWidget::loadFromClicked()
@@ -288,5 +297,31 @@ void TransformWidget::loadFromClicked()
 		view->figure = figure;
 		view->change_pic();
 	}
-	printf("Error %d\n", result);
+	else
+		error_hadling(result);
+}
+
+void TransformWidget::error_hadling(error_code &result)
+{
+	QMessageBox box;
+	switch (result)
+	{
+		case error_file:
+			box.critical(this, "Ошибка", "Не существует файла с параметрами объекта model.txt");
+			break;
+		case error_file_input:
+			box.critical(this, "Ошибка", "Некорректный формат (содержимое) файла с параметрами объекта model.txt");
+			break;
+		case error_memory:
+			box.critical(this, "Ошибка", "Произошла ошибка при выделении памяти под математическую модель объекта");
+			break;
+		case error_void:
+			box.critical(this, "Ошибка", "Сначала необходимо загрузить модель объекта");
+			break;
+		case error_input:
+			box.critical(this, "Ошибка", "Для изменения объекта необходимо ввести хотя бы один параметр");
+			break;
+		default:
+			break;
+	}
 }

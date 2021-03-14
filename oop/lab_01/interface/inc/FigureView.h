@@ -1,8 +1,9 @@
-#include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QGraphicsView>
+#ifndef FIGUREVIEW_H
+#define FIGUREVIEW_H
+
 #include <QtWidgets/QWidget>
 #include <QPainter>
-#include "logic.h"
+#include "../../logic/inc/logic.h"
 
 class FigureView : public QWidget
 {
@@ -17,3 +18,4 @@ public:
     void change_pic();
 };
 
+#endif

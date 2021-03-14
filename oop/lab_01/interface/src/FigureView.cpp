@@ -1,10 +1,10 @@
-#include "FigureView.h"
+#include "../inc/FigureView.h"
 
 FigureView::FigureView(QWidget *parent, math_model_t &figure)
     : QWidget(parent)
 {    
-    setMinimumWidth(200);
-    setMinimumHeight(200);
+    setMinimumWidth(400);
+    setMinimumHeight(400);
     this->figure = figure;
 }
 
@@ -12,14 +12,17 @@ void FigureView::paintEvent(QPaintEvent *e)
 {
 
     Q_UNUSED(e);
- 
+    QPalette pal = palette();
+
+    pal.setColor(QPalette::Background, Qt::white); 
+    this->setAutoFillBackground(true); 
+    this->setPalette(pal);
     QPainter painter(this);
  
     painter.setPen(QPen(QBrush("#535353"), 0.5));
 
     int h = height();
     int w = width();
- 
     painter.translate(QPoint(w/2, h/2));
     for (int i = 0; i < figure.connections_amount; i++)
     {

@@ -5,11 +5,7 @@
 #include <fstream>
 #include <cmath>
 
-#define MAT_SIZE 4
 #define DIMENSION 3
-#define PAIRS 2
-#define LINE 1
-#define CAMERA_Z 10
 
 enum action_number
 {
@@ -51,8 +47,7 @@ typedef struct
 {
     int points_amount = 0;
     int connections_amount = 0;
-    matrix_t dimensional_coords; //Заменить верхние и нижние координаты на единое целое
-    matrix_t prospect_coords;
+    matrix_t dimensional_coords;
     matrix_t connection; //Индексы соединенных ребрами вершин
 } math_model_t;
 

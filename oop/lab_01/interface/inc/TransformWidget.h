@@ -7,9 +7,9 @@
 #include <QtWidgets/QLineEdit>
 #include <QRegExpValidator>
 #include <QtWidgets/QGridLayout>
+#include <QtWidgets/QMessageBox>
 #include "FigureView.h"
-#include "logic.h"
-#define VALID_EXP "^([\\+ | \\-][1-9][0-9]*[\\.][0-9]*|0)"
+#define VALID_EXP "^([\\+ | \\-]?[1-9][0-9]*[\\.][0-9]*|0|[\\+ | \\-]?[0]{1}[\\.][0-9]*)"
 
 class TransformWidget : public QWidget
 {
@@ -30,6 +30,7 @@ private slots:
 public: 
 	TransformWidget(QWidget *parent = nullptr);
 	~TransformWidget();
+	void error_hadling(error_code &result);
 	changes_params_t params;
 	math_model_t figure;
 	QLineEdit *dx_entry;
