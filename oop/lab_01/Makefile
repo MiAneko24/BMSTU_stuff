@@ -57,12 +57,12 @@ SOURCES       = interface/src/interface.cpp \
 		logic/src/logic.cpp \
 		interface/src/FigureView.cpp moc_TransformWidget.cpp \
 		moc_FigureView.cpp
-OBJECTS       = out/interface.o \
-		out/TransformWidget.o \
-		out/logic.o \
-		out/FigureView.o \
-		out/moc_TransformWidget.o \
-		out/moc_FigureView.o
+OBJECTS       = interface.o \
+		TransformWidget.o \
+		logic.o \
+		FigureView.o \
+		moc_TransformWidget.o \
+		moc_FigureView.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -388,34 +388,28 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 
 ####### Compile
 
-out/interface.o: interface/src/interface.cpp interface/inc/TransformWidget.h \
+interface.o: interface/src/interface.cpp interface/inc/TransformWidget.h \
 		interface/inc/FigureView.h \
 		logic/inc/logic.h
-	mkdir -p out
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ interface/src/interface.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o interface.o interface/src/interface.cpp
 
-out/TransformWidget.o: interface/src/TransformWidget.cpp interface/inc/TransformWidget.h \
+TransformWidget.o: interface/src/TransformWidget.cpp interface/inc/TransformWidget.h \
 		interface/inc/FigureView.h \
 		logic/inc/logic.h
-	mkdir -p out
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ interface/src/TransformWidget.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o TransformWidget.o interface/src/TransformWidget.cpp
 
-out/logic.o: logic/src/logic.cpp logic/inc/logic.h
-	mkdir -p out
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ logic/src/logic.cpp
+logic.o: logic/src/logic.cpp logic/inc/logic.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o logic.o logic/src/logic.cpp
 
-out/FigureView.o: interface/src/FigureView.cpp interface/inc/FigureView.h \
+FigureView.o: interface/src/FigureView.cpp interface/inc/FigureView.h \
 		logic/inc/logic.h
-	mkdir -p out
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ interface/src/FigureView.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o FigureView.o interface/src/FigureView.cpp
 
-out/moc_TransformWidget.o: moc_TransformWidget.cpp 
-	mkdir -p out
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ moc_TransformWidget.cpp
+moc_TransformWidget.o: moc_TransformWidget.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_TransformWidget.o moc_TransformWidget.cpp
 
-out/moc_FigureView.o: moc_FigureView.cpp 
-	mkdir -p out
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ moc_FigureView.cpp
+moc_FigureView.o: moc_FigureView.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_FigureView.o moc_FigureView.cpp
 
 ####### Install
 
