@@ -3,7 +3,7 @@
 TransformWidget::TransformWidget(QWidget *parent)
 	: QWidget(parent)
 {
-	view = new FigureView(this, this->figure);
+	view = new FigureView(this, this->params);
 	//view->resize(500, 500);
 
 	QLabel *move_label = new QLabel(tr("Смещение вдоль осей координат"), this);
@@ -54,6 +54,9 @@ TransformWidget::TransformWidget(QWidget *parent)
 	connect(load_from_btn, SIGNAL(clicked()), this, SLOT(loadFromClicked()));
 	connect(load_to_file_btn, SIGNAL(clicked()), this, SLOT(loadToClicked()));
 
+	QLabel *file_label = new QLabel("Имя файла для считывания/сохранения модели", this);
+	file_entry = new QLineEdit(this);
+
 	QGridLayout *mainLayout = new QGridLayout;
 	mainLayout->setSizeConstraint(QLayout::SetFixedSize);
 	
@@ -90,9 +93,12 @@ TransformWidget::TransformWidget(QWidget *parent)
 
 	mainLayout->addWidget(rotate_btn, 15, 1);
 
-	mainLayout->addWidget(load_from_btn, 17, 1);
-	mainLayout->addWidget(load_to_file_btn, 17, 2);
-	mainLayout->addWidget(view, 0, 3, 17, 10);
+	mainLayout->addWidget(file_label, 17, 0, 1, 2);
+	mainLayout->addWidget(file_entry, 17, 2);
+
+	mainLayout->addWidget(load_from_btn, 18, 1);
+	mainLayout->addWidget(load_to_file_btn, 18, 2);
+	mainLayout->addWidget(view, 0, 3, 18, 10);
 	setLayout(mainLayout);
 
 	setWindowTitle(tr("3D application"));
@@ -100,7 +106,8 @@ TransformWidget::TransformWidget(QWidget *parent)
 
 TransformWidget::~TransformWidget()
 {
-	make_action(this->figure, this->params, free_memory);
+	this->params.action = free_memory;
+	make_action(this->params);
 }
 
 void TransformWidget::moveClicked()
@@ -110,54 +117,48 @@ void TransformWidget::moveClicked()
 	bool dx_empty = dx_entry->text().isEmpty();
 	bool dy_empty = dy_entry->text().isEmpty();
 	bool dz_empty = dz_entry->text().isEmpty();
-	if (this->figure.points_amount == 0)
+	if (dx_empty && dy_empty && dz_empty)
 	{
-		result = error_void;
+		result = error_input;
+	}
+	if (!dx_empty)
+	{
+		this->params.changes[i] = dx_entry->text().toDouble();
+		i++;
 	}
 	else
 	{
-		if (dx_empty && dy_empty && dz_empty)
-		{
-			result = error_input;
-		}
-		if (!dx_empty)
-		{
-			this->params.move[i] = dx_entry->text().toDouble();
-			i++;
-		}
-		else
-		{
-			this->params.move[i] = 0;
-			i++;
-		}
-		if (!dy_empty)
-		{
-			this->params.move[i] = dy_entry->text().toDouble();
-			i++;
-		}
-		else
-		{
-			this->params.move[i] = 0;
-			i++;
-		}
-		if (!dz_empty)
-		{
-			this->params.move[i] = dz_entry->text().toDouble();
-			i++;
-		}
-		else
-		{
-			this->params.move[i] = 0;
-			i++;
-		}
-		if (!result)
-		{
-			result = make_action(this->figure, this->params, move_action);
-		}
+		this->params.changes[i] = 0;
+		i++;
+	}
+	if (!dy_empty)
+	{
+		this->params.changes[i] = dy_entry->text().toDouble();
+		i++;
+	}
+	else
+	{
+		this->params.changes[i] = 0;
+		i++;
+	}
+	if (!dz_empty)
+	{
+		this->params.changes[i] = dz_entry->text().toDouble();
+		i++;
+	}
+	else
+	{
+		this->params.changes[i] = 0;
+		i++;
 	}
 	if (!result)
 	{
-		view->figure = figure;
+		this->params.action = move_action;
+		result = make_action(this->params);
+	}
+	if (!result)
+	{
+
 		view->change_pic();
 	}
 	else
@@ -171,52 +172,46 @@ void TransformWidget::scaleClicked()
 	bool kx_empty = kx_entry->text().isEmpty();
 	bool ky_empty = ky_entry->text().isEmpty();
 	bool kz_empty = kz_entry->text().isEmpty();
-	if (this->figure.points_amount == 0)
+	if (kx_empty && ky_empty && kz_empty)
+		result = error_input;
+	if (!kx_empty)
 	{
-		result = error_void;
+		this->params.changes[i] = kx_entry->text().toDouble();
+		i++;
 	}
 	else
 	{
-		if (kx_empty && ky_empty && kz_empty)
-			result = error_input;
-		if (!kx_empty)
-		{
-			this->params.k[i] = kx_entry->text().toDouble();
-			i++;
-		}
-		else
-		{
-			this->params.k[i] = 1;
-			i++;
-		}
-		if (!ky_empty)
-		{
-			this->params.k[i] = ky_entry->text().toDouble();
-			i++;
-		}
-		else
-		{
-			this->params.k[i] = 1;
-			i++;
-		}
-		if (!kz_empty)
-		{
-			this->params.k[i] = kz_entry->text().toDouble();
-			i++;
-		}
-		else
-		{
-			this->params.k[i] = 1;
-			i++;
-		}
-		if (!result)
-		{
-			result = make_action(this->figure, this->params, scale_action);
-		}
+		this->params.changes[i] = 1;
+		i++;
+	}
+	if (!ky_empty)
+	{
+		this->params.changes[i] = ky_entry->text().toDouble();
+		i++;
+	}
+	else
+	{
+		this->params.changes[i] = 1;
+		i++;
+	}
+	if (!kz_empty)
+	{
+		this->params.changes[i] = kz_entry->text().toDouble();
+		i++;
+	}
+	else
+	{
+		this->params.changes[i] = 1;
+		i++;
 	}
 	if (!result)
 	{
-		view->figure = figure;
+		this->params.action = scale_action;
+		result = make_action(this->params);
+	}
+	if (!result)
+	{
+		view->params = params;
 		view->change_pic();
 	}
 	else
@@ -225,7 +220,24 @@ void TransformWidget::scaleClicked()
 
 void TransformWidget::loadToClicked()
 {
-	error_code result = make_action(this->figure, this->params, save_model);
+	error_code result = no_errors;
+	this->params.action = save_model;
+	if (file_entry->text().isEmpty())
+		result = error_input_filename;
+	else
+	{
+		if (this->params.filename)
+			free(this->params.filename);
+		QString filename = file_entry->text();
+		this->params.filename = (char *) malloc(filename.length() * sizeof(char));
+		if (!this->params.filename)
+			result = error_memory;
+		else
+		{
+			qstrcpy(this->params.filename, filename.toLatin1());
+			result = make_action(this->params);
+		}
+	}
 	if (result)
 		error_hadling(result);
 }
@@ -237,51 +249,48 @@ void TransformWidget::rotateClicked()
 	bool xy_empty = xy_angle_entry->text().isEmpty();
 	bool yz_empty = yz_angle_entry->text().isEmpty();
 	bool xz_empty = xz_angle_entry->text().isEmpty();
-	if (this->figure.points_amount == 0)
-		result = error_void;
+	
+	if (xy_empty && yz_empty && xz_empty)
+		result = error_input;
+	if (!xy_empty)
+	{
+		this->params.changes[i] = xy_angle_entry->text().toDouble() * M_PI / 180;
+		i++;
+	}
 	else
 	{
-		if (xy_empty && yz_empty && xz_empty)
-			result = error_input;
-		if (!xy_empty)
-		{
-			this->params.angle[i] = xy_angle_entry->text().toDouble() * M_PI / 180;
-			i++;
-		}
-		else
-		{
-			this->params.angle[i] = 0;
-			i++;
-		}
-		if (!yz_empty)
-		{
-			this->params.angle[i] = yz_angle_entry->text().toDouble() * M_PI / 180;
-			i++;
-		}
-		else
-		{
-			this->params.angle[i] = 0;
-			i++;
-		}
-		if (!xz_empty)
-		{
-			this->params.angle[i] = xz_angle_entry->text().toDouble() * M_PI / 180;
-			i++;
-		}
-		else
-		{
-			this->params.angle[i] = 0;
-			i++;
-		}
-		if (!result)
-		{
-			result = make_action(this->figure, this->params, rotate_action);
-		}
+		this->params.changes[i] = 0;
+		i++;
+	}
+	if (!yz_empty)
+	{
+		this->params.changes[i] = yz_angle_entry->text().toDouble() * M_PI / 180;
+		i++;
+	}
+	else
+	{
+		this->params.changes[i] = 0;
+		i++;
+	}
+	if (!xz_empty)
+	{
+		this->params.changes[i] = xz_angle_entry->text().toDouble() * M_PI / 180;
+		i++;
+	}
+	else
+	{
+		this->params.changes[i] = 0;
+		i++;
+	}
+	if (!result)
+	{
+		this->params.action = rotate_action;
+		result = make_action(this->params);
 	}
 
 	if (!result)
 	{
-		view->figure = figure;
+		view->params = params;
 		view->change_pic();
 	}
 	else
@@ -290,11 +299,29 @@ void TransformWidget::rotateClicked()
 
 void TransformWidget::loadFromClicked()
 {
-	error_code result = make_action(this->figure, this->params, get_model);
+	error_code result = no_errors;
+	this->params.action = get_model;
+	if (file_entry->text().isEmpty())
+		result = error_input_filename;
+	else
+	{
+		if (this->params.filename)
+			free(this->params.filename);
+		QString filename = file_entry->text();
+		this->params.filename = (char *) malloc(filename.length() * sizeof(char));
+		if (!this->params.filename)
+			result = error_memory;
+		else
+		{
+			qstrcpy(this->params.filename, filename.toLatin1());
+		}
+	}
+	
+	result = make_action(this->params);
 	
 	if (!result)
 	{
-		view->figure = figure;
+		view->params = params;
 		view->change_pic();
 	}
 	else
@@ -307,10 +334,10 @@ void TransformWidget::error_hadling(error_code &result)
 	switch (result)
 	{
 		case error_file:
-			box.critical(this, "Ошибка", "Не существует файла с параметрами объекта model.txt");
+			box.critical(this, "Ошибка", "Не существует файла с таким именем");
 			break;
 		case error_file_input:
-			box.critical(this, "Ошибка", "Некорректный формат (содержимое) файла с параметрами объекта model.txt");
+			box.critical(this, "Ошибка", "Некорректный формат (содержимое) файла с параметрами объекта");
 			break;
 		case error_memory:
 			box.critical(this, "Ошибка", "Произошла ошибка при выделении памяти под математическую модель объекта");

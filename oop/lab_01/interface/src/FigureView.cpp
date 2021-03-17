@@ -1,11 +1,11 @@
 #include "../inc/FigureView.h"
 
-FigureView::FigureView(QWidget *parent, math_model_t &figure)
+FigureView::FigureView(QWidget *parent, changes_params_t params)
     : QWidget(parent)
 {    
+    this->params = params;
     setMinimumWidth(400);
     setMinimumHeight(400);
-    this->figure = figure;
 }
 
 void FigureView::paintEvent(QPaintEvent *e)
@@ -17,22 +17,16 @@ void FigureView::paintEvent(QPaintEvent *e)
     pal.setColor(QPalette::Background, Qt::white); 
     this->setAutoFillBackground(true); 
     this->setPalette(pal);
-    QPainter painter(this);
- 
-    painter.setPen(QPen(QBrush("#535353"), 0.5));
-
+    QPainter *painter = new QPainter(this);
     int h = height();
     int w = width();
-    painter.translate(QPoint(w/2, h/2));
-    for (int i = 0; i < figure.connections_amount; i++)
-    {
-        painter.drawLine(
-            figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][0]][0], 
-            figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][0]][1],
-            figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][1]][0],
-            figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][1]][1]
-            );
-    }
+    painter->setPen(QPen(QBrush("#535353"), 2));
+    painter->translate(QPoint(w/2, h/2));
+
+    params.painter = painter;
+    params.action = draw_action;
+    make_action(params);
+    painter->end();
 }
 
 void FigureView::change_pic()

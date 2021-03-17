@@ -13,9 +13,10 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 public:
-    FigureView(QWidget *parent, math_model_t &figure);
-    math_model_t figure;
-    void change_pic();
+    FigureView(QWidget *parent, changes_params_t params);
+    changes_params_t params;
+    void change_pic(); //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    // idk wtf is going on but you have to use magic to draw inside of function inside of logic 
 };
 
 #endif

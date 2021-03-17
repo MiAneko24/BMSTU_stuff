@@ -4,8 +4,9 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-
+#include <QPainter>
 #define DIMENSION 3
+
 
 enum action_number
 {
@@ -14,6 +15,7 @@ enum action_number
     move_action,
     rotate_action,
     scale_action,
+    draw_action,
     free_memory,
 };
 
@@ -25,33 +27,19 @@ typedef enum
     error_file_input,
     error_memory,
     error_void,
+    error_input_filename,
 } error_code;
 
 typedef struct
 {
-    double move[DIMENSION] = {0};
-    double angle[DIMENSION] = {0};
-    double k[DIMENSION] = {0};
     double center[DIMENSION] = {0};
+    double changes[DIMENSION] = {0};
+    char *filename = NULL;
+    int action;
+    QPainter *painter = NULL;
 } changes_params_t;
 
 
-typedef struct 
-{
-    double **matrix;
-    int n;
-    int m;
-} matrix_t;
-
-typedef struct
-{
-    int points_amount = 0;
-    int connections_amount = 0;
-    matrix_t dimensional_coords;
-    matrix_t connection; //Индексы соединенных ребрами вершин
-} math_model_t;
-
-
-error_code make_action(math_model_t &figure, changes_params_t &params, int action);
+error_code make_action(changes_params_t &params);
 
 #endif

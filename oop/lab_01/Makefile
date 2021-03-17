@@ -55,12 +55,20 @@ OBJECTS_DIR   = ./
 SOURCES       = interface/src/interface.cpp \
 		interface/src/TransformWidget.cpp \
 		logic/src/logic.cpp \
-		interface/src/FigureView.cpp moc_TransformWidget.cpp \
+		interface/src/FigureView.cpp \
+		logic/src/mem_work.cpp \
+		logic/src/scan.cpp \
+		logic/src/output.cpp \
+		logic/src/model_transform.cpp moc_TransformWidget.cpp \
 		moc_FigureView.cpp
 OBJECTS       = interface.o \
 		TransformWidget.o \
 		logic.o \
 		FigureView.o \
+		mem_work.o \
+		scan.o \
+		output.o \
+		model_transform.o \
 		moc_TransformWidget.o \
 		moc_FigureView.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -140,10 +148,18 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		lab_01.pro logic/inc/logic.h \
 		interface/inc/TransformWidget.h \
-		interface/inc/FigureView.h interface/src/interface.cpp \
+		interface/inc/FigureView.h \
+		logic/inc/mem_work.h \
+		logic/inc/scan.h \
+		logic/inc/output.h \
+		logic/inc/model_transform.h interface/src/interface.cpp \
 		interface/src/TransformWidget.cpp \
 		logic/src/logic.cpp \
-		interface/src/FigureView.cpp
+		interface/src/FigureView.cpp \
+		logic/src/mem_work.cpp \
+		logic/src/scan.cpp \
+		logic/src/output.cpp \
+		logic/src/model_transform.cpp
 QMAKE_TARGET  = lab_01.out
 DESTDIR       = 
 TARGET        = lab_01.out
@@ -323,8 +339,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents logic/inc/logic.h interface/inc/TransformWidget.h interface/inc/FigureView.h $(DISTDIR)/
-	$(COPY_FILE) --parents interface/src/interface.cpp interface/src/TransformWidget.cpp logic/src/logic.cpp interface/src/FigureView.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents logic/inc/logic.h interface/inc/TransformWidget.h interface/inc/FigureView.h logic/inc/mem_work.h logic/inc/scan.h logic/inc/output.h logic/inc/model_transform.h $(DISTDIR)/
+	$(COPY_FILE) --parents interface/src/interface.cpp interface/src/TransformWidget.cpp logic/src/logic.cpp interface/src/FigureView.cpp logic/src/mem_work.cpp logic/src/scan.cpp logic/src/output.cpp logic/src/model_transform.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -398,12 +414,37 @@ TransformWidget.o: interface/src/TransformWidget.cpp interface/inc/TransformWidg
 		logic/inc/logic.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o TransformWidget.o interface/src/TransformWidget.cpp
 
-logic.o: logic/src/logic.cpp logic/inc/logic.h
+logic.o: logic/src/logic.cpp logic/inc/logic.h \
+		logic/inc/mem_work.h \
+		logic/inc/model_transform.h \
+		logic/inc/scan.h \
+		logic/inc/output.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o logic.o logic/src/logic.cpp
 
 FigureView.o: interface/src/FigureView.cpp interface/inc/FigureView.h \
 		logic/inc/logic.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o FigureView.o interface/src/FigureView.cpp
+
+mem_work.o: logic/src/mem_work.cpp logic/inc/mem_work.h \
+		logic/inc/logic.h \
+		logic/inc/model_transform.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mem_work.o logic/src/mem_work.cpp
+
+scan.o: logic/src/scan.cpp logic/inc/scan.h \
+		logic/inc/logic.h \
+		logic/inc/model_transform.h \
+		logic/inc/mem_work.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o scan.o logic/src/scan.cpp
+
+output.o: logic/src/output.cpp logic/inc/output.h \
+		logic/inc/logic.h \
+		logic/inc/model_transform.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o output.o logic/src/output.cpp
+
+model_transform.o: logic/src/model_transform.cpp logic/inc/model_transform.h \
+		logic/inc/logic.h \
+		logic/inc/mem_work.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o model_transform.o logic/src/model_transform.cpp
 
 moc_TransformWidget.o: moc_TransformWidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_TransformWidget.o moc_TransformWidget.cpp

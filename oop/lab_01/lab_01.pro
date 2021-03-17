@@ -19,7 +19,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Input
 HEADERS += logic/inc/logic.h interface/inc/TransformWidget.h interface/inc/FigureView.h
-SOURCES += interface/src/interface.cpp interface/src/TransformWidget.cpp logic/src/logic.cpp interface/src/FigureView.cpp
+HEADERS += logic/inc/mem_work.h logic/inc/scan.h logic/inc/output.h logic/inc/model_transform.h
+SOURCES += interface/src/interface.cpp interface/src/TransformWidget.cpp logic/src/logic.cpp interface/src/FigureView.cpp 
+SOURCES += logic/src/mem_work.cpp logic/src/scan.cpp logic/src/output.cpp logic/src/model_transform.cpp
 
 # Указываем тип проекта
 TEMPLATE = app # app - Application, прикладная программа

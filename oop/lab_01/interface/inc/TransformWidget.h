@@ -15,8 +15,6 @@ class TransformWidget : public QWidget
 {
 	Q_OBJECT
 
-//private: 
-
 private slots:
 	void loadToClicked();
 	void loadFromClicked();
@@ -24,15 +22,11 @@ private slots:
 	void scaleClicked();
 	void rotateClicked();
 
-//protected:
-
-
 public: 
 	TransformWidget(QWidget *parent = nullptr);
 	~TransformWidget();
 	void error_hadling(error_code &result);
 	changes_params_t params;
-	math_model_t figure;
 	QLineEdit *dx_entry;
 	QLineEdit *dy_entry;
 	QLineEdit *dz_entry;
@@ -42,6 +36,7 @@ public:
 	QLineEdit *xy_angle_entry;
 	QLineEdit *yz_angle_entry;
 	QLineEdit *xz_angle_entry;
+	QLineEdit *file_entry;
 	FigureView *view;
 
 };
