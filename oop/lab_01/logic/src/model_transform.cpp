@@ -7,8 +7,7 @@ void get_move_matrix_by_center_coords(matrix_t &transform_matrix, changes_params
 
 void multiply_matrix(matrix_t &mat_1, matrix_t &mat_2, matrix_t &res)
 {
-    res.n = mat_1.n;
-    res.m = mat_2.m;
+    null_matrix(res);
     for (int i = 0; i < res.n; i++)
     {
         for (int j = 0; j < res.m; j++)
@@ -19,64 +18,100 @@ void multiply_matrix(matrix_t &mat_1, matrix_t &mat_2, matrix_t &res)
     }
 }
 
+error_code get_rotation_x_matrix(matrix_t &yz, changes_params_t &params)
+{
+    yz.n = MAT_SIZE;
+    yz.m = MAT_SIZE;
+    error_code result = create_matrix(yz);
+    if (!result)
+    {
+        yz.matrix[0][0] = cos(params.changes[0]);
+        yz.matrix[0][1] = -sin(params.changes[0]);
+        yz.matrix[1][0] = sin(params.changes[0]);
+        yz.matrix[1][1] = cos(params.changes[0]);
+        yz.matrix[2][2] = 1;
+        yz.matrix[DIMENSION][DIMENSION] = 1;
+    }
+    return result;
+}
+
+error_code get_rotation_y_matrix(matrix_t &xz, changes_params_t &params)
+{
+    xz.n = MAT_SIZE;
+    xz.m = MAT_SIZE;
+    error_code result = create_matrix(xz);
+    if (!result)
+    {
+        xz.matrix[1][1] = cos(params.changes[1]);
+        xz.matrix[1][2] = -sin(params.changes[1]);
+        xz.matrix[2][1] = sin(params.changes[1]);
+        xz.matrix[2][2] = cos(params.changes[1]);
+        xz.matrix[0][0] = 1;
+        xz.matrix[DIMENSION][DIMENSION] = 1;
+    }
+    return result;
+}
+
+error_code get_rotation_z_matrix(matrix_t &xy, changes_params_t &params)
+{
+    xy.n = MAT_SIZE;
+    xy.m = MAT_SIZE;
+    error_code result = create_matrix(xy);
+    if (!result)
+    {
+        xy.matrix[0][0] = cos(params.changes[2]);
+        xy.matrix[0][2] = -sin(params.changes[2]);
+        xy.matrix[2][0] = sin(params.changes[2]);
+        xy.matrix[2][2] = cos(params.changes[2]);
+        xy.matrix[1][1] = 1;
+        xy.matrix[DIMENSION][DIMENSION] = 1;
+    }
+    return result;
+}
+
+void inverse_center_coords(double *center)
+{
+    for(int i = 0; i < DIMENSION; i++)
+        center[i] *= -1;
+}
+
 error_code get_rotation_transform_matrix_t(matrix_t &transform_matrix, changes_params_t &params)
 {
     error_code result = no_errors;
-    matrix_t xy =
-    {
-        .matrix = NULL,
+    matrix_t xy;
+    matrix_t yz;
+    matrix_t xz;
+    matrix_t res = {
+        .matrix = NULL, 
         .n = MAT_SIZE,
         .m = MAT_SIZE,
     };
-    matrix_t yz = xy;
-    matrix_t xz = xy;
-    matrix_t res = xy;
-    result = create_matrix(xy);
+    result = get_rotation_x_matrix(yz, params);
     if (!result)
     {
-        xy.matrix[0][0] = cos(params.changes[0]);
-        xy.matrix[0][1] = -sin(params.changes[0]);
-        xy.matrix[1][0] = sin(params.changes[0]);
-        xy.matrix[1][1] = cos(params.changes[0]);
-        xy.matrix[2][2] = 1;
-        xy.matrix[DIMENSION][DIMENSION] = 1;
-        result = create_matrix(yz);
+        result = get_rotation_y_matrix(xz, params);
+        if (!result)
+        {
+            result = get_rotation_z_matrix(xy, params);
+            if (!result)
+                result = create_matrix(res);
+        }
     }
     if (!result)
     {
-        yz.matrix[1][1] = cos(params.changes[1]);
-        yz.matrix[1][2] = -sin(params.changes[1]);
-        yz.matrix[2][1] = sin(params.changes[1]);
-        yz.matrix[2][2] = cos(params.changes[1]);
-        yz.matrix[0][0] = 1;
-        yz.matrix[DIMENSION][DIMENSION] = 1;
-        result = create_matrix(xz);
-    }
-    if (!result)
-    {
-        xz.matrix[0][0] = cos(params.changes[2]);
-        xz.matrix[0][2] = -sin(params.changes[2]);
-        xz.matrix[2][0] = sin(params.changes[2]);
-        xz.matrix[2][2] = cos(params.changes[2]);
-        xz.matrix[1][1] = 1;
-        xz.matrix[DIMENSION][DIMENSION] = 1;
-        result = create_matrix(res);
-    }
-    if (!result)
-    {
-        multiply_matrix(xy, yz, res);
+        multiply_matrix(xy, yz, res);                              
         multiply_matrix(res, xz, transform_matrix);
-        null_matrix(xy);
-        for(int i = 0; i < DIMENSION; i++)
-            params.center[i] *= -1;
+
+        inverse_center_coords(params.center);
+    
         get_move_matrix_by_center_coords(xy, params);
-        null_matrix(res);
+    
         multiply_matrix(xy, transform_matrix, res);
-        for(int i = 0; i < DIMENSION; i++)
-            params.center[i] *= -1;
-        null_matrix(xy);
+        
+        inverse_center_coords(params.center);
+        
         get_move_matrix_by_center_coords(xy, params);
-        null_matrix(transform_matrix);
+
         multiply_matrix(res, xy, transform_matrix);
     }
     free_matrix(xy);
@@ -88,10 +123,21 @@ error_code get_rotation_transform_matrix_t(matrix_t &transform_matrix, changes_p
 
 void get_move_matrix_by_center_coords(matrix_t &transform_matrix, changes_params_t &params)
 {
+    null_matrix(transform_matrix);
     for (int i = 0; i < transform_matrix.n; i++)
         transform_matrix.matrix[i][i] = 1;
     for (int i = 0; i < DIMENSION; i++)
         transform_matrix.matrix[transform_matrix.n - 1][i] = params.center[i];
+}
+
+void get_scale_matrix(matrix_t &transform_matrix, changes_params_t &params)
+{
+    for (int i = 0; i < DIMENSION; i++)
+    {
+        transform_matrix.matrix[i][i] = params.changes[i];
+    }
+
+    transform_matrix.matrix[DIMENSION][DIMENSION] = 1;   
 }
 
 error_code get_scale_transform_matrix_t(matrix_t &transform_matrix, changes_params_t &params)
@@ -109,21 +155,16 @@ error_code get_scale_transform_matrix_t(matrix_t &transform_matrix, changes_para
         result = create_matrix(res);
     }
     if (!result)
-    {
-        for (int i = 0; i < DIMENSION; i++)
-        {
-            transform_matrix.matrix[i][i] = params.changes[i];
-        }
-        for(int i = 0; i < DIMENSION; i++)
-            params.center[i] *= -1;
-        transform_matrix.matrix[DIMENSION][DIMENSION] = 1;
+    {                  
+        get_scale_matrix(transform_matrix, params);
+        inverse_center_coords(params.center);
+        
         get_move_matrix_by_center_coords(move, params);
+        
         multiply_matrix(move, transform_matrix, res);
-        null_matrix(transform_matrix);
-        for (int i = 0; i < DIMENSION; i++)
-        {
-            params.center[i] *= -1;
-        }
+        
+        inverse_center_coords(params.center);
+        
         get_move_matrix_by_center_coords(move,params);
         multiply_matrix(res, move, transform_matrix);
     }
@@ -211,8 +252,6 @@ error_code scale(math_model_t &figure, changes_params_t &params)
     result = create_matrix(transform_matrix);
     if (!result)
     {
-        for (int i = 0; i < DIMENSION; i++)
-            params.center[i] = 0;
         get_center_coords(params, figure);
         get_scale_transform_matrix_t(transform_matrix, params);
     }

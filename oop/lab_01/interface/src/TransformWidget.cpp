@@ -17,9 +17,9 @@ TransformWidget::TransformWidget(QWidget *parent)
 	QLabel *kz_label = new QLabel(tr("Вдоль OZ:"), this);
 
 	QLabel *rotate_label = new QLabel(tr("Вращение относительно центра фигуры (в углах)"), this);
-	QLabel *xy_angle_label = new QLabel(tr("Поворот относительно OX:"), this);
-	QLabel *yz_angle_label = new QLabel(tr("Поворот относительно OY:"), this);
-	QLabel *xz_angle_label = new QLabel(tr("Поворот относительно OZ:"), this);
+	QLabel *yz_angle_label = new QLabel(tr("Поворот относительно OX:"), this);
+	QLabel *xz_angle_label = new QLabel(tr("Поворот относительно OY:"), this);
+	QLabel *xy_angle_label = new QLabel(tr("Поворот относительно OZ:"), this);
 	dx_entry = new QLineEdit(this);
 	dy_entry = new QLineEdit(this);
 	dz_entry = new QLineEdit(this);
@@ -34,13 +34,13 @@ TransformWidget::TransformWidget(QWidget *parent)
 	ky_entry->setValidator(new QRegExpValidator(QRegExp(VALID_EXP), this));
 	kz_entry->setValidator(new QRegExpValidator(QRegExp(VALID_EXP), this));
 	
-	xy_angle_entry = new QLineEdit(this);
 	yz_angle_entry = new QLineEdit(this);
 	xz_angle_entry = new QLineEdit(this);
+	xy_angle_entry = new QLineEdit(this);
 	
-	xy_angle_entry->setValidator(new QRegExpValidator(QRegExp(VALID_EXP), this));
 	yz_angle_entry->setValidator(new QRegExpValidator(QRegExp(VALID_EXP), this));
 	xz_angle_entry->setValidator(new QRegExpValidator(QRegExp(VALID_EXP), this));
+	xy_angle_entry->setValidator(new QRegExpValidator(QRegExp(VALID_EXP), this));
 	
 	QPushButton *move_btn = new QPushButton("Переместить", this);
 	QPushButton *scale_btn = new QPushButton("Масштабировать", this);
@@ -84,12 +84,12 @@ TransformWidget::TransformWidget(QWidget *parent)
 
 	mainLayout->addWidget(rotate_label, 11, 0, 1, 4);
 
-	mainLayout->addWidget(xy_angle_label, 12, 0);
-	mainLayout->addWidget(xy_angle_entry, 12, 1, 1, 2);
-	mainLayout->addWidget(yz_angle_label, 13, 0);
-	mainLayout->addWidget(yz_angle_entry, 13, 1, 1, 2);
-	mainLayout->addWidget(xz_angle_label, 14, 0);
-	mainLayout->addWidget(xz_angle_entry, 14, 1, 1, 2);
+	mainLayout->addWidget(yz_angle_label, 12, 0);
+	mainLayout->addWidget(yz_angle_entry, 12, 1, 1, 2);
+	mainLayout->addWidget(xz_angle_label, 13, 0);
+	mainLayout->addWidget(xz_angle_entry, 13, 1, 1, 2);
+	mainLayout->addWidget(xy_angle_label, 14, 0);
+	mainLayout->addWidget(xy_angle_entry, 14, 1, 1, 2);
 
 	mainLayout->addWidget(rotate_btn, 15, 1);
 
@@ -229,12 +229,13 @@ void TransformWidget::loadToClicked()
 		if (this->params.filename)
 			free(this->params.filename);
 		QString filename = file_entry->text();
-		this->params.filename = (char *) malloc(filename.length() * sizeof(char));
+		this->params.filename = (char *) malloc((filename.length() + 1) * sizeof(char));
 		if (!this->params.filename)
 			result = error_memory;
 		else
 		{
-			qstrcpy(this->params.filename, filename.toLatin1());
+			memcpy(this->params.filename, filename.toLatin1(), filename.length());
+			params.filename[filename.length()] = '\0';
 			result = make_action(this->params);
 		}
 	}
@@ -246,22 +247,12 @@ void TransformWidget::rotateClicked()
 {
 	error_code result = no_errors;
 	int i = 0;
-	bool xy_empty = xy_angle_entry->text().isEmpty();
 	bool yz_empty = yz_angle_entry->text().isEmpty();
 	bool xz_empty = xz_angle_entry->text().isEmpty();
+	bool xy_empty = xy_angle_entry->text().isEmpty();
 	
 	if (xy_empty && yz_empty && xz_empty)
 		result = error_input;
-	if (!xy_empty)
-	{
-		this->params.changes[i] = xy_angle_entry->text().toDouble() * M_PI / 180;
-		i++;
-	}
-	else
-	{
-		this->params.changes[i] = 0;
-		i++;
-	}
 	if (!yz_empty)
 	{
 		this->params.changes[i] = yz_angle_entry->text().toDouble() * M_PI / 180;
@@ -275,6 +266,16 @@ void TransformWidget::rotateClicked()
 	if (!xz_empty)
 	{
 		this->params.changes[i] = xz_angle_entry->text().toDouble() * M_PI / 180;
+		i++;
+	}
+	else
+	{
+		this->params.changes[i] = 0;
+		i++;
+	}
+	if (!xy_empty)
+	{
+		this->params.changes[i] = xy_angle_entry->text().toDouble() * M_PI / 180;
 		i++;
 	}
 	else
@@ -308,12 +309,13 @@ void TransformWidget::loadFromClicked()
 		if (this->params.filename)
 			free(this->params.filename);
 		QString filename = file_entry->text();
-		this->params.filename = (char *) malloc(filename.length() * sizeof(char));
+		this->params.filename = (char *) malloc((filename.length() + 1) * sizeof(char));
 		if (!this->params.filename)
 			result = error_memory;
 		else
 		{
-			qstrcpy(this->params.filename, filename.toLatin1());
+			memcpy(this->params.filename, filename.toLatin1(), filename.length());
+			params.filename[filename.length()] = '\0';
 		}
 	}
 	

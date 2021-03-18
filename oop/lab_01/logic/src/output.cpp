@@ -9,25 +9,23 @@ error_code save_to_file(math_model_t &figure, char *filename)
     if (f == NULL)
     {
         result = error_file;
+        return result;
     }
-    else
+    fprintf(f, "%d\n", figure.dimensional_coords.n);
+    for (int i = 0; i < figure.dimensional_coords.n; i++)
     {
-        fprintf(f, "%d\n", figure.dimensional_coords.n);
-        for (int i = 0; i < figure.dimensional_coords.n; i++)
-        {
-            for (int j = 0; j < DIMENSION; j++)
-                fprintf(f, "%.4lf ", figure.dimensional_coords.matrix[i][j]);
-            fprintf(f, "\n");
-        }
-        fprintf(f, "%d\n", figure.connection.n);
-        for (int i = 0; i < figure.connection.n; i++)
-        {
-            for (int j = 0; j < figure.connection.m; j++)
-                fprintf(f, "%d ", (int) figure.connection.matrix[i][j]);
-            fprintf(f, "\n");
-        }
-        fclose(f);
+        for (int j = 0; j < DIMENSION; j++)
+            fprintf(f, "%.4lf ", figure.dimensional_coords.matrix[i][j]);
+        fprintf(f, "\n");
     }
+    fprintf(f, "%d\n", figure.connection.n);
+    for (int i = 0; i < figure.connection.n; i++)
+    {
+        for (int j = 0; j < figure.connection.m; j++)
+            fprintf(f, "%d ", (int) figure.connection.matrix[i][j]);
+        fprintf(f, "\n");
+    }
+    fclose(f);
     return result;
 }
 

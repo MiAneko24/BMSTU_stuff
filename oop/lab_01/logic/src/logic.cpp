@@ -5,7 +5,7 @@
 #include "../inc/output.h"
 // в точке входа никаких посторонних функций!
 
-error_code make_action(changes_params_t &params) //Фигура и параметры хранятся в логике ??? или возвращаются из логики??? решить!
+error_code make_action(changes_params_t &params) 
 {
     error_code result = no_errors;
     static math_model_t figure;
