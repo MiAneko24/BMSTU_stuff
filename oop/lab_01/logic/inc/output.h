@@ -5,6 +5,6 @@
 
 error_code save_to_file(math_model_t &figure, char *filename);
 
-void draw_model(math_model_t &figure, QPainter *painter);
+error_code draw_model(math_model_t &figure, QPainter *painter);
 
 #endif

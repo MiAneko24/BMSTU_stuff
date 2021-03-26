@@ -4,12 +4,13 @@
 
 error_code save_to_file(math_model_t &figure, char *filename)
 {
+    if (model_is_void(figure))
+        return error_void;
     error_code result = no_errors;
     FILE *f = fopen(filename, "w");
     if (f == NULL)
     {
-        result = error_file;
-        return result;
+        return error_file;
     }
     fprintf(f, "%d\n", figure.dimensional_coords.n);
     for (int i = 0; i < figure.dimensional_coords.n; i++)
@@ -29,8 +30,10 @@ error_code save_to_file(math_model_t &figure, char *filename)
     return result;
 }
 
-void draw_model(math_model_t &figure, QPainter *painter)
+error_code draw_model(math_model_t &figure, QPainter *painter)
 {
+    if (model_is_void(figure))
+        return error_void;
     for (int i = 0; i < figure.connection.n; i++)
     {
         painter->drawLine(
@@ -40,4 +43,5 @@ void draw_model(math_model_t &figure, QPainter *painter)
             figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][1]][1]
             );
     }
+    return no_errors;
 }

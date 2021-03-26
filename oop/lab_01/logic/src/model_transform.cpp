@@ -5,6 +5,11 @@ void print_mat(matrix_t &mat);
 void get_center_coords(changes_params_t &params, math_model_t &figure);
 void get_move_matrix_by_center_coords(matrix_t &transform_matrix, changes_params_t &params);
 
+bool model_is_void(math_model_t &figure)
+{
+    return figure.dimensional_coords.n == 0;
+}
+
 void multiply_matrix(matrix_t &mat_1, matrix_t &mat_2, matrix_t &res)
 {
     null_matrix(res);
@@ -204,6 +209,8 @@ error_code transform_points(matrix_t &mat, int index, matrix_t transform_matrix)
 
 error_code rotate(math_model_t &figure, changes_params_t &params)
 {
+    if (model_is_void(figure))
+        return error_void;
     error_code result = no_errors;
     matrix_t transform_matrix =
     {
@@ -242,6 +249,8 @@ void get_center_coords(changes_params_t &params, math_model_t &figure)
 
 error_code scale(math_model_t &figure, changes_params_t &params)
 {
+    if (model_is_void(figure))
+        return error_void;
     error_code result = no_errors;
     matrix_t transform_matrix =
     {
@@ -263,8 +272,10 @@ error_code scale(math_model_t &figure, changes_params_t &params)
     return result;
 }
 
-void move(math_model_t &figure, changes_params_t &params)
+error_code move(math_model_t &figure, changes_params_t &params)
 {
+    if (model_is_void(figure))
+        return error_void;
     for (int i = 0; i < figure.dimensional_coords.n; i++)
     {
         for (int j = 0; j < figure.dimensional_coords.m; j++)
@@ -272,6 +283,7 @@ void move(math_model_t &figure, changes_params_t &params)
             figure.dimensional_coords.matrix[i][j] += params.changes[j];
         }
     }
+    return no_errors;
 }
 
 void copy_matrix(matrix_t &mat_1, matrix_t &mat_2)

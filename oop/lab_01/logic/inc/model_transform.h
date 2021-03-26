@@ -21,7 +21,7 @@ typedef struct
         .matrix = NULL,
         .n = 0,
         .m = 0,
-    };
+    }; // Матрица координат точек
     matrix_t connection = 
     {
         .matrix = NULL,
@@ -30,7 +30,10 @@ typedef struct
     }; //Индексы соединенных ребрами вершин
 } math_model_t;
 
-void move(math_model_t &figure, changes_params_t &params);
+
+bool model_is_void(math_model_t &figure);
+
+error_code move(math_model_t &figure, changes_params_t &params);
 
 error_code rotate(math_model_t &figure, changes_params_t &params);
 
