@@ -9,12 +9,6 @@ void null_matrix(matrix_t &matrix)
     }
 }
 
-void copy_math_model_t(math_model_t &to, math_model_t &from)
-{
-    to.connection = from.connection;
-    to.dimensional_coords = from.dimensional_coords;
-}
-
 error_code create_matrix(matrix_t &mat)
 {
     error_code result = no_errors;
@@ -34,6 +28,29 @@ error_code create_matrix(matrix_t &mat)
     return result;
 }
 
+error_code create_point_t(point_t &point)
+{
+    error_code result = no_errors;
+    point.n = MAT_SIZE;
+    point.coords = (double *) calloc(point.n, sizeof(double));
+    if (point.coords == NULL)
+        result = error_memory;
+    return result;
+}
+
+error_code create_points_array_t(points_array_t &points)
+{
+    error_code result = no_errors;
+    points.array = (point_t *) calloc(points.amount, sizeof(point_t));
+    if (points.array == NULL)
+        return error_memory;
+    for (int i = 0; i < points.amount && !result; i++)
+    {
+        result = create_point_t(points.array[i]); 
+    }
+    return result;
+}
+
 void free_matrix(matrix_t &mat)
 {
     if (!mat.matrix)
@@ -45,16 +62,31 @@ void free_matrix(matrix_t &mat)
 
 void free_math_model_t(math_model_t &figure)
 {
-    if (figure.dimensional_coords.matrix)
+    if (figure.points.array)
     {
-        free(figure.dimensional_coords.matrix);
-        figure.dimensional_coords.matrix = NULL;
-        figure.dimensional_coords.n = 0;
+        for (int i = 0; i < figure.points.amount; i++)
+        {
+            if (figure.points.array[i].coords)
+                free(figure.points.array[i].coords);
+        }
     }
     if (figure.connection.matrix)
     {
         free(figure.connection.matrix);
         figure.connection.n = 0;
         figure.connection.matrix = NULL;
+    }
+}
+
+void math_model_t_init(math_model_t &figure)
+{
+    if (!figure.inited)
+    {
+        figure.points.array = NULL;
+        figure.points.amount = 0;
+        figure.connection.matrix = NULL;
+        figure.connection.n = 0;
+        figure.connection.m = 0;
+        figure.inited = true;
     }
 }

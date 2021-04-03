@@ -5,14 +5,14 @@
 
 void null_matrix(matrix_t &matrix);
 
-
 error_code create_matrix(matrix_t &mat);
 
 void free_matrix(matrix_t &mat);
 
-void copy_math_model_t(math_model_t &to, math_model_t &from);
-
 void free_math_model_t(math_model_t &figure);
 
+void math_model_t_init(math_model_t &figure);
+
+error_code create_points_array_t(points_array_t &points);
 
 #endif

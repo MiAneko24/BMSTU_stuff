@@ -1,14 +1,9 @@
 #include "../inc/model_transform.h"
 #include "../inc/mem_work.h"
 
-void print_mat(matrix_t &mat);
 void get_center_coords(changes_params_t &params, math_model_t &figure);
-void get_move_matrix_by_center_coords(matrix_t &transform_matrix, changes_params_t &params);
 
-bool model_is_void(math_model_t &figure)
-{
-    return figure.dimensional_coords.n == 0;
-}
+void get_move_matrix_by_center_coords(matrix_t &transform_matrix, changes_params_t &params);
 
 void multiply_matrix(matrix_t &mat_1, matrix_t &mat_2, matrix_t &res)
 {
@@ -30,11 +25,11 @@ error_code get_rotation_x_matrix(matrix_t &yz, changes_params_t &params)
     error_code result = create_matrix(yz);
     if (!result)
     {
-        yz.matrix[0][0] = cos(params.changes[0]);
-        yz.matrix[0][1] = -sin(params.changes[0]);
-        yz.matrix[1][0] = sin(params.changes[0]);
         yz.matrix[1][1] = cos(params.changes[0]);
-        yz.matrix[2][2] = 1;
+        yz.matrix[1][2] = -sin(params.changes[0]);
+        yz.matrix[2][1] = sin(params.changes[0]);
+        yz.matrix[2][2] = cos(params.changes[0]);
+        yz.matrix[0][0] = 1;
         yz.matrix[DIMENSION][DIMENSION] = 1;
     }
     return result;
@@ -47,11 +42,11 @@ error_code get_rotation_y_matrix(matrix_t &xz, changes_params_t &params)
     error_code result = create_matrix(xz);
     if (!result)
     {
-        xz.matrix[1][1] = cos(params.changes[1]);
-        xz.matrix[1][2] = -sin(params.changes[1]);
-        xz.matrix[2][1] = sin(params.changes[1]);
+        xz.matrix[0][0] = cos(params.changes[1]);
+        xz.matrix[0][2] = sin(params.changes[1]);
+        xz.matrix[2][0] = -sin(params.changes[1]);
         xz.matrix[2][2] = cos(params.changes[1]);
-        xz.matrix[0][0] = 1;
+        xz.matrix[1][1] = 1;
         xz.matrix[DIMENSION][DIMENSION] = 1;
     }
     return result;
@@ -65,10 +60,10 @@ error_code get_rotation_z_matrix(matrix_t &xy, changes_params_t &params)
     if (!result)
     {
         xy.matrix[0][0] = cos(params.changes[2]);
-        xy.matrix[0][2] = -sin(params.changes[2]);
-        xy.matrix[2][0] = sin(params.changes[2]);
-        xy.matrix[2][2] = cos(params.changes[2]);
-        xy.matrix[1][1] = 1;
+        xy.matrix[0][1] = -sin(params.changes[2]);
+        xy.matrix[1][0] = sin(params.changes[2]);
+        xy.matrix[1][1] = cos(params.changes[2]);
+        xy.matrix[2][2] = 1;
         xy.matrix[DIMENSION][DIMENSION] = 1;
     }
     return result;
@@ -104,8 +99,8 @@ error_code get_rotation_transform_matrix_t(matrix_t &transform_matrix, changes_p
     }
     if (!result)
     {
-        multiply_matrix(xy, yz, res);                              
-        multiply_matrix(res, xz, transform_matrix);
+        multiply_matrix(yz, xz, res);                              
+        multiply_matrix(res, xy, transform_matrix);
 
         inverse_center_coords(params.center);
     
@@ -180,12 +175,12 @@ error_code get_scale_transform_matrix_t(matrix_t &transform_matrix, changes_para
 
 
 
-error_code transform_points(matrix_t &mat, int index, matrix_t transform_matrix)
+error_code transform_points(point_t &point, matrix_t &transform_matrix)
 {
     error_code result = no_errors;
     matrix_t prom = 
     {
-        .matrix = &mat.matrix[index],
+        .matrix = &point.coords,
         .n = 1,
         .m = MAT_SIZE,
     };
@@ -199,17 +194,16 @@ error_code transform_points(matrix_t &mat, int index, matrix_t transform_matrix)
     if (!result)
     {
         multiply_matrix(prom, transform_matrix, res);
-        for (int j = 0; j < MAT_SIZE; j++)
-            mat.matrix[index][j] = res.matrix[0][j];
+        for (int j = 0; j < point.n; j++)
+            point.coords[j] = res.matrix[0][j];
     }
     free_matrix(res);
-    free_matrix(prom);
     return result;
 }
 
-error_code rotate(math_model_t &figure, changes_params_t &params)
+error_code math_model_t_rotate(math_model_t &figure, changes_params_t &params)
 {
-    if (model_is_void(figure))
+    if (!figure.inited)
         return error_void;
     error_code result = no_errors;
     matrix_t transform_matrix =
@@ -224,9 +218,9 @@ error_code rotate(math_model_t &figure, changes_params_t &params)
         get_center_coords(params, figure);
         result = get_rotation_transform_matrix_t(transform_matrix, params);
     }
-    for (int i = 0; i < figure.dimensional_coords.n && !result; i++)
+    for (int i = 0; i < figure.points.amount && !result; i++)
     {
-        result = transform_points(figure.dimensional_coords, i, transform_matrix);
+        result = transform_points(figure.points.array[i], transform_matrix);
     }
     free_matrix(transform_matrix);
     return result;
@@ -236,20 +230,20 @@ void get_center_coords(changes_params_t &params, math_model_t &figure)
 {
     for (int i = 0; i < DIMENSION; i++)
         params.center[i] = 0;
-    for (int i = 0; i < figure.dimensional_coords.n; i++)
+    for (int i = 0; i < figure.points.amount; i++)
     {
         for (int j = 0; j < DIMENSION; j++)
         {
-            params.center[j] += figure.dimensional_coords.matrix[i][j];
+            params.center[j] += figure.points.array[i].coords[j];
         }
     }
     for (int j = 0; j < DIMENSION; j++)
-        params.center[j] /= figure.dimensional_coords.n;
+        params.center[j] /= figure.points.amount;
 }
 
-error_code scale(math_model_t &figure, changes_params_t &params)
+error_code math_model_t_scale(math_model_t &figure, changes_params_t &params)
 {
-    if (model_is_void(figure))
+    if (!figure.inited)
         return error_void;
     error_code result = no_errors;
     matrix_t transform_matrix =
@@ -264,23 +258,23 @@ error_code scale(math_model_t &figure, changes_params_t &params)
         get_center_coords(params, figure);
         get_scale_transform_matrix_t(transform_matrix, params);
     }
-    for (int i = 0; i < figure.dimensional_coords.n && !result; i++)
+    for (int i = 0; i < figure.points.amount && !result; i++)
     {
-        result = transform_points(figure.dimensional_coords, i, transform_matrix);
+        result = transform_points(figure.points.array[i], transform_matrix);
     }
     free_matrix(transform_matrix);
     return result;
 }
 
-error_code move(math_model_t &figure, changes_params_t &params)
+error_code math_model_t_move(math_model_t &figure, changes_params_t &params)
 {
-    if (model_is_void(figure))
+    if (!figure.inited)
         return error_void;
-    for (int i = 0; i < figure.dimensional_coords.n; i++)
+    for (int i = 0; i < figure.points.amount; i++)
     {
-        for (int j = 0; j < figure.dimensional_coords.m; j++)
+        for (int j = 0; j < figure.points.array[i].n; j++)
         {
-            figure.dimensional_coords.matrix[i][j] += params.changes[j];
+            figure.points.array[i].coords[j] += params.changes[j];
         }
     }
     return no_errors;

@@ -38,33 +38,47 @@ error_code scan_matrix_from_file(matrix_t &mat, FILE *f) // Считывание
     return result;
 }
 
-void increase_coords_dimension(matrix_t &mat) // Расширение матрицы координат точек (добавление четвертой координаты, равной единице)
+error_code scan_points_array_from_file(points_array_t &points, FILE *f)
 {
-    for (int i = 0; i < mat.n; i++)  
-    {                                
-        mat.matrix[i][DIMENSION] = 1;
+    error_code result = no_errors;
+    for (int i = 0; i < points.amount && !result; i++)
+        for (int j = 0; j < points.array[i].n && !result; j++)
+        {
+            result = scan_double_from_file(points.array[i].coords[j], f);
+        }
+    return result;
+}
+
+void increase_coords_dimension(points_array_t &points) // Расширение матрицы координат точек (добавление четвертой координаты, равной единице)
+{
+    for (int i = 0; i < points.amount; i++)  
+    {                      
+        points.array[i].n++;
+        points.array[i].coords[DIMENSION] = 1;
     }
 }
 
-error_code scan_amount_and_coords_points_from_file(matrix_t &dimensional_coords, FILE *f) // Считывание количества точек и их координат из файла
+void decrement_coords_dimension(points_array_t &points)
+{
+    for (int i = 0; i < points.amount; i++)
+        points.array[i].n--;
+}
+
+error_code scan_amount_and_coords_points_from_file(points_array_t &points, FILE *f) // Считывание количества точек и их координат из файла
 {
     error_code result = no_errors;
-    result = scan_int_from_file(dimensional_coords.n, f);
+    result = scan_int_from_file(points.amount, f);
     if (result)
         return result;
-    
-    dimensional_coords.matrix = NULL;
-    dimensional_coords.m = MAT_SIZE;
 
-    result = create_matrix(dimensional_coords);
+    result = create_points_array_t(points);
     if (!result)
     {
-        dimensional_coords.m -= 1;
-        result = scan_matrix_from_file(dimensional_coords, f);
+        decrement_coords_dimension(points);
+        result = scan_points_array_from_file(points, f);
         if (!result)
         {
-            dimensional_coords.m += 1;
-            increase_coords_dimension(dimensional_coords);
+            increase_coords_dimension(points);
         }
     }
     return result;
@@ -84,7 +98,7 @@ error_code scan_amount_and_connections_from_file(matrix_t &connection, FILE *f) 
     return result;
 }
 
-error_code scan_from_file(math_model_t &figure, char *filename) 
+error_code math_model_t_scan_from_file(math_model_t &figure, char *filename) 
 {
     error_code result = no_errors;
     FILE *f = fopen(filename, "r");
@@ -94,7 +108,7 @@ error_code scan_from_file(math_model_t &figure, char *filename)
         result = error_file;
         return result; 
     }
-    result = scan_amount_and_coords_points_from_file(tmp.dimensional_coords, f);
+    result = scan_amount_and_coords_points_from_file(tmp.points, f);
     if (!result)
     {
         result = scan_amount_and_connections_from_file(tmp.connection, f);
@@ -103,7 +117,7 @@ error_code scan_from_file(math_model_t &figure, char *filename)
     if (!result)
     {
         free_math_model_t(figure);
-        copy_math_model_t(figure, tmp);
+        figure = tmp;
     }
     else
         free_math_model_t(tmp);

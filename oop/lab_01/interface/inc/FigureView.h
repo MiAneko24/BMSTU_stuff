@@ -15,8 +15,7 @@ protected:
 public:
     FigureView(QWidget *parent, changes_params_t params);
     changes_params_t params;
-    void change_pic(); //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    // idk wtf is going on but you have to use magic to draw inside of function inside of logic 
+    void change_pic(); 
 };
 
 #endif

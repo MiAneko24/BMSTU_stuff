@@ -14,28 +14,30 @@ typedef struct
     int m;
 } matrix_t;
 
+typedef struct 
+{
+    double *coords;
+    int n = MAT_SIZE;
+} point_t;
+
 typedef struct
 {
-    matrix_t dimensional_coords = 
-    {
-        .matrix = NULL,
-        .n = 0,
-        .m = 0,
-    }; // Матрица координат точек
-    matrix_t connection = 
-    {
-        .matrix = NULL,
-        .n = 0,
-        .m = 0,
-    }; //Индексы соединенных ребрами вершин
-} math_model_t;
+    point_t *array;
+    int amount;
+} points_array_t;
 
+typedef struct
+{
+    points_array_t points; // Матрица координат точек
+    matrix_t connection; //Индексы соединенных ребрами вершин
+    bool inited;
+} math_model_t;
 
 bool model_is_void(math_model_t &figure);
 
-error_code move(math_model_t &figure, changes_params_t &params);
+error_code math_model_t_move(math_model_t &figure, changes_params_t &params);
 
-error_code rotate(math_model_t &figure, changes_params_t &params);
+error_code math_model_t_rotate(math_model_t &figure, changes_params_t &params);
 
-error_code scale(math_model_t &figure, changes_params_t &params);
+error_code math_model_t_scale(math_model_t &figure, changes_params_t &params);
 #endif

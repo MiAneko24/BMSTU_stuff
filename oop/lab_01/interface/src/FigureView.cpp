@@ -26,7 +26,9 @@ void FigureView::paintEvent(QPaintEvent *e)
     params.painter = painter;
     params.action = draw_action;
     make_action(params);
+    params.painter = NULL;
     painter->end();
+    delete painter;
 }
 
 void FigureView::change_pic()

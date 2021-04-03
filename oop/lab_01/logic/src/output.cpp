@@ -2,9 +2,9 @@
 #include <QPainter>
 #include <QtWidgets/QWidget>
 
-error_code save_to_file(math_model_t &figure, char *filename)
+error_code math_model_t_save_to_file(math_model_t &figure, char *filename)
 {
-    if (model_is_void(figure))
+    if (!figure.inited)
         return error_void;
     error_code result = no_errors;
     FILE *f = fopen(filename, "w");
@@ -12,11 +12,11 @@ error_code save_to_file(math_model_t &figure, char *filename)
     {
         return error_file;
     }
-    fprintf(f, "%d\n", figure.dimensional_coords.n);
-    for (int i = 0; i < figure.dimensional_coords.n; i++)
+    fprintf(f, "%d\n", figure.points.amount);
+    for (int i = 0; i < figure.points.amount; i++)
     {
         for (int j = 0; j < DIMENSION; j++)
-            fprintf(f, "%.4lf ", figure.dimensional_coords.matrix[i][j]);
+            fprintf(f, "%.4lf ", figure.points.array[i].coords[j]);
         fprintf(f, "\n");
     }
     fprintf(f, "%d\n", figure.connection.n);
@@ -30,17 +30,23 @@ error_code save_to_file(math_model_t &figure, char *filename)
     return result;
 }
 
-error_code draw_model(math_model_t &figure, QPainter *painter)
+void draw_line(QPainter *painter, double x1, double y1, double x2, double y2)
 {
-    if (model_is_void(figure))
+    painter->drawLine(x1, y1, x2, y1);
+}
+
+error_code math_model_t_draw(math_model_t &figure, QPainter *painter)
+{
+    if (!figure.inited)
         return error_void;
     for (int i = 0; i < figure.connection.n; i++)
     {
-        painter->drawLine(
-            figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][0]][0], 
-            figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][0]][1],
-            figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][1]][0],
-            figure.dimensional_coords.matrix[(int)figure.connection.matrix[i][1]][1]
+        draw_line(
+            painter,
+            figure.points.array[(int)figure.connection.matrix[i][0]].coords[0], 
+            figure.points.array[(int)figure.connection.matrix[i][0]].coords[1],
+            figure.points.array[(int)figure.connection.matrix[i][1]].coords[0],
+            figure.points.array[(int)figure.connection.matrix[i][1]].coords[1]
             );
     }
     return no_errors;

@@ -4,22 +4,22 @@ TransformWidget::TransformWidget(QWidget *parent)
 	: QWidget(parent)
 {
 	view = new FigureView(this, this->params);
-	//view->resize(500, 500);
 
-	QLabel *move_label = new QLabel(tr("Смещение вдоль осей координат"), this);
-	QLabel *dx_label = new QLabel(tr("Вдоль OX:"), this);
-	QLabel *dy_label = new QLabel(tr("Вдоль OY:"), this);
-	QLabel *dz_label = new QLabel(tr("Вдоль OZ:"), this);
-
-	QLabel *scale_label = new QLabel(tr("Масштабирование относительно центра фигуры"), this);
-	QLabel *kx_label = new QLabel(tr("Вдоль OX:"), this);
-	QLabel *ky_label = new QLabel(tr("Вдоль OY:"), this);
-	QLabel *kz_label = new QLabel(tr("Вдоль OZ:"), this);
-
-	QLabel *rotate_label = new QLabel(tr("Вращение относительно центра фигуры (в углах)"), this);
-	QLabel *yz_angle_label = new QLabel(tr("Поворот относительно OX:"), this);
-	QLabel *xz_angle_label = new QLabel(tr("Поворот относительно OY:"), this);
-	QLabel *xy_angle_label = new QLabel(tr("Поворот относительно OZ:"), this);
+	move_label = new QLabel(tr("Смещение вдоль осей координат"), this);
+	dx_label = new QLabel(tr("Вдоль OX:"), this);
+	dy_label = new QLabel(tr("Вдоль OY:"), this);
+	dz_label = new QLabel(tr("Вдоль OZ:"), this);
+	
+	scale_label = new QLabel(tr("Масштабирование относительно центра фигуры"), this);
+	kx_label = new QLabel(tr("Вдоль OX:"), this);
+	ky_label = new QLabel(tr("Вдоль OY:"), this);
+	kz_label = new QLabel(tr("Вдоль OZ:"), this);
+	
+	rotate_label = new QLabel(tr("Вращение относительно центра фигуры (в углах)"), this);
+	yz_angle_label = new QLabel(tr("Поворот относительно OX:"), this);
+	xz_angle_label = new QLabel(tr("Поворот относительно OY:"), this);
+	xy_angle_label = new QLabel(tr("Поворот относительно OZ:"), this);
+	
 	dx_entry = new QLineEdit(this);
 	dy_entry = new QLineEdit(this);
 	dz_entry = new QLineEdit(this);
@@ -42,11 +42,11 @@ TransformWidget::TransformWidget(QWidget *parent)
 	xz_angle_entry->setValidator(new QRegExpValidator(QRegExp(VALID_EXP), this));
 	xy_angle_entry->setValidator(new QRegExpValidator(QRegExp(VALID_EXP), this));
 	
-	QPushButton *move_btn = new QPushButton("Переместить", this);
-	QPushButton *scale_btn = new QPushButton("Масштабировать", this);
-	QPushButton *rotate_btn = new QPushButton("Повернуть", this);
-	QPushButton *load_from_btn = new QPushButton("Загрузить фигуру", this);
-	QPushButton *load_to_file_btn = new QPushButton("Сохранить фигуру", this);
+	move_btn = new QPushButton("Переместить", this);
+	scale_btn = new QPushButton("Масштабировать", this);
+	rotate_btn = new QPushButton("Повернуть", this);
+	load_from_btn = new QPushButton("Загрузить фигуру", this);
+	load_to_file_btn = new QPushButton("Сохранить фигуру", this);
 
 	connect(move_btn, SIGNAL(clicked()), this, SLOT(moveClicked()));
 	connect(scale_btn, SIGNAL(clicked()), this, SLOT(scaleClicked()));
@@ -54,10 +54,10 @@ TransformWidget::TransformWidget(QWidget *parent)
 	connect(load_from_btn, SIGNAL(clicked()), this, SLOT(loadFromClicked()));
 	connect(load_to_file_btn, SIGNAL(clicked()), this, SLOT(loadToClicked()));
 
-	QLabel *file_label = new QLabel("Имя файла для считывания/сохранения модели", this);
+	file_label = new QLabel("Имя файла для считывания/сохранения модели", this);
 	file_entry = new QLineEdit(this);
 
-	QGridLayout *mainLayout = new QGridLayout;
+	mainLayout = new QGridLayout;
 	mainLayout->setSizeConstraint(QLayout::SetFixedSize);
 	
 	mainLayout->addWidget(move_label, 0, 0, 1, 3);
@@ -107,6 +107,49 @@ TransformWidget::TransformWidget(QWidget *parent)
 TransformWidget::~TransformWidget()
 {
 	this->params.action = free_memory;
+	if (params.filename)
+		free(params.filename);
+	delete move_label;
+
+	delete dy_label;
+	delete dz_label;
+	
+	delete scale_label;
+	delete kx_label;
+	delete ky_label;
+	delete kz_label;
+	
+	delete rotate_label;
+	delete yz_angle_label;
+	delete xz_angle_label;
+	delete xy_angle_label;
+	
+	delete file_label;
+	
+	delete view;
+
+	delete dx_entry;
+	delete dy_entry;
+	delete dz_entry;
+
+	delete kx_entry;
+	delete ky_entry;
+	delete kz_entry;
+	
+	delete xy_angle_entry;
+	delete xz_angle_entry;
+	delete yz_angle_entry;
+	
+	delete file_entry;
+	
+	delete move_btn;
+	delete scale_btn;
+	delete rotate_btn;
+	delete load_from_btn;
+	delete load_to_file_btn;
+
+	delete mainLayout;
+
 	make_action(this->params);
 }
 
