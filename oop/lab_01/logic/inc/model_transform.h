@@ -30,7 +30,6 @@ typedef struct
 {
     points_array_t points; // Матрица координат точек
     matrix_t connection; //Индексы соединенных ребрами вершин
-    bool inited;
 } math_model_t;
 
 bool model_is_void(math_model_t &figure);

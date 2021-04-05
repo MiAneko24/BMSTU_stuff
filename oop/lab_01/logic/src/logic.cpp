@@ -7,8 +7,8 @@
 error_code make_action(changes_params_t &params) 
 {
     error_code result = no_errors;
-    static math_model_t figure;
-    math_model_t_init(figure);
+    
+    static math_model_t figure = math_model_t_init();
     
     switch (params.action)
     {

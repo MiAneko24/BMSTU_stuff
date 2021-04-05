@@ -5,14 +5,18 @@
 
 void null_matrix(matrix_t &matrix);
 
-error_code create_matrix(matrix_t &mat);
+error_code allocate_matrix(matrix_t &mat);
 
 void free_matrix(matrix_t &mat);
 
 void free_math_model_t(math_model_t &figure);
 
-void math_model_t_init(math_model_t &figure);
+math_model_t math_model_t_init();
 
-error_code create_points_array_t(points_array_t &points);
+void matrix_t_init(matrix_t &mat, int n, int m);
+
+void free_points_t(points_array_t &points);
+
+error_code allocate_points_array_t(points_array_t &points);
 
 #endif
