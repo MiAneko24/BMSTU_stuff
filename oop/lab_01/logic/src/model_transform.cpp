@@ -13,7 +13,7 @@ bool model_is_void(math_model_t &figure)
     return false;
 }
 
-void multiply_matrix(matrix_t &res, matrix_t &mat_1, matrix_t &mat_2)
+void multiply_matrix(matrix_t &res, const matrix_t &mat_1, const matrix_t &mat_2)
 {
     null_matrix(res);
 
@@ -23,14 +23,14 @@ void multiply_matrix(matrix_t &res, matrix_t &mat_1, matrix_t &mat_2)
                 res.matrix[i][j] += mat_1.matrix[i][k] * mat_2.matrix[k][j];
 }
 
-void copy_matrix(matrix_t &mat_1, matrix_t &mat_2)
+void copy_matrix(matrix_t &mat_1, const matrix_t &mat_2)
 {
     for (int i = 0; i < mat_1.n; i++)
         for (int j = 0; j < mat_1.m; j++)
             mat_1.matrix[i][j] = mat_2.matrix[i][j];
 }
 
-error_code get_rotation_x_matrix(matrix_t &yz, double *changes)
+error_code get_rotation_x_matrix(matrix_t &yz, const double *changes)
 {
     error_code result = no_errors;
 
@@ -51,7 +51,7 @@ error_code get_rotation_x_matrix(matrix_t &yz, double *changes)
     return result;
 }
 
-error_code get_rotation_y_matrix(matrix_t &xz, double *changes)
+error_code get_rotation_y_matrix(matrix_t &xz, const double *changes)
 {
     error_code result = no_errors;
 
@@ -71,7 +71,7 @@ error_code get_rotation_y_matrix(matrix_t &xz, double *changes)
     return result;
 }
 
-error_code get_rotation_z_matrix(matrix_t &xy, double *changes)
+error_code get_rotation_z_matrix(matrix_t &xy, const double *changes)
 {
     error_code result = no_errors;
 
@@ -98,7 +98,7 @@ void inverse_center_coords(double *center)
         center[i] *= -1;
 }
 
-error_code get_rotation_matrix_all_axes(matrix_t &transform_matrix, double *changes)
+error_code get_rotation_matrix_all_axes(matrix_t &transform_matrix, const double *changes)
 {
     error_code result = no_errors;
     matrix_t xy;
@@ -175,7 +175,7 @@ error_code get_rotation_transform_matrix_t(matrix_t &transform_matrix, changes_p
     return result;
 }
 
-void get_move_matrix_by_center_coords(matrix_t &transform_matrix, double *center)
+void get_move_matrix_by_center_coords(matrix_t &transform_matrix, const double *center)
 {
     null_matrix(transform_matrix);
     
@@ -186,7 +186,7 @@ void get_move_matrix_by_center_coords(matrix_t &transform_matrix, double *center
         transform_matrix.matrix[transform_matrix.n - 1][i] = center[i];
 }
 
-void get_scale_matrix(matrix_t &transform_matrix, changes_params_t &params)
+void get_scale_matrix(matrix_t &transform_matrix, const changes_params_t &params)
 {
     for (int i = 0; i < DIMENSION; i++)
         transform_matrix.matrix[i][i] = params.changes[i];
@@ -213,7 +213,7 @@ error_code get_scale_transform_matrix_t(matrix_t &transform_matrix, changes_para
     return result;
 }
 
-error_code transform_points(point_t &point, matrix_t &transform_matrix)
+error_code transform_points(point_t &point, const matrix_t &transform_matrix)
 {
     error_code result = no_errors;
 
@@ -300,7 +300,7 @@ error_code math_model_t_scale(math_model_t &figure, changes_params_t &params)
     return result;
 }
 
-error_code math_model_t_move(math_model_t &figure, changes_params_t &params)
+error_code math_model_t_move(math_model_t &figure, const changes_params_t &params)
 {
     if (model_is_void(figure))
         return error_void;

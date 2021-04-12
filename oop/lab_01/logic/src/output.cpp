@@ -15,7 +15,6 @@ void print_amount_and_points_to_file(points_array_t &points, FILE *f)
 
 void print_amount_and_connections_to_file(matrix_t &connection, FILE *f)
 {
-
     fprintf(f, "%d\n", connection.n);
     for (int i = 0; i < connection.n; i++)
     {
