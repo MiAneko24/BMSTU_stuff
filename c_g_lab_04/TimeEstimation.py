@@ -4,7 +4,6 @@ import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from algorithms import Bresenham_float, Bresenham_int, Bresenham_wth_disposal, num_diff_analyse, Wu_algoritm, time_estimation
 from circles import circle_brez, circle_canon, circle_middle, circle_param
 
 import tkinter.messagebox as box

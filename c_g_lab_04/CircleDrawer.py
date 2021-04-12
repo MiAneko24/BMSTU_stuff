@@ -2,7 +2,6 @@ import tkinter.messagebox as box
 from tkinter import *
 from tkinter import ttk
 from tkinter import colorchooser
-from algorithms import Bresenham_float, Bresenham_int, Bresenham_wth_disposal, num_diff_analyse, Wu_algoritm, draw
 
 from circles import circle_canon, circle_brez, circle_middle, circle_param
 

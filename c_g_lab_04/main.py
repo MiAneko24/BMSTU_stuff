@@ -4,7 +4,6 @@ import tkinter.messagebox as box
 from CircleDrawer import CircleDrawer
 from CircleSpectre import CircleSpectre
 from TimeEstimation import TimeEstimation
-from GradationResearch import GradationResearch
 from EllipsDrawer import EllipsDrawer
 from EllipsSpectre import EllipsSpectre
 from TimeEstimationEllipse import TimeEstimationEllipse
