@@ -3,12 +3,12 @@
 
 void get_center_coords(changes_params_t &params, points_array_t &points);
 
-void get_move_matrix_by_center_coords(matrix_t &transform_matrix, double *center);
+void get_move_matrix(matrix_t &transform_matrix, double *changes);
 
 
-bool model_is_void(math_model_t &figure)
+bool model_is_void(points_array_t &points)
 {
-    if (figure.points.amount == 0)
+    if (points.amount == 0)
         return true;
     return false;
 }
@@ -141,12 +141,12 @@ error_code get_transform_matrix_center_figure(matrix_t &transform_matrix, matrix
     if (!result)
     {
         inverse_center_coords(center);
-        get_move_matrix_by_center_coords(tmp, center);
+        get_move_matrix(tmp, center);
         
         multiply_matrix(transform_center, tmp, transform_matrix);
             
         inverse_center_coords(center);
-        get_move_matrix_by_center_coords(tmp, center);
+        get_move_matrix(tmp, center);
 
         multiply_matrix(transform_matrix, transform_center, tmp);
     }
@@ -175,7 +175,7 @@ error_code get_rotation_transform_matrix_t(matrix_t &transform_matrix, changes_p
     return result;
 }
 
-void get_move_matrix_by_center_coords(matrix_t &transform_matrix, const double *center)
+void get_move_matrix(matrix_t &transform_matrix, double *changes)
 {
     null_matrix(transform_matrix);
     
@@ -183,8 +183,9 @@ void get_move_matrix_by_center_coords(matrix_t &transform_matrix, const double *
         transform_matrix.matrix[i][i] = 1;
     
     for (int i = 0; i < DIMENSION; i++)
-        transform_matrix.matrix[transform_matrix.n - 1][i] = center[i];
+        transform_matrix.matrix[transform_matrix.n - 1][i] = changes[i];
 }
+
 
 void get_scale_matrix(matrix_t &transform_matrix, const changes_params_t &params)
 {
@@ -213,33 +214,56 @@ error_code get_scale_transform_matrix_t(matrix_t &transform_matrix, changes_para
     return result;
 }
 
-error_code transform_points(point_t &point, const matrix_t &transform_matrix)
+void multiply_point_to_matrix(point_t &res, point_t &point, const matrix_t &transform_matrix)
+{
+    for (int i = 0; i < point.n; i++)
+    {
+        for (int j = 0; j < transform_matrix.m; j++)
+            res.coords[i] += point.coords[j] * transform_matrix.matrix[j][i];
+    }
+}
+
+void swap_points(point_t &point_1, point_t &point_2)
+{
+    point_t tmp = point_t_init();
+    tmp = point_1;
+    point_1 = point_2;
+    point_2 = tmp;
+}
+
+error_code transform_point(point_t &point, const matrix_t &transform_matrix)
 {
     error_code result = no_errors;
-
-    matrix_t prom;
-    matrix_t_init(prom, LINE, MAT_SIZE);
-    prom.matrix = &point.coords;
     
-    matrix_t res;
-    matrix_t_init(res, prom.n, transform_matrix.m);
-    result = allocate_matrix(res);
+    point_t res;
+    result = allocate_point_t(res);
 
     if (!result)
     {
-        multiply_matrix(res, prom, transform_matrix);
-        for (int j = 0; j < point.n; j++)
-            point.coords[j] = res.matrix[0][j];
+        multiply_point_to_matrix(res, point, transform_matrix);
+        swap_points(res, point);
     }
 
-    free_matrix(res);
+    if (!result)
+
+    free_point_t(res);
     
+    return result;
+}
+
+error_code transform_points(points_array_t &points, matrix_t &transform_matrix)
+{
+    error_code result = no_errors;
+
+    for (int i = 0; i < points.amount && !result; i++)
+        result = transform_point(points.array[i], transform_matrix);
+
     return result;
 }
 
 error_code math_model_t_rotate(math_model_t &figure, changes_params_t &params)
 {
-    if (model_is_void(figure))
+    if (model_is_void(figure.points))
         return error_void;
 
     error_code result = no_errors;
@@ -254,12 +278,18 @@ error_code math_model_t_rotate(math_model_t &figure, changes_params_t &params)
         result = get_rotation_transform_matrix_t(transform_matrix, params);
     }
 
-    for (int i = 0; i < figure.points.amount && !result; i++)
-        result = transform_points(figure.points.array[i], transform_matrix);
+    if (!result)
+        result = transform_points(figure.points, transform_matrix);
     
     free_matrix(transform_matrix);
 
     return result;
+}
+
+void get_center_by_point(double *center, point_t &point)
+{
+    for (int j = 0; j < DIMENSION; j++)
+        center[j] += point.coords[j];
 }
 
 void get_center_coords(changes_params_t &params, points_array_t &points)
@@ -268,8 +298,7 @@ void get_center_coords(changes_params_t &params, points_array_t &points)
         params.center[i] = 0;
 
     for (int i = 0; i < points.amount; i++)
-        for (int j = 0; j < DIMENSION; j++)
-            params.center[j] += points.array[i].coords[j];
+        get_center_by_point(params.center, points.array[i]);
 
     for (int j = 0; j < DIMENSION; j++)
         params.center[j] /= points.amount;
@@ -277,7 +306,7 @@ void get_center_coords(changes_params_t &params, points_array_t &points)
 
 error_code math_model_t_scale(math_model_t &figure, changes_params_t &params)
 {
-    if (model_is_void(figure))
+    if (model_is_void(figure.points))
         return error_void;
 
     error_code result = no_errors;
@@ -292,22 +321,30 @@ error_code math_model_t_scale(math_model_t &figure, changes_params_t &params)
         get_scale_transform_matrix_t(transform_matrix, params);
     }
 
-    for (int i = 0; i < figure.points.amount && !result; i++)
-        result = transform_points(figure.points.array[i], transform_matrix);
+    result = transform_points(figure.points, transform_matrix);
 
     free_matrix(transform_matrix);
 
     return result;
 }
 
-error_code math_model_t_move(math_model_t &figure, const changes_params_t &params)
+error_code math_model_t_move(math_model_t &figure, changes_params_t &params)
 {
-    if (model_is_void(figure))
+    error_code result = no_errors;
+    if (model_is_void(figure.points))
         return error_void;
 
-    for (int i = 0; i < figure.points.amount; i++)
-        for (int j = 0; j < figure.points.array[i].n; j++)
-            figure.points.array[i].coords[j] += params.changes[j];
+    matrix_t transform_matrix;
+    matrix_t_init(transform_matrix, MAT_SIZE, MAT_SIZE);
 
-    return no_errors;
+    result = allocate_matrix(transform_matrix);
+    if (!result)
+    {
+        get_move_matrix(transform_matrix, params.changes);
+        result = transform_points(figure.points, transform_matrix);
+    }
+
+    free_matrix(transform_matrix);
+
+    return result;
 }

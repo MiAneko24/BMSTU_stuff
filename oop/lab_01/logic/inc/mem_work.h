@@ -19,4 +19,10 @@ void free_points_t(points_array_t &points);
 
 error_code allocate_points_array_t(points_array_t &points);
 
+error_code allocate_point_t(point_t &point);
+
+void free_point_t(point_t &point);
+
+point_t point_t_init();
+
 #endif

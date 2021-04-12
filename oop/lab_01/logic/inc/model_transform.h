@@ -32,7 +32,7 @@ typedef struct
     matrix_t connection; //Индексы соединенных ребрами вершин
 } math_model_t;
 
-bool model_is_void(math_model_t &figure);
+bool model_is_void(points_array_t &points);
 
 error_code math_model_t_move(math_model_t &figure, changes_params_t &params);
 

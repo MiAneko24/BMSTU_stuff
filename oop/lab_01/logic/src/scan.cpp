@@ -54,10 +54,15 @@ error_code scan_points_from_file(points_array_t &points, FILE *f)
     return result;
 }
 
-void increase_coords_dimension(points_array_t &points) // Добавление четвертой координаты, равной единице, для каждой точки
+void increase_point_coords_dimension(point_t &point)
+{
+    point.coords[DIMENSION] = 1;
+}
+
+void increase_points_coords_dimension(points_array_t &points) // Добавление четвертой координаты, равной единице, для каждой точки
 {
     for (int i = 0; i < points.amount; i++)                      
-        points.array[i].coords[DIMENSION] = 1; 
+        increase_point_coords_dimension(points.array[i]); 
 }
 
 error_code scan_amount_and_points_from_file(points_array_t &points, FILE *f) // Считывание количества точек и их координат из файла
@@ -67,16 +72,13 @@ error_code scan_amount_and_points_from_file(points_array_t &points, FILE *f) // 
     result = scan_int_from_file(points.amount, f);
     if (result)
         return result;
-    
-    if (points.amount <= 0)
-        return error_file_input;
 
     result = allocate_points_array_t(points);
     if (!result)
     {
         result = scan_points_from_file(points, f);
         if (!result)
-            increase_coords_dimension(points);
+            increase_points_coords_dimension(points);
     }
 
     return result;
@@ -110,8 +112,7 @@ error_code math_model_t_scan_from_file(math_model_t &figure, char *filename)
         
     error_code result = no_errors;
 
-    math_model_t tmp;
-    tmp = math_model_t_init();
+    math_model_t tmp = math_model_t_init();
 
     result = scan_amount_and_points_from_file(tmp.points, f);
     if (!result)

@@ -30,8 +30,10 @@ error_code make_action(changes_params_t &params)
         case draw_action:
             result = math_model_t_draw(figure, params.painter);
             break;
-        default:
+        case free_memory:
             free_math_model_t(figure);
+            break;
+        default:
             break;
     }
     return result;

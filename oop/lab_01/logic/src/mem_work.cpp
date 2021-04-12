@@ -36,11 +36,12 @@ error_code allocate_point_t(point_t &point)
 
 error_code allocate_points_array_t(points_array_t &points)
 {
+    error_code result = no_errors;
+
     points.array = (point_t *) calloc(points.amount, sizeof(point_t));
     if (points.array == NULL)
         return error_memory;
 
-    error_code result = no_errors;
 
     for (int i = 0; i < points.amount && !result; i++)
         result = allocate_point_t(points.array[i]); 
@@ -50,7 +51,7 @@ error_code allocate_points_array_t(points_array_t &points)
 
 void free_matrix(matrix_t &mat)
 {
-    if (!mat.matrix)
+    if (mat.matrix)
         free(mat.matrix);
     
     mat.n = 0;
@@ -58,21 +59,23 @@ void free_matrix(matrix_t &mat)
     mat.matrix = NULL;
 }
 
-void free_points_t(points_array_t &points)
+void free_point_t(point_t &point)
 {
-    for (int i = 0; i < points.amount; i++)
-        if (points.array[i].coords)
-            free(points.array[i].coords);
+    if (point.coords)
+        free(point.coords);
 }
 
+void free_points_t(points_array_t &points)
+{
+    if (points.array)
+        for (int i = 0; i < points.amount; i++)
+            free_point_t(points.array[i]);
+}
 
 void free_math_model_t(math_model_t &figure)
 {
-    if (figure.points.array)
-        free_points_t(figure.points);
-    
-    if (figure.connection.matrix)
-        free_matrix(figure.connection);
+    free_points_t(figure.points);   
+    free_matrix(figure.connection);
 }
 
 void matrix_t_init(matrix_t &mat, int n, int m)
@@ -82,12 +85,26 @@ void matrix_t_init(matrix_t &mat, int n, int m)
     mat.matrix = NULL;
 }
 
+point_t point_t_init()
+{
+    point_t point;
+    point.n = MAT_SIZE;
+    point.coords = nullptr;
+    return point;
+}
+
+points_array_t points_t_init()
+{
+    points_array_t points;
+    points.array = nullptr;
+    points.amount = 0;
+    return points;
+}
+
 math_model_t math_model_t_init()
 {
     math_model_t figure;
-    figure.points.array = NULL;
-    figure.points.amount = 0;
-    figure.connection.matrix = NULL;
-    figure.connection.n = 0;
-    figure.connection.m = 0;
+    figure.points = points_t_init();
+    matrix_t_init(figure.connection, 0, 0);
+    return figure;
 }

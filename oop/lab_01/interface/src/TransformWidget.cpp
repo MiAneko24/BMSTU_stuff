@@ -156,14 +156,17 @@ TransformWidget::~TransformWidget()
 void TransformWidget::moveClicked()
 {
     error_code result = no_errors;
+	
 	int i = 0;
 	bool dx_empty = dx_entry->text().isEmpty();
 	bool dy_empty = dy_entry->text().isEmpty();
 	bool dz_empty = dz_entry->text().isEmpty();
+
 	if (dx_empty && dy_empty && dz_empty)
 	{
 		result = error_input;
 	}
+
 	if (!dx_empty)
 	{
 		this->params.changes[i] = dx_entry->text().toDouble();
@@ -174,6 +177,7 @@ void TransformWidget::moveClicked()
 		this->params.changes[i] = 0;
 		i++;
 	}
+
 	if (!dy_empty)
 	{
 		this->params.changes[i] = dy_entry->text().toDouble();
@@ -184,6 +188,7 @@ void TransformWidget::moveClicked()
 		this->params.changes[i] = 0;
 		i++;
 	}
+
 	if (!dz_empty)
 	{
 		this->params.changes[i] = dz_entry->text().toDouble();
@@ -194,11 +199,13 @@ void TransformWidget::moveClicked()
 		this->params.changes[i] = 0;
 		i++;
 	}
+
 	if (!result)
 	{
 		this->params.action = move_action;
 		result = make_action(this->params);
 	}
+
 	if (!result)
 	{
 
@@ -211,10 +218,12 @@ void TransformWidget::moveClicked()
 void TransformWidget::scaleClicked()
 {
 	error_code result = no_errors;
+
 	int i = 0;
 	bool kx_empty = kx_entry->text().isEmpty();
 	bool ky_empty = ky_entry->text().isEmpty();
 	bool kz_empty = kz_entry->text().isEmpty();
+
 	if (kx_empty && ky_empty && kz_empty)
 		result = error_input;
 	if (!kx_empty)
@@ -227,6 +236,7 @@ void TransformWidget::scaleClicked()
 		this->params.changes[i] = 1;
 		i++;
 	}
+
 	if (!ky_empty)
 	{
 		this->params.changes[i] = ky_entry->text().toDouble();
@@ -237,6 +247,7 @@ void TransformWidget::scaleClicked()
 		this->params.changes[i] = 1;
 		i++;
 	}
+
 	if (!kz_empty)
 	{
 		this->params.changes[i] = kz_entry->text().toDouble();
@@ -247,11 +258,13 @@ void TransformWidget::scaleClicked()
 		this->params.changes[i] = 1;
 		i++;
 	}
+
 	if (!result)
 	{
 		this->params.action = scale_action;
 		result = make_action(this->params);
 	}
+
 	if (!result)
 	{
 		view->params = params;
@@ -296,6 +309,7 @@ void TransformWidget::rotateClicked()
 	
 	if (xy_empty && yz_empty && xz_empty)
 		result = error_input;
+
 	if (!yz_empty)
 	{
 		this->params.changes[i] = yz_angle_entry->text().toDouble() * M_PI / 180;
@@ -306,6 +320,7 @@ void TransformWidget::rotateClicked()
 		this->params.changes[i] = 0;
 		i++;
 	}
+
 	if (!xz_empty)
 	{
 		this->params.changes[i] = xz_angle_entry->text().toDouble() * M_PI / 180;
@@ -316,6 +331,7 @@ void TransformWidget::rotateClicked()
 		this->params.changes[i] = 0;
 		i++;
 	}
+
 	if (!xy_empty)
 	{
 		this->params.changes[i] = xy_angle_entry->text().toDouble() * M_PI / 180;
@@ -326,6 +342,7 @@ void TransformWidget::rotateClicked()
 		this->params.changes[i] = 0;
 		i++;
 	}
+
 	if (!result)
 	{
 		this->params.action = rotate_action;
@@ -344,6 +361,7 @@ void TransformWidget::rotateClicked()
 void TransformWidget::loadFromClicked()
 {
 	error_code result = no_errors;
+
 	this->params.action = get_model;
 	if (file_entry->text().isEmpty())
 		result = error_input_filename;
@@ -353,6 +371,7 @@ void TransformWidget::loadFromClicked()
 			free(this->params.filename);
 		QString filename = file_entry->text();
 		this->params.filename = (char *) malloc((filename.length() + 1) * sizeof(char));
+
 		if (!this->params.filename)
 			result = error_memory;
 		else
