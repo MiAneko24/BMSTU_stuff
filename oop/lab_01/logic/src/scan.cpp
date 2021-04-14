@@ -106,11 +106,11 @@ error_code scan_connections_from_file(matrix_t &connection, FILE *f) // Счит
 
 error_code math_model_t_scan_from_file(math_model_t &figure, char *filename) 
 {
+    error_code result = no_errors;
+
     FILE *f = fopen(filename, "r");
     if (f == NULL)
-        return error_file; 
-        
-    error_code result = no_errors;
+        return error_file;     
 
     math_model_t tmp = math_model_t_init();
 

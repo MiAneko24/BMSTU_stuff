@@ -101,6 +101,7 @@ void inverse_center_coords(double *center)
 error_code get_rotation_matrix_all_axes(matrix_t &transform_matrix, const double *changes)
 {
     error_code result = no_errors;
+
     matrix_t xy;
     matrix_t yz;
     matrix_t xz;
@@ -242,11 +243,8 @@ error_code transform_point(point_t &point, const matrix_t &transform_matrix)
     {
         multiply_point_to_matrix(res, point, transform_matrix);
         swap_points(res, point);
+        free_point_t(res);
     }
-
-    if (!result)
-
-    free_point_t(res);
     
     return result;
 }
@@ -276,12 +274,12 @@ error_code math_model_t_rotate(math_model_t &figure, changes_params_t &params)
     {
         get_center_coords(params, figure.points);
         result = get_rotation_transform_matrix_t(transform_matrix, params);
-    }
 
-    if (!result)
-        result = transform_points(figure.points, transform_matrix);
-    
-    free_matrix(transform_matrix);
+        if (!result)
+            result = transform_points(figure.points, transform_matrix);
+        
+        free_matrix(transform_matrix);
+    }
 
     return result;
 }
@@ -306,10 +304,10 @@ void get_center_coords(changes_params_t &params, points_array_t &points)
 
 error_code math_model_t_scale(math_model_t &figure, changes_params_t &params)
 {
+    error_code result = no_errors;
+
     if (model_is_void(figure.points))
         return error_void;
-
-    error_code result = no_errors;
 
     matrix_t transform_matrix;
     matrix_t_init(transform_matrix, MAT_SIZE, MAT_SIZE);
@@ -331,6 +329,7 @@ error_code math_model_t_scale(math_model_t &figure, changes_params_t &params)
 error_code math_model_t_move(math_model_t &figure, changes_params_t &params)
 {
     error_code result = no_errors;
+
     if (model_is_void(figure.points))
         return error_void;
 

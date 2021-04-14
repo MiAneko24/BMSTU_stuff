@@ -31,10 +31,10 @@ void print_amount_and_connections_to_file(matrix_t &connection, FILE *f)
 
 error_code math_model_t_save_to_file(math_model_t &figure, char *filename)
 {
+    error_code result = no_errors;
+
     if (model_is_void(figure.points))
         return error_void;
-
-    error_code result = no_errors;
 
     FILE *f = fopen(filename, "w");
     if (f == NULL)
