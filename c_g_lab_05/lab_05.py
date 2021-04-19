@@ -3,7 +3,7 @@ from tkinter import colorchooser
 from tkinter import ttk
 from time import sleep, time
 import tkinter.messagebox as box
-
+#TODO time show
 from numpy import sign
 
 class EdgesWithFlag(Frame):
@@ -43,7 +43,6 @@ class EdgesWithFlag(Frame):
         
         self.pointsArray[self.curFig].append([x, y, self.color_lines])
         self.draw_line()
-        print("add")
 
     def clear(self):
         self.canvas.delete("all")
@@ -53,7 +52,6 @@ class EdgesWithFlag(Frame):
         self.img = PhotoImage(width = 1090, height = 1016)
         self.canvas.create_image((545, 508), image = self.img, state = "normal")
         
-        print("clear")
 
     def Bresenham_int(self, x1, y1, x2, y2):
         
@@ -86,51 +84,6 @@ class EdgesWithFlag(Frame):
                 else:
                     y += sy
                 e += 2 * dy
-            
-
-
-    # def digitBresenham(self, xStart, xEnd, yStart, yEnd):
-    #     if xStart == xEnd and yStart == yEnd:
-    #         self.img.put(self.color_lines, (xStart, yStart))
-    #         return
-
-    #     deltaX = xEnd - xStart
-    #     deltaY = yEnd - yStart
-
-    #     stepX = int(sign(deltaX))
-    #     stepY = int(sign(deltaY))
-
-    #     deltaX = abs(deltaX)
-    #     deltaY = abs(deltaY)
-
-    #     if deltaX < deltaY:
-    #         deltaX, deltaY = deltaY, deltaX
-    #         flag = True
-    #     else:
-    #         flag = False
-
-    #     acc = deltaY + deltaY - deltaX
-    #     curX = xStart
-    #     curY = yStart
-
-    #     for i in range(deltaX + 1):
-    #         self.img.put(self.color_lines, (curX, curY))
-
-    #         if flag:
-    #             if acc >= 0:
-    #                 curX += stepX
-    #                 acc -= (deltaX + deltaX)
-    #             curY += stepY
-    #             acc += deltaY + deltaY
-    #         else:
-    #             if acc >= 0:
-    #                 curY += stepY
-    #                 acc -= (deltaX + deltaX)
-    #             curX += stepX
-    #             acc += deltaY + deltaY
-
-
-
 
     def setExtrems(self):
         self.extrems.clear()
@@ -192,7 +145,6 @@ class EdgesWithFlag(Frame):
                             self.pointsArray[self.curFig][-1][1])
         self.color_lines = tempCol
 
-        print("cancel")
 
     def draw_line(self):
         self.ended = False
@@ -203,7 +155,6 @@ class EdgesWithFlag(Frame):
                         self.pointsArray[self.curFig][-1][1])
 
     def left_click(self, event):
-        print("click")
         self.ended = True
         if (len(self.pointsArray) == 0):
             self.curFig = 0
@@ -219,54 +170,12 @@ class EdgesWithFlag(Frame):
         self.curFig += 1
 
         self.pointsArray.append(list())
-        print("endclick")
 
     def leadRoundEdge(self, edge):
         if edge[0][1] == edge[1][1]:
             return
         if edge[0][1] > edge[1][1]:
             edge[1], edge[0] = edge[0], edge[1]
-
-        # x = int(edge[0][0])
-        # y = int(edge[0][1])
-        # dx = int(edge[1][0] - edge[0][0])
-        # dy = int(edge[1][1] - edge[0][1])
-        # sx = int(sign(dx))
-        # sy = int(sign(dy))
-        # dx = abs(dx)
-        # dy = abs(dy)
-        # fl = 0
-        # if (dx >= dy):
-        #     fl = 0
-        # else:
-        #     fl = 1
-        #     dy, dx = dx, dy
-        # e = 2 * dy - dx
-        # # print("brez")
-        # for i in range(0, dx + 1):
-            
-        #     if self.img.get(x + 1, y) != self.mark_color[1] and self.img.get(x, y) != self.mark_color[1]:
-        #         # print("[{:d}, {:d}]".format(x + 1, y))
-        #         self.img.put(self.mark_color[0], (x + 1, y))
-        #     else:
-        #         # print("[{:d}, {:d}]".format(x, y))
-        #         self.img.put(self.mark_color[0], (x, y))
-            
-        #     if (e >= 0):
-        #         if (fl == 0):
-        #             y += sy
-        #         else:
-        #             x += sx
-        #         e -= 2 * dx
-        #     if (e <= 0):
-        #         if (fl == 0):
-        #             x += sx
-        #         else:
-        #             y += sy
-        #         e += 2 * dy
-            
-        # print()
-        # print("cda")
         dy = 1
         dx = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
 
@@ -274,11 +183,9 @@ class EdgesWithFlag(Frame):
         y = int(edge[0][1])
         while y < edge[1][1]:
             if self.img.get(int(x) + 1, y) != self.mark_color[1]:
-                # print("[{:d}, {:6.2f}]".format(int(x) + 1, y))
                 self.img.put(self.mark_color[0], (int(x) + 1, y))
             else:
 
-                # print("[{:d}, {:6.2f}]".format(int(x), y))
                 self.img.put(self.mark_color[0], (int(x), y))
             x += dx
             y += dy
@@ -297,11 +204,9 @@ class EdgesWithFlag(Frame):
             inside = False
             curColor = self.color_bg
             invColor = self.color_lines
-            #curPointScanString = self.x_min
             for x in range(self.x_min, self.x_max + 1):
                 if self.img.get(x, y) == self.mark_color[1]:
                     inside = not inside
-    #                curColor, invColor = invColor, curColor
                 if (inside):
                     self.img.put(invColor, (x, y))
                 else:
@@ -309,21 +214,18 @@ class EdgesWithFlag(Frame):
             if (sleep_needed):
                 self.canvas.update()
                 sleep(0.1)
-                    #curPointScanString = x
-            # self.img.put(curColor, (x, y))
 
     def start(self):
         self.pointsArray.pop()
         self.setExtrems()
         self.get_mark_color()
-        print(self.mark_color)
         self.set_limits()
         self.leadRoundFigure()
 
-        self.canvas.update()
-        sleep(3)
         delay = self.draw_mode_chooser.get()
         if (delay == "С задержкой"):
+            self.canvas.update()
+            sleep(3)
             self.rasterScanWithFlag(True)
         else:
             self.rasterScanWithFlag()
