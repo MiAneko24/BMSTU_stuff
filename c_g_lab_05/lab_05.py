@@ -270,8 +270,8 @@ class EdgesWithFlag(Frame):
         dy = 1
         dx = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
 
-        x = edge[0][0]
-        y = edge[0][1]
+        x = int(edge[0][0])
+        y = int(edge[0][1])
         while y < edge[1][1]:
             if self.img.get(int(x) + 1, y) != self.mark_color[1]:
                 # print("[{:d}, {:6.2f}]".format(int(x) + 1, y))
