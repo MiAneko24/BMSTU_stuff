@@ -106,15 +106,13 @@ def circle_middle(canvas, color, cx, cy, r):
         if p < 0:  # средняя точка внутри окружности, ближе верхний пиксел, горизонтальный шаг
             p += 2 * x + 1
         else:   # средняя точка вне окружности, ближе диагональный пиксел, диагональный шаг
-            p += 2 * x - 2 * y + 5
             y -= 1
+            p += 2 * x - 2 * y + 1 
 
-        # if x > y:
-        #     break
     
 def ellips_canon(canvas, color, cx, cy, a, b):
-    if (abs(a) < EPS and abs(b) < EPS):
-        canvas.create_oval(cx, cy, cx, cy, outline=color)
+    if (abs(a) < EPS or abs(b) < EPS):
+        canvas.create_line(cx - a, cy - b, cx + a, cy + b, fill=color)
         return
     x = 0
     while (x < a + EPS):
@@ -139,7 +137,7 @@ def ellips_canon(canvas, color, cx, cy, a, b):
 def ellips_param(canvas, color, cx, cy, a, b):
     m = max(a, b)
     if (int (m) == 0):
-        canvas.create_oval(cx, cy, cx, cy, outline=color)
+        canvas.create_line(cx - a, cy - b, cx + a, cy + b, fill=color)
         return
     l = round(pi * m / 2)
     for i in range(0, l + 1, 1):
@@ -153,6 +151,9 @@ def ellips_param(canvas, color, cx, cy, a, b):
     
 
 def ellips_brez(canvas, color, cx, cy, a, b):
+    m = max(a, b)
+    if (int (m) == 0):
+        canvas.create_line(cx - a, cy - b, cx + a, cy + b, fill=color)
     x = 0  # начальные значения
     y = b
     a = a ** 2
