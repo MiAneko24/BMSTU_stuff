@@ -129,7 +129,7 @@ class EllipsDrawer(Frame):
         except ValueError:
             box.showerror("Ошибка", "Координаты центра эллипса и полуоси должны быть вещественными числами")
             return
-        if (a <= 0 or b <= 0):
+        if (a < 0 or b < 0):
             box.showerror("Ошибка", "Полуоси не могут быть неположительными числами")
             return
         else:

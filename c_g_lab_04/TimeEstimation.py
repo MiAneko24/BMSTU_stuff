@@ -44,7 +44,7 @@ class TimeEstimation(Frame):
         if (r_end < r_start):
             box.showerror("Ошибка", "Конечный радиус не может быть больше начального")
             return
-        if (r_end <= 0 or r_start <= 0):
+        if (r_end < 0 or r_start < 0):
             box.showerror("Ошибка", "Радиус не может быть неположительным числом")
             return
             
@@ -115,18 +115,7 @@ class TimeEstimation(Frame):
             r.append(j)
         ax.plot(r, data, color='blue', label="Метод средней точки")
 
-        r.clear()
-        data.clear()        
-        for j in range(r_start, r_end, step):
-            for i in range(repeats):
-                start_time = time.time()
-                canvas.create_oval(cx - j, cy - j, cx + j, cy + j, outline=color)
-                circle_brez(canvas, color, cx, cy, j)
-                res_time += time.time() - start_time
-            res_time /= repeats
-            data.append(res_time)
-            r.append(j)
-        ax.plot(r, data, color='r', label="Библиотечная функция")
+     
         ax.set_title("Зависимость времени работы алгоритмов от радиуса")
         ax.set_xlabel("Радиус")
         ax.set_ylabel("Время, мс")

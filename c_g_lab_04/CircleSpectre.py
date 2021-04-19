@@ -150,7 +150,7 @@ class CircleSpectre(Frame):
         except ValueError:
             box.showerror("Ошибка", """Центр окружности, радиус и шаг его изменения должны быть вещественными числами, количество - целым числом""")
             return
-        if (r_start <= 0 or step <= 0 or amount <= 0):
+        if (r_start < 0 or step <= 0 or amount <= 0):
             box.showerror("Ошибка", "Радиус, шаг его изменения и количество окружностей не могут быть неположительными числами")
             return
         else:

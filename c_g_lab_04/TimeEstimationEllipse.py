@@ -58,7 +58,7 @@ class TimeEstimationEllipse(Frame):
         if (a_end < a_start or b_end < b_start):
             box.showerror("Ошибка", "Конечное значение полуоси не может быть больше начального")
             return
-        if (a_end <= 0 or a_start <= 0 or b_end <= 0 or b_start <= 0):
+        if (a_end < 0 or a_start < 0 or b_end < 0 or b_start < 0):
             box.showerror("Ошибка", "Полуось не может быть неположительным числом")
             return
             
@@ -150,22 +150,7 @@ class TimeEstimationEllipse(Frame):
         
         ax.plot(r, data, color='blue', label="Метод средней точки")
 
-        r.clear()
-        data.clear()   
-        a = a_start
-        b = b_start
-        while (a < a_end):
-            for i in range(repeats):
-                start_time = time.time()
-                canvas.create_oval(cx - a, cy - b, cx + a, cy + b, outline=color)
-                res_time += time.time() - start_time
-            res_time /= repeats
-            data.append(res_time)
-            r.append(a + b)
-            a += step_a
-            b += step_b
-        
-        ax.plot(r, data, color='r', label="Библиотечная функция")
+      
         ax.set_title("Зависимость времени работы алгоритмов от сумы полуосей")
         ax.set_xlabel("Сумма полуосей")
         ax.set_ylabel("Время, мс")

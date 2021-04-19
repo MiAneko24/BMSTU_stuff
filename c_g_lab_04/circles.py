@@ -3,6 +3,7 @@ from tkinter import Canvas
 
 draw = 0
 time_estimation = 1
+EPS = 1e-6
 
 def sign(x):
     if x > 0:
@@ -14,7 +15,7 @@ def sign(x):
 
 def circle_canon(canvas, color, cx, cy, r):
     x = 0
-    while (x < r + 1):
+    while (x < r + EPS):
         y = round(sqrt(r ** 2 - x ** 2))
         canvas.create_oval(cx + x, cy + y, cx + x, cy + y, outline=color)
         canvas.create_oval(cx + x, cy - y, cx + x, cy - y, outline=color)
@@ -23,7 +24,7 @@ def circle_canon(canvas, color, cx, cy, r):
         x += 1
 
     y = 0
-    while (y < r + 1):
+    while (y < r + EPS):
         x = round(sqrt(r ** 2 - y ** 2))
 
         canvas.create_oval(cx + x, cy + y, cx + x, cy + y, outline=color)
@@ -33,7 +34,7 @@ def circle_canon(canvas, color, cx, cy, r):
         y += 1
     
 def circle_param(canvas, color, cx, cy, r):
-    if (r == 0):
+    if (abs(r) < EPS):
         canvas.create_oval(cx, cy, cx, cy, outline=color)
         return
     l = round(pi * r / 2 )  # длина четврети окружности
@@ -60,7 +61,7 @@ def circle_brez(canvas, color, cx, cy, r):
             buf = 2 * d + 2 * y - 1
             x += 1
 
-            if buf <= 0:  # горизонтальный шаг
+            if buf < EPS:  # горизонтальный шаг
                 d = d + 2 * x + 1
             else:  # диагональный шаг
                 y -= 1
@@ -80,7 +81,7 @@ def circle_brez(canvas, color, cx, cy, r):
 
             continue
 
-        if d == 0.0:  # пиксель лежит на окружности
+        if abs(d) < EPS:  # пиксель лежит на окружности
             x += 1   # диагональный шаг
             y -= 1
             d = d + 2 * x - 2 * y + 2
@@ -89,7 +90,7 @@ def circle_middle(canvas, color, cx, cy, r):
     x = 0  # начальные значения
     y = r
     p = 5 / 4 - r  # (x + 1)^2 + (y - 1/2)^2 - r^2
-    while True:
+    while x < y + EPS:
         canvas.create_oval(cx - x, cy + y, cx - x, cy + y, outline=color)
         canvas.create_oval(cx + x, cy - y, cx + x, cy - y, outline=color)
         canvas.create_oval(cx - x, cy - y, cx - x, cy - y, outline=color)
@@ -108,15 +109,15 @@ def circle_middle(canvas, color, cx, cy, r):
             p += 2 * x - 2 * y + 5
             y -= 1
 
-        if x > y:
-            break
+        # if x > y:
+        #     break
     
 def ellips_canon(canvas, color, cx, cy, a, b):
-    if (a == 0 and b == 0):
+    if (abs(a) < EPS and abs(b) < EPS):
         canvas.create_oval(cx, cy, cx, cy, outline=color)
         return
     x = 0
-    while (x < a + 1):
+    while (x < a + EPS):
         y = round(b * sqrt(1.0 - x ** 2 / a / a))
         canvas.create_oval(cx + x, cy + y, cx + x, cy + y, outline=color)
         canvas.create_oval(cx + x, cy - y, cx + x, cy - y, outline=color)
@@ -125,7 +126,7 @@ def ellips_canon(canvas, color, cx, cy, a, b):
         x += 1
 
     y = 0
-    while (y < b + 1):
+    while (y < b + EPS):
         x = round(a * sqrt(1.0 - y ** 2 / b / b))
         canvas.create_oval(cx + x, cy + y, cx + x, cy + y, outline=color)
         canvas.create_oval(cx + x, cy - y, cx + x, cy - y, outline=color)
@@ -171,9 +172,7 @@ def ellips_brez(canvas, color, cx, cy, a, b):
                 y -= 1
                 d = d + 2 * b * x - 2 * a * y + a + b
 
-            continue
-
-        if d > 0:  # пиксель лежит вне эллипса
+        elif d > 0:  # пиксель лежит вне эллипса
             buf = 2 * d - 2 * b * x - b
             y -= 1
 
@@ -183,9 +182,7 @@ def ellips_brez(canvas, color, cx, cy, a, b):
                 x += 1
                 d = d + 2 * x * b - 2 * y * a + a + b
 
-            continue
-
-        if d == 0.0:  # пиксель лежит на окружности
+        elif abs(d) < EPS:  # пиксель лежит на окружности
             x += 1  # диагональный шаг
             y -= 1
             d = d + 2 * x * b - 2 * y * a + a + b
@@ -195,22 +192,24 @@ def ellips_brez(canvas, color, cx, cy, a, b):
 def ellips_middle(canvas, color, cx, cy, a, b):
     x = 0   # начальные положения
     y = b
-    p = b * b - a * a * b + 0.25 * a * a   # начальное значение параметра принятия решения в области tg<1
-    while 2 * (b ** 2) * x < 2 * a * a * y:  # пока тангенс угла наклона меньше 1
+    p = b ** 2 - a ** 2 * b + 0.25 * a ** 2   # начальное значение параметра принятия решения в области tg<1
+    dx = 2 * b ** 2 * x
+    dy = 2 * a ** 2 * y
+    while dx < dy:  # пока тангенс угла наклона меньше 1
         canvas.create_oval(cx - x, cy + y, cx - x, cy + y, outline=color)
         canvas.create_oval(cx + x, cy - y, cx + x, cy - y, outline=color)
         canvas.create_oval(cx - x, cy - y, cx - x, cy - y, outline=color)
         canvas.create_oval(cx + x, cy + y, cx + x, cy + y, outline=color)
 
         x += 1
-
-        if p < 0:  # средняя точка внутри эллипса, ближе верхний пиксел, горизонтальный шаг
-            p += 2 * b * b * x + b * b
-        else:   # средняя точка вне эллипса, ближе диагональный пиксел, диагональный шаг
+        dx += 2 * b ** 2
+        if p >= 0:   # средняя точка вне эллипса, ближе диагональный пиксел, диагональный шаг
             y -= 1
-            p += 2 * b * b * x - 2 * a * a * y + b * b
+            dy -= 2 * a ** 2
+            p -= dy
+        p += dx + b ** 2
 
-    p = b * b * (x + 0.5) * (x + 0.5) + a * a * (y - 1) * (y - 1) - a * a * b * b
+    p = b ** 2 * (x + 0.5) ** 2 + a ** 2 * (y - 1) ** 2 - a ** 2 * b ** 2
     # начальное значение параметра принятия решения в области tg>1 в точке (х + 0.5, y - 1) полседнего положения
 
     while y >= 0:
@@ -220,11 +219,12 @@ def ellips_middle(canvas, color, cx, cy, a, b):
         canvas.create_oval(cx + x, cy + y, cx + x, cy + y, outline=color)
 
         y -= 1
+        dy -= 2 * a ** 2
 
-        if p > 0:
-            p -= 2 * a * a * y + a * a
-        else:
+        if p <= 0:
             x += 1
-            p += 2 * b * b * x - 2 * a * a * y + a * a
+            dx += 2 * b ** 2
+            p += dx
+        p -= dy - a ** 2
     
     

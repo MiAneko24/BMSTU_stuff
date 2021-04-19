@@ -124,7 +124,7 @@ class CircleDrawer(Frame):
             box.showerror("Ошибка", """Координаты начала и конца отрезка должны быть
 целыми числами""")
             return
-        if (r <= 0):
+        if (r < 0):
             box.showerror("Ошибка", "Радиус не может быть неположительным числом")
             return
         else:
