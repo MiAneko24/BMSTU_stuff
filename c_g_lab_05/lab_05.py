@@ -3,21 +3,19 @@ from tkinter import colorchooser
 from tkinter import ttk
 from time import sleep, time
 import tkinter.messagebox as box
-#TODO time show
 from numpy import sign
 
 class EdgesWithFlag(Frame):
     img = 0
-    delay = 0
 
     ended = False
     extrems = [[]]
 
-    noteColor = "#00C12B"
+    mark_color = "#00C12B"
 
-    pointsArray = [[]]
-    edgesArray = [[]]
-    curFig = 0
+    points = [[]]
+    edges = [[]]
+    figure = 0
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -41,13 +39,13 @@ class EdgesWithFlag(Frame):
             box.showerror("Ошибка", "Координаты точки должны быть вещественными числами")
             return
         
-        self.pointsArray[self.curFig].append([x, y, self.color_lines])
+        self.points[self.figure].append([x, y, self.color_lines])
         self.draw_line()
 
     def clear(self):
         self.canvas.delete("all")
-        self.curFig = 0
-        self.pointsArray = [[]]
+        self.figure = 0
+        self.points = [[]]
         self.extrems = [[]]
         self.img = PhotoImage(width = 1090, height = 1016)
         self.canvas.create_image((545, 508), image = self.img, state = "normal")
@@ -85,28 +83,28 @@ class EdgesWithFlag(Frame):
                     y += sy
                 e += 2 * dy
 
-    def setExtrems(self):
+    def find_extrems(self):
         self.extrems.clear()
         self.extrems = [[]]
 
-        for i in range(len(self.pointsArray)):
+        for i in range(len(self.points)):
             self.extrems[i].append((
-                (self.pointsArray[i][0][1] < self.pointsArray[i][-1][1] and
-                    self.pointsArray[i][0][1] < self.pointsArray[i][1][1]) or
-                (self.pointsArray[i][0][1] > self.pointsArray[i][-1][1] and
-                    self.pointsArray[i][0][1] > self.pointsArray[i][1][1])))
-            for j in range(1, len(self.pointsArray[i]) - 1):
+                (self.points[i][0][1] < self.points[i][-1][1] and
+                    self.points[i][0][1] < self.points[i][1][1]) or
+                (self.points[i][0][1] > self.points[i][-1][1] and
+                    self.points[i][0][1] > self.points[i][1][1])))
+            for j in range(1, len(self.points[i]) - 1):
                 self.extrems[i].append((
-                    (self.pointsArray[i][j][1] < self.pointsArray[i][j - 1][1] and
-                        self.pointsArray[i][j][1] < self.pointsArray[i][j + 1][1]) or
-                    (self.pointsArray[i][j][1] > self.pointsArray[i][j - 1][1] and
-                        self.pointsArray[i][j][1] > self.pointsArray[i][j + 1][1])))
+                    (self.points[i][j][1] < self.points[i][j - 1][1] and
+                        self.points[i][j][1] < self.points[i][j + 1][1]) or
+                    (self.points[i][j][1] > self.points[i][j - 1][1] and
+                        self.points[i][j][1] > self.points[i][j + 1][1])))
 
             self.extrems[i].append(
-                (self.pointsArray[i][-1][1] < self.pointsArray[i][-2][1] and
-                    self.pointsArray[i][-1][1] < self.pointsArray[i][0][1]) or
-                (self.pointsArray[i][-1][1] > self.pointsArray[i][-2][1] and
-                    self.pointsArray[i][-1][1] > self.pointsArray[i][0][1]))
+                (self.points[i][-1][1] < self.points[i][-2][1] and
+                    self.points[i][-1][1] < self.points[i][0][1]) or
+                (self.points[i][-1][1] > self.points[i][-2][1] and
+                    self.points[i][-1][1] > self.points[i][0][1]))
             self.extrems.append(list())
         self.extrems.pop()
 
@@ -122,56 +120,62 @@ class EdgesWithFlag(Frame):
 
 
     def cancel(self):
-        if len(self.pointsArray) == 0:
+        if len(self.points) == 0:
             box.showinfo("Предупреждение", "Отменять нечего")
             return
         tempCol = self.color_lines
         self.color_lines = self.color_bg
-        print(self.curFig)
-        if len(self.pointsArray[self.curFig]) > 1:
-            print(len(self.pointsArray[self.curFig]))
-            self.Bresenham_int(self.pointsArray[self.curFig][-2][0],
-                        self.pointsArray[self.curFig][-2][1],
-                        self.pointsArray[self.curFig][-1][0],
-                        self.pointsArray[self.curFig][-1][1])
-            self.pointsArray[self.curFig].pop()
+        print(self.figure)
+        if len(self.points[self.figure]) > 1:
+            print(len(self.points[self.figure]))
+            self.Bresenham_int(self.points[self.figure][-2][0],
+                        self.points[self.figure][-2][1],
+                        self.points[self.figure][-1][0],
+                        self.points[self.figure][-1][1])
+            self.points[self.figure].pop()
         else:
-            self.pointsArray.pop()
-            self.curFig -= 1
-            if (self.curFig >= 0):
-                self.Bresenham_int(self.pointsArray[self.curFig][0][0],
-                            self.pointsArray[self.curFig][0][1],
-                            self.pointsArray[self.curFig][-1][0],
-                            self.pointsArray[self.curFig][-1][1])
+            self.points.pop()
+            self.figure -= 1
+            if (self.figure >= 0):
+                self.Bresenham_int(self.points[self.figure][0][0],
+                            self.points[self.figure][0][1],
+                            self.points[self.figure][-1][0],
+                            self.points[self.figure][-1][1])
         self.color_lines = tempCol
 
 
     def draw_line(self):
         self.ended = False
-        if len(self.pointsArray[self.curFig]) > 1:
-            self.Bresenham_int(self.pointsArray[self.curFig][-2][0],
-                        self.pointsArray[self.curFig][-2][1],
-                        self.pointsArray[self.curFig][-1][0],
-                        self.pointsArray[self.curFig][-1][1])
+        if len(self.points[self.figure]) > 1:
+            self.Bresenham_int(self.points[self.figure][-2][0],
+                        self.points[self.figure][-2][1],
+                        self.points[self.figure][-1][0],
+                        self.points[self.figure][-1][1])
 
     def left_click(self, event):
         self.ended = True
-        if (len(self.pointsArray) == 0):
-            self.curFig = 0
-            self.pointsArray.append(list())
-        self.pointsArray[self.curFig].append([event.x, event.y, self.color_lines])
+        if (len(self.points) == 0):
+            self.figure = 0
+            self.points.append(list())
+        self.points[self.figure].append([event.x, event.y, self.color_lines])
         self.draw_line()
 
     def right_click(self, event):
-        self.Bresenham_int(self.pointsArray[self.curFig][0][0],
-                   self.pointsArray[self.curFig][0][1],
-                   self.pointsArray[self.curFig][-1][0],
-                   self.pointsArray[self.curFig][-1][1])
-        self.curFig += 1
+        self.Bresenham_int(self.points[self.figure][0][0],
+                   self.points[self.figure][0][1],
+                   self.points[self.figure][-1][0],
+                   self.points[self.figure][-1][1])
+        self.figure += 1
 
-        self.pointsArray.append(list())
+        self.points.append(list())
 
-    def leadRoundEdge(self, edge):
+    def set_mark_points_for_edge(self, edge, is_extreme):
+        if (is_extreme[0]):
+            edges[0][0] += dx
+            edges[0][1] += dy
+        if (is_extreme[1]):
+            edges[1][0] += dx
+            edges[1][1] += dy
         if edge[0][1] == edge[1][1]:
             return
         if edge[0][1] > edge[1][1]:
@@ -182,53 +186,55 @@ class EdgesWithFlag(Frame):
         x = int(edge[0][0])
         y = int(edge[0][1])
         while y < edge[1][1]:
-            if self.img.get(int(x) + 1, y) != self.mark_color[1]:
-                self.img.put(self.mark_color[0], (int(x) + 1, y))
-            else:
-
+            if self.img.get(int(x), y) != self.mark_color[1]:
                 self.img.put(self.mark_color[0], (int(x), y))
+            else:
+                self.img.put(self.color_bg, (int(x), y))
             x += dx
             y += dy
 
 
-    def leadRoundFigure(self):
-        for i in range(len(self.pointsArray)):
-            len_cur = len(self.pointsArray[i])
+    def set_mark_points_for_figures(self):
+        for i in range(len(self.points)):
+            len_cur = len(self.points[i])
             for j in range(len_cur):
-                self.leadRoundEdge(
-                    [self.pointsArray[i][j], self.pointsArray[i][(j + 1) % len_cur]]
+                self.set_mark_points_for_edge(
+                    [self.points[i][j], self.points[i][(j + 1) % len_cur]], [self.points[i][j] in self.extrems[i], self.points[i][(j + 1) % len_cur] in self.extrems[i]]
                 )
 
-    def rasterScanWithFlag(self, sleep_needed=False):
+    def fill_with_flag(self, sleep_needed=False):
+        time_start = time()
         for y in range(self.y_min - 1, self.y_max + 1):
             inside = False
-            curColor = self.color_bg
-            invColor = self.color_lines
+            cur_color = self.color_bg
+            inv_color = self.color_lines
             for x in range(self.x_min, self.x_max + 1):
                 if self.img.get(x, y) == self.mark_color[1]:
                     inside = not inside
                 if (inside):
-                    self.img.put(invColor, (x, y))
+                    self.img.put(inv_color, (x, y))
                 else:
-                    self.img.put(curColor, (x, y))
+                    self.img.put(cur_color, (x, y))
             if (sleep_needed):
                 self.canvas.update()
                 sleep(0.1)
+        time_end = time() - time_start
+        box.showinfo("Информация", "Закраска заняла {:12.6f} секунд".format(time_end))
 
     def start(self):
-        self.pointsArray.pop()
-        self.setExtrems()
+        self.points.pop()
+        self.find_extrems()
         self.get_mark_color()
         self.set_limits()
-        self.leadRoundFigure()
+        self.set_mark_points_for_figures()
 
         delay = self.draw_mode_chooser.get()
         if (delay == "С задержкой"):
             self.canvas.update()
             sleep(3)
-            self.rasterScanWithFlag(True)
+            self.fill_with_flag(True)
         else:
-            self.rasterScanWithFlag()
+            self.fill_with_flag()
 
 
 
@@ -237,7 +243,7 @@ class EdgesWithFlag(Frame):
         self.x_min = 1090
         self.y_max = 0
         self.y_min = 1060
-        for figure in self.pointsArray:
+        for figure in self.points:
             for i in figure:
                 if i[0] > self.x_max:
                     self.x_max = i[0]
