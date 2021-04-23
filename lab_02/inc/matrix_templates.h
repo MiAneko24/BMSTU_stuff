@@ -17,23 +17,23 @@ class Matrix : public BaseMatrix
 {
     private:
         std::shared_ptr<MatrixRow<T>[]> data;
-        void checkSumSizes(Matrix<T> &matrix);
-        void checkSquare();
-        void checkMulSizes(Matrix<T> &mat);
-        void checkIndexes(int i, int j);
-        void checkRowIndex(int i);
-        void checkColumnIndex(int j);
-        void checkMatrixSource(T **source);
-        void checkOperationsType();
-        void checkDivider(T &elem);
+        void checkSumSizes(Matrix<T> &matrix, std::string file, int line);
+        void checkSquare(std::string file, int line);
+        void checkMulSizes(Matrix<T> &mat, std::string file, int line);
+        void checkIndexes(int i, int j, std::string file, int line);
+        void checkRowIndex(int i, std::string file, int line);
+        void checkMatrixSource(T **source, std::string file, int line);
+        void checkOperationsType(std::string file, int line);
+        void checkDivider(T &elem, std::string file, int line);
+        void check_reversing_matrix(std::string file, int line);
 
         void allocateDataArray(size_t rows, size_t columns);
-        void allocateMatrix(size_t rows, size_t columns); //DONE
+        void allocateMatrix(size_t rows, size_t columns); 
 
-        void checkDeterminant();
-        void checkList(std::initializer_list<std::initializer_list<T>> list);
-        void checkNull();
-        void checkAddSizes(Matrix<T> &mat);
+        void checkDeterminant(std::string file, int line);
+        void checkList(std::initializer_list<std::initializer_list<T>> list, std::string file, int line);
+        void checkNull(std::string file, int line);
+        void checkAddSizes(Matrix<T> &mat, std::string file, int line);
 
         T determinant_recursive(Matrix<T> &matrix);
         void swap_rows(int i, int j);
@@ -45,9 +45,8 @@ class Matrix : public BaseMatrix
 
         void fill_additional_matrix(Matrix<T> &mat, Matrix<T> &tmp, size_t k);
         void elementary_transf(Matrix<T> &mat_res, int &i, int step);
-        void check_reversing_matrix();
-        void reset(size_t size); //DONE
-        void reset(); //DONE
+        void reset(size_t size); 
+        void reset(); 
         
     public:
         friend Iterator<T>;
@@ -61,33 +60,33 @@ class Matrix : public BaseMatrix
 
         Matrix<T> add(Matrix<T> &mat_1, Matrix<T> &mat_2);
 
-        Matrix<T> add(Matrix<T> &mat); // checked \/
-        Matrix<T> sub(Matrix<T> &mat); // checked \/
-        Matrix<T> mul(Matrix<T> &mat); // checked \/
+        Matrix<T> add(Matrix<T> &mat); 
+        Matrix<T> sub(Matrix<T> &mat); 
+        Matrix<T> mul(Matrix<T> &mat); 
         Matrix<T> mul(T &elem);
         Matrix<T> div(T &elem);
 
-        Matrix(std::initializer_list<std::initializer_list<T>> list); //DONE
-        explicit Matrix(Matrix<T> &matrix); //DONE
-        Matrix(size_t rows, size_t columns); //DONE
-        Matrix(T &fill_with, size_t rows, size_t columns); //DONE
-        Matrix(T **source, size_t rows, size_t columns); //DONE
+        Matrix(std::initializer_list<std::initializer_list<T>> list); 
+        explicit Matrix(Matrix<T> &matrix); 
+        Matrix(size_t rows, size_t columns); 
+        Matrix(T &fill_with, size_t rows, size_t columns); 
+        Matrix(T **source, size_t rows, size_t columns); 
         Matrix(Matrix<T> &&matrix);
 
-        Matrix<T> operator *(Matrix<T> &mat); //DONE, checked
-        Matrix<T> operator *(T &elem); //DONE
+        Matrix<T> operator *(Matrix<T> &mat); 
+        Matrix<T> operator *(T &elem); 
         Matrix<T>& operator *=(T &elem); 
         
-        Matrix<T> operator +(Matrix<T> &mat); //DONE, checked
+        Matrix<T> operator +(Matrix<T> &mat); 
         Matrix<T>& operator +=(Matrix<T> &mat);
 
-        Matrix<T> operator /(T &elem); //DONE
+        Matrix<T> operator /(T &elem); 
         Matrix<T>& operator /=(T &elem);
         bool operator ==(Matrix<T> &mat);
         bool operator != (Matrix<T> &mat);
-        Matrix<T> operator -(Matrix<T> &mat); //DONE, checked
+        Matrix<T> operator -(Matrix<T> &mat); 
         Matrix<T>& operator -=(Matrix<T> &mat);
-        MatrixRow<T>& operator [](int pos); //DONE
+        MatrixRow<T>& operator [](int pos); 
 
         Matrix<T>& operator =(std::initializer_list<std::initializer_list<T>> list);
         Matrix<T>& operator =(Matrix<T> &matrix);
@@ -122,7 +121,7 @@ Matrix<T>::~Matrix()
 template <typename T>
 MatrixRow<T>& Matrix<T>::operator[](int pos)
 {
-    checkRowIndex(pos);
+    checkRowIndex(pos, __FILE__, __LINE__);
     return data[pos];
 }
 
@@ -158,11 +157,10 @@ void Matrix<T>::copy(Matrix<T> &matrix)
 template <typename T>
 Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> list)
 {
-    checkList(list);
+    checkList(list, __FILE__, __LINE__);
     size_t rows = list.size();
     auto it = list.begin();
     size_t columns = it->size();
-    // printf("at alloc, rows= %ld, columns=%ld\n", rows, columns);
     
     allocateDataArray(rows, columns);
     size_t i = 0;
@@ -182,23 +180,16 @@ T& Matrix<T>::get_elem(int i, int j)
 template <typename T>
 void Matrix<T>::set_elem(int i, int j, int num)
 {
-    checkIndexes();
+    checkIndexes(i, j, __FILE__, __LINE__);
     this->operator[](i)[j] = num;
 }
-
-// template <typename T>
-// void Matrix<T>::checkIndexes(int i, int j)
-// {
-//     checkRowIndex(i);
-//     checkColumnIndex(j);
-// }
 
 template <typename T>
 void Matrix<T>::allocateDataArray(size_t rows, size_t columns)
 {
     mRows = rows;
     mColumns = columns;
-    checkNull();
+    checkNull(__FILE__, __LINE__);
     try
     {
         reset(mRows);
@@ -217,7 +208,6 @@ void Matrix<T>::allocateMatrix(size_t rows, size_t columns)
     
     for (int i = 0; i < mRows; i++)
     {
-        // printf("i = %d\n", i);
         operator[](i).allocateMatrixRow(mColumns);
     }
 }
@@ -240,7 +230,7 @@ Matrix<T>::Matrix(T &fill_with, size_t rows, size_t columns)
 template <typename T>
 Matrix<T>::Matrix(T **source, size_t rows, size_t columns)
 {
-    checkMatrixSource(source);
+    checkMatrixSource(source, __FILE__, __LINE__);
     allocateMatrix(rows, columns);
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)

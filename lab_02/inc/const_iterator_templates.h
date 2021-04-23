@@ -42,8 +42,8 @@ class constIterator : public std::iterator<std::input_iterator_tag, T>
         size_t iRows;
         size_t iColumns;
 
-        void checkIndex() const;
-        void checkExpired() const;
+        void checkIndex(std::string file, int line) const;
+        void checkExpired(std::string file, int line) const;
 };
 
 #endif

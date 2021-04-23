@@ -6,7 +6,7 @@
 template <typename T>
 void Matrix<T>::mulEq(T &elem)
 {
-    checkOperationsType();
+    checkOperationsType(__FILE__, __LINE__);
 
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)
@@ -23,8 +23,8 @@ Matrix<T>& Matrix<T>::operator *=(T& elem)
 template <typename T>
 Matrix<T> Matrix<T>::mul(Matrix<T> &mat)
 {
-    checkOperationsType();
-    checkMulSizes(mat);
+    checkOperationsType(__FILE__, __LINE__);
+    checkMulSizes(mat, __FILE__, __LINE__);
 
     Matrix<T> res = Matrix<T>(mRows, mat.getColumns());
     for (int i = 0; i < res.getRows(); i++)
@@ -38,7 +38,7 @@ Matrix<T> Matrix<T>::mul(Matrix<T> &mat)
 template <typename T>
 Matrix<T> Matrix<T>::mul(T &elem)
 {
-    checkOperationsType();
+    checkOperationsType(__FILE__, __LINE__);
     Matrix<T> res = Matrix<T>(mRows, mColumns);
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)
@@ -49,27 +49,14 @@ Matrix<T> Matrix<T>::mul(T &elem)
 template <typename T>
 Matrix<T> Matrix<T>::operator *(Matrix<T> &mat)
 {
-    // checkOperationsType();
-    // checkMulSizes(this, mat);
-
     Matrix<T> res = mul(mat);
-    // Matrix<T>(mRows, mat.mColumns);
-    // for (int i = 0; i < mRows; i++)
-    //     for (int j = 0; j < mat.mColumns; j++)
-    //         for (int k = 0; k < mColumns; k++)
-    //             res[i][j] += this->operator[](i)[k] * mat[k][j];
     return res;
 }
 
 template <typename T>
 Matrix<T> Matrix<T>::operator *(T &elem)
 {
-    // checkOperationsType();
     Matrix<T> res = mul(elem);
-    // Matrix<T>(mRows, mColumns);
-    // for (int i = 0; i < mRows; i++)
-    //     for (int j = 0; j < mColumns; j++)
-    //         res[i][j] = this->operator[](i)[j] * elem;
     return res;
 }
 
@@ -81,7 +68,6 @@ bool Matrix<T>::operator ==(Matrix<T> &mat)
         result = false;
     for (int i = 0; i < mRows && result; i++)
     {
-        // printf("i = %d\n", i);
         if (this->operator[](i) != mat[i])
             result = false;
     }
@@ -103,8 +89,8 @@ bool Matrix<T>::operator !=(Matrix<T> &mat)
 template <typename T>
 void Matrix<T>::addEq(Matrix<T>& mat)
 {
-    checkOperationsType();
-    checkAddSizes(mat);
+    checkOperationsType(__FILE__, __LINE__);
+    checkAddSizes(mat, __FILE__, __LINE__);
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)
             this->operator[](i)[j] += mat[i][j];
@@ -120,8 +106,8 @@ Matrix<T>& Matrix<T>::operator +=(Matrix<T> &mat)
 template <typename T>
 Matrix<T> Matrix<T>::add(Matrix<T> &mat)
 {
-    checkOperationsType();
-    checkAddSizes(mat);
+    checkOperationsType(__FILE__, __LINE__);
+    checkAddSizes(mat, __FILE__, __LINE__);
     Matrix<T> res = Matrix<T>(mRows, mColumns);
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)
@@ -133,13 +119,7 @@ Matrix<T> Matrix<T>::add(Matrix<T> &mat)
 template <typename T>
 Matrix<T> Matrix<T>::operator +(Matrix<T> &mat)
 {
-    // checkOperationsType();
-    // checkAddSizes(this, mat);
     Matrix<T> res = add(mat);
-    // Matrix<T>(mRows, mColumns);
-    // for (int i = 0; i < mRows; i++)
-    //     for (int j = 0; j < mColumns; j++)
-    //         res[i][j] = this->operator[](i)[j] + mat[i][j];
     return res;
 }
 
@@ -148,8 +128,8 @@ Matrix<T> Matrix<T>::operator +(Matrix<T> &mat)
 template <typename T>
 void Matrix<T>::divEq(T &elem)
 {
-    checkOperationsType();
-    checkDivider(elem);
+    checkOperationsType(__FILE__, __LINE__);
+    checkDivider(elem, __FILE__, __LINE__);
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)
             this->operator[](i)[j] /= elem;
@@ -166,8 +146,8 @@ Matrix<T>& Matrix<T>::operator /=(T& elem)
 template <typename T>
 Matrix<T> Matrix<T>::div(T &elem)
 {
-    checkOperationsType();
-    checkDivider(elem);
+    checkOperationsType(__FILE__, __LINE__);
+    checkDivider(elem, __FILE__, __LINE__);
     Matrix<T> res = Matrix<T>(mRows, mColumns);
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)
@@ -178,21 +158,15 @@ Matrix<T> Matrix<T>::div(T &elem)
 template <typename T>
 Matrix<T> Matrix<T>::operator /(T &elem)
 {
-    // checkOperationsType();
-    // checkDivider();
     Matrix<T> res = div(elem);
-    // Matrix<T>(mRows, mColumns);
-    // for (int i = 0; i < mRows; i++)
-    //     for (int j = 0; j < mColumns; j++)
-    //         res[i][j] = this->operator[](i)[j] / elem;
     return res;
 }
 
 template <typename T>
 void Matrix<T>::subEq(Matrix<T> &mat)
 {
-    checkOperationsType();
-    checkAddSizes(mat);
+    checkOperationsType(__FILE__, __LINE__);
+    checkAddSizes(mat, __FILE__, __LINE__);
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)
             this->operator[](i)[j] -= mat[i][j];
@@ -208,8 +182,8 @@ Matrix<T>& Matrix<T>::operator -=(Matrix<T> &mat)
 template <typename T>
 Matrix<T> Matrix<T>::sub(Matrix<T> &mat)
 {
-    checkOperationsType();
-    checkAddSizes(mat);
+    checkOperationsType(__FILE__, __LINE__);
+    checkAddSizes(mat, __FILE__, __LINE__);
     Matrix<T> res = Matrix<T>(mRows, mColumns);
     for (int i = 0; i < mRows; i++)
         for (int j = 0; j < mColumns; j++)
@@ -220,20 +194,14 @@ Matrix<T> Matrix<T>::sub(Matrix<T> &mat)
 template <typename T>
 Matrix<T> Matrix<T>::operator -(Matrix<T> &mat)
 {
-    // checkOperationsType();
-    // checkAddSizes(this, mat);
     Matrix<T> res = sub(mat);
-    // Matrix<T>(mRows, mColumns);
-    // for (int i = 0; i < mRows; i++)
-    //     for (int j = 0; j < mColumns; j++)
-    //         res[i][j] = this[i][j] - mat[i][j];
     return res;
 }
 
 template <typename T>
 T Matrix<T>::det()
 {
-    checkOperationsType();
+    checkOperationsType(__FILE__, __LINE__);
     return determinant_recursive(*this);
 }
 
@@ -294,7 +262,6 @@ void Matrix<T>::swap_rows(int i, int j)
 {
     MatrixRow<T> tmp = MatrixRow<T>(mColumns);
     this->operator[](i).copy(this->operator[](j));
-    // this->operator[](i) = this->operator[](j);
     this->operator[](j).copy(tmp);
     tmp.reset();
 }
@@ -335,7 +302,6 @@ void Matrix<T>::elementary_transf(Matrix<T> &mat_res, int &i, int step)
             if (this->operator[](j)[i] != 0)
             {
                 swap_rows(j, i);
-                // swap_rows(mat_res + j, mat_res + i);
             }
             if (this->operator[](i)[i] == 0)
                 i += step;
@@ -351,8 +317,8 @@ void Matrix<T>::elementary_transf(Matrix<T> &mat_res, int &i, int step)
 template <typename T>
 void Matrix<T>::reverse_matrix()
 {
-    checkOperationsType();
-    check_reversing_matrix();
+    checkOperationsType(__FILE__, __LINE__);
+    check_reversing_matrix(__FILE__, __LINE__);
 
     Matrix<T> result = Matrix<T>(mRows, mColumns);
     result.make_e_matrix();
@@ -382,7 +348,7 @@ void Matrix<T>::transpose()
 template <typename T>
 Matrix<T>& Matrix<T>::operator =(std::initializer_list<std::initializer_list<T>> list)
 {
-    checkList(list);
+    checkList(list, __FILE__, __LINE__);
     size_t rows = list.size();
     auto it = list.begin();
     size_t columns = it->size();

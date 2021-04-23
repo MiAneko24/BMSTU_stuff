@@ -36,16 +36,12 @@ class MatrixRow
         MatrixRow(T *t_array, size_t t_size);
         MatrixRow(const MatrixRow<T> &matRow);
         T& operator[](size_t column) const; 
-        // T& operator[](size_t column); 
         MatrixRow<T> operator =(MatrixRow<T> &matRow);
         bool operator ==(MatrixRow<T> &matRow);
 
         bool operator !=(MatrixRow<T> &matRow);
         MatrixRow<T>& operator =(MatrixRow<T> &&matRow);
-        ~MatrixRow(){};
-        //void setNumber(size_t ind, size_t num);
-
-    
+        ~MatrixRow(){};    
 };
 
 template <typename T>
@@ -119,21 +115,6 @@ void MatrixRow<T>::reset()
         array.reset();
 }
 
-// template <typename T>
-// MatrixRow<T>::MatrixRow(T *t_array, size_t t_size)
-// {
-//     reset(t_array); 
-//     rSize = t_size;
-// } 
-        
-
-// template <typename T>
-// void MatrixRow<T>::reset(T[] new_arr)
-// {
-//     checkNull();
-//     array.reset(new_arr);
-// }
-
 template <typename T>
 MatrixRow<T>::MatrixRow(std::initializer_list<T> list, size_t columns)
 {
@@ -186,7 +167,6 @@ void MatrixRow<T>::checkIndex(int pos) const
 {
     if (pos >= rSize || pos < 0)
     {
-        // printf("pos = %d, rSize = %d\n", pos, rSize);
         time_t time_cur = time(nullptr);
         throw IndexError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Index of columns is out of range");
     }

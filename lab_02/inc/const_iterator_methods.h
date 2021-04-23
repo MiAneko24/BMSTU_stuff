@@ -65,8 +65,8 @@ constIterator<T>& constIterator<T>::operator +=(size_t add)
 template <typename T>
 const T& constIterator<T>::operator *() const
 {
-    checkExpired();
-    checkIndex();
+    checkExpired(__FILE__, __LINE__);
+    checkIndex(__FILE__, __LINE__);
 
     std::shared_ptr<MatrixRow<T> []> matrix = iData.lock();
     return matrix[iIndex / iColumns][iIndex % iColumns];
@@ -75,8 +75,8 @@ const T& constIterator<T>::operator *() const
 template <typename T>
 const T* constIterator<T>::operator ->() const 
 {
-    checkExpired();
-    checkIndex();
+    checkExpired(__FILE__, __LINE__);
+    checkIndex(__FILE__, __LINE__);
 
     std::shared_ptr<MatrixRow<T> []> matrix = iData.lock();
     return matrix[iIndex / iColumns][iIndex % iColumns];
@@ -107,22 +107,22 @@ constIterator<T>& constIterator<T>::next()
 }
 
 template <typename T>
-void constIterator<T>::checkIndex() const
+void constIterator<T>::checkIndex(std::string file, int line) const
 {
     if (iIndex > iRows * iColumns)
     {
         time_t time_cur = time(nullptr);
-        throw IndexIteratorError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Iterator out of bounds");
+        throw IndexIteratorError(ctime(&time_cur), file, typeid(*this).name(), line, "Iterator out of bounds");
     }
 }
 
 template <typename T>
-void constIterator<T>::checkExpired() const
+void constIterator<T>::checkExpired(std::string file, int line) const
 {
     if (iData.expired())
     {
         time_t time_cur = time(nullptr);
-        throw ExpiredError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Iterator points on nullptr");
+        throw ExpiredError(ctime(&time_cur), file, typeid(*this).name(), line, "Iterator points on nullptr");
     }
 }
 

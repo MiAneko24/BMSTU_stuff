@@ -26,12 +26,6 @@ START_TEST(test_substitution_of_two_double_matrix_normal_case)
     Matrix<double> res_exp = Matrix<double>({{4.4, -8, -5.3, -12, -3.6}, {-13, 12, 3.2, -6.4, -12}, {7, 16, -1, 1.4, 4}});
     Matrix<double> res = mat_1 - mat_2;
 
-    // for (int i = 0; i < res.getRows(); i++)
-    // {
-    //     for (int j =0; j < res.getColumns(); j++)
-    //         printf("%5.3lf ", res[i][j]);
-    //     printf("\n");
-    // }
     ck_assert(res == res_exp);
 }
 END_TEST
@@ -43,7 +37,6 @@ START_TEST(test_multiplication_of_two_double_matrix_normal_case)
     Matrix<double> mat_2 = Matrix<double>({{1.6, 7}, {8.3, 5.8}, {9, -3}, {4.2, 8}, {-1, 0.6}});
     Matrix<double> res_exp = Matrix<double>({{5.1, -11.48}, {90.96, -5.1}, {93.6, 62.1}});
     Matrix<double> res = mat_1 * mat_2;
-
 
     ck_assert(res == res_exp);
 }
@@ -208,14 +201,78 @@ START_TEST(test_const_iterator)
 }
 END_TEST
 
+START_TEST(test_catch_throw)
+{
+    Matrix<int> mat_1 = Matrix<int>(4, 4);
+
+    Matrix<int> mat_2 = Matrix<int>(7, 1);
+
+    Matrix<char> mat_3 = Matrix<char>(3, 4);
+    int i = 0;
+    
+    try
+    {
+        i = mat_1[6][7];
+
+    }
+    catch(IndexError &e)
+    {
+        std::cout << "IndexError caught"<< std::endl; 
+        std::cout << e.what() << '\n';
+    }
+
+    try
+    {
+        mat_1 += mat_2;
+    }
+    catch(DimensionMatrixError &e)
+    {
+        std::cout << "DimensionMatrixError after summary caught" << std::endl;
+        std::cout << e.what() << '\n';
+    }
+    try
+    {
+        mat_3.reverse_matrix();
+    }
+    catch(TypeMatrixError &e)
+    {
+        std::cout << "TypeMatrixError after reverse of char matrix caught" << std::endl; 
+        std::cout << e.what() << '\n';
+    }
+    try
+    {
+        double j = mat_3.det();
+    }
+    catch(TypeMatrixError & e)
+    {
+        std::cout << "TypeMatrixError after attempt of getting determinant of char matrix caught" << std::endl; 
+        std::cout << e.what() << '\n';
+    }
+    try
+    {
+        i = 0;
+        mat_1 /= i;
+    }
+    catch(DivisionByZeroError &e)
+    {
+        std::cout << "DivisionByZeroError caught" << std::endl; 
+        std::cout << e.what() << '\n';
+    }
+    
+    
+}
+END_TEST
+
 
 
 Suite* summary_of_two_matrix_suite(void)
 {
     Suite *s;
     TCase *tc_pos;
+    TCase *tc_neg;
     s = suite_create("summary_of_two_matrix");
     tc_pos = tcase_create("positives");
+    tc_neg = tcase_create("negatives");
     tcase_add_test(tc_pos, test_summmary_of_two_double_matrix_normal_case);
 
     tcase_add_test(tc_pos, test_multiplication_of_two_double_matrix_normal_case);
@@ -228,7 +285,9 @@ Suite* summary_of_two_matrix_suite(void)
     tcase_add_test(tc_pos, test_div_eq_int_matrix_on_number);
     tcase_add_test(tc_pos, test_iterator);
     tcase_add_test(tc_pos, test_const_iterator);
+    tcase_add_test(tc_neg, test_catch_throw);
     suite_add_tcase(s, tc_pos);
+    suite_add_tcase(s, tc_neg);
     return s;
 }
 
