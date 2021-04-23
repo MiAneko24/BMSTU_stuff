@@ -1,16 +1,20 @@
+#ifndef BASE_MATRIX_CLASS_H
+#define BASE_MATRIX_CLASS_H
+
 #include <memory>
 #include <iostream>
 
 class BaseMatrix {
     public:
-        BaseMatrix(size_t rows, size_t columns) : mRows(rows), mColumns(columns) {};
+        explicit BaseMatrix(size_t rows, size_t columns) : mRows(rows), mColumns(columns) {};
+        explicit BaseMatrix() : mRows(0), mColumns(0) {};
         virtual size_t getColumns() const noexcept
         {
-            return mRows;
+            return mColumns;
         }
         virtual size_t getRows() const noexcept
         {
-            return mColumns;
+            return mRows;
         }
         virtual operator bool() const noexcept
         {
@@ -23,3 +27,5 @@ class BaseMatrix {
 };
 
 BaseMatrix :: ~BaseMatrix() {};
+
+#endif

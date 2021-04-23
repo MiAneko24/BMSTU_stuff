@@ -1,3 +1,6 @@
+#ifndef MATRIX_EXCEPTIONS_H
+#define MATRIX_EXCEPTIONS_H
+
 #include <memory>
 #include <iostream>
 
@@ -40,6 +43,17 @@ class IndexError : public BaseMatrixException
         }
 };
 
+class DivisionByZeroError : public BaseMatrixException
+{
+    public:
+        DivisionByZeroError(std::string time, std::string file, std::string error_class, int line, std::string error_info)
+        : BaseMatrixException(time, file, error_class, line, error_info){};
+        const char* what() const noexcept
+        {
+            return error_msg.c_str();
+        }
+};
+
 class NullPointerError : public BaseMatrixException
 {
     public:
@@ -75,3 +89,5 @@ class DimensionMatrixError : public BaseMatrixException
 };
 
 
+
+#endif
