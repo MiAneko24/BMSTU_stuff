@@ -1,11 +1,7 @@
 
 #include "../inc/matrix_templates.h"
-#include "../inc/matrix_checks.h"
-#include "../inc/math_operations.h"
 #include "../inc/iterator_template.h"
-#include "../inc/iterator_methods.h"
 #include "../inc/const_iterator_templates.h"
-#include "../inc/const_iterator_methods.h"
 #include <check.h>
 
 START_TEST(test_summmary_of_two_double_matrix_normal_case)

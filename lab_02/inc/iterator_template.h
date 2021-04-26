@@ -50,4 +50,6 @@ class Iterator : public std::iterator<std::input_iterator_tag, T>
         void checkExpired(std::string file, int line) const;
 };
 
+#include "iterator_methods.h"
+
 #endif
