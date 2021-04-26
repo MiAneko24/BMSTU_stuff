@@ -14,40 +14,7 @@ class MatrixRow;
 
 template <typename T>
 class Matrix : public BaseMatrix 
-{
-    private:
-        std::shared_ptr<MatrixRow<T>[]> data;
-        void checkSumSizes(Matrix<T> &matrix, std::string file, int line);
-        void checkSquare(std::string file, int line);
-        void checkMulSizes(Matrix<T> &mat, std::string file, int line);
-        void checkIndexes(int i, int j, std::string file, int line);
-        void checkRowIndex(int i, std::string file, int line);
-        void checkMatrixSource(T **source, std::string file, int line);
-        void checkOperationsType(std::string file, int line);
-        void checkDivider(T &elem, std::string file, int line);
-        void check_reversing_matrix(std::string file, int line);
-
-        void allocateDataArray(size_t rows, size_t columns);
-        void allocateMatrix(size_t rows, size_t columns); 
-
-        void checkDeterminant(std::string file, int line);
-        void checkList(std::initializer_list<std::initializer_list<T>> list, std::string file, int line);
-        void checkNull(std::string file, int line);
-        void checkAddSizes(Matrix<T> &mat, std::string file, int line);
-
-        T determinant_recursive(Matrix<T> &matrix);
-        void swap_rows(int i, int j);
-        int sign(int i);
-        void move(Matrix<T> &&matrix);
-        void copy(Matrix<T> &matrix);
-
-        void move(Matrix<T> &matrix);
-
-        void fill_additional_matrix(Matrix<T> &mat, Matrix<T> &tmp, size_t k);
-        void elementary_transf(Matrix<T> &mat_res, int &i, int step);
-        void reset(size_t size); 
-        void reset(); 
-        
+{        
     public:
         friend Iterator<T>;
         friend constIterator<T>;
@@ -109,6 +76,39 @@ class Matrix : public BaseMatrix
         constIterator<T> end() const;
         constIterator<T> cbegin() const;
         constIterator<T> cend() const;
+
+     private:
+        std::shared_ptr<MatrixRow<T>[]> data;
+        void checkSumSizes(Matrix<T> &matrix, std::string file, int line);
+        void checkSquare(std::string file, int line);
+        void checkMulSizes(Matrix<T> &mat, std::string file, int line);
+        void checkIndexes(int i, int j, std::string file, int line);
+        void checkRowIndex(int i, std::string file, int line);
+        void checkMatrixSource(T **source, std::string file, int line);
+        void checkOperationsType(std::string file, int line);
+        void checkDivider(T &elem, std::string file, int line);
+        void check_reversing_matrix(std::string file, int line);
+
+        void allocateDataArray(size_t rows, size_t columns);
+        void allocateMatrix(size_t rows, size_t columns); 
+
+        void checkDeterminant(std::string file, int line);
+        void checkList(std::initializer_list<std::initializer_list<T>> list, std::string file, int line);
+        void checkNull(std::string file, int line);
+        void checkAddSizes(Matrix<T> &mat, std::string file, int line);
+
+        T determinant_recursive(Matrix<T> &matrix);
+        void swap_rows(int i, int j);
+        int sign(int i);
+        void move(Matrix<T> &&matrix);
+        void copy(Matrix<T> &matrix);
+
+        void move(Matrix<T> &matrix);
+
+        void fill_additional_matrix(Matrix<T> &mat, Matrix<T> &tmp, size_t k);
+        void elementary_transf(Matrix<T> &mat_res, int &i, int step);
+        void reset(size_t size); 
+        void reset(); 
 };
 
 #include "matrix_constructors_and_iter_methods.h"

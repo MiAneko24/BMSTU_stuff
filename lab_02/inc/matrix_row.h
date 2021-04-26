@@ -12,18 +12,6 @@ class Matrix;
 template <typename T>
 class MatrixRow 
 {
-    private:
-        void checkIndex(int pos) const;
-        void checkList(std::initializer_list<T> list, size_t columns);
-        void checkNull(T *array);
-        std::shared_ptr<T[]> array = nullptr;
-        size_t rSize = 0;
-        void copy(const MatrixRow<T> &matRow);
-        void move(MatrixRow<T> &matRow);
-        void move(MatrixRow<T> &&matRow);
-    // protected:
-
-        
     public:
         friend Matrix<T>;
         void reset();
@@ -42,6 +30,16 @@ class MatrixRow
         bool operator !=(MatrixRow<T> &matRow);
         MatrixRow<T>& operator =(MatrixRow<T> &&matRow);
         ~MatrixRow(){};    
+        
+    private:
+        void checkIndex(int pos) const;
+        void checkList(std::initializer_list<T> list, size_t columns);
+        void checkNull(T *array);
+        std::shared_ptr<T[]> array = nullptr;
+        size_t rSize = 0;
+        void copy(const MatrixRow<T> &matRow);
+        void move(MatrixRow<T> &matRow);
+        void move(MatrixRow<T> &&matRow);
 };
 
 #include "matrix_row_methods.h"

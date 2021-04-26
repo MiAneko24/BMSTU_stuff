@@ -21,7 +21,6 @@ START_TEST(test_substitution_of_two_double_matrix_normal_case)
     Matrix<double> mat_2 = Matrix<double>({{1.6, 7, 8.3, 7, 5.8}, {9, -3, -0.1, 4.2, 8}, {-4, -9, 4.5, -0.4, 1}});
     Matrix<double> res_exp = Matrix<double>({{4.4, -8, -5.3, -12, -3.6}, {-13, 12, 3.2, -6.4, -12}, {7, 16, -1, 1.4, 4}});
     Matrix<double> res = mat_1 - mat_2;
-
     ck_assert(res == res_exp);
 }
 END_TEST
