@@ -7,7 +7,7 @@ from numpy import sign
 
 class EdgesWithFlag(Frame):
     img = 0
-
+    font = "Calibria 15"
     ended = False
     extrems = [[]]
 
@@ -125,9 +125,7 @@ class EdgesWithFlag(Frame):
             return
         tempCol = self.color_lines
         self.color_lines = self.color_bg
-        print(self.figure)
         if len(self.points[self.figure]) > 1:
-            print(len(self.points[self.figure]))
             self.Bresenham_int(self.points[self.figure][-2][0],
                         self.points[self.figure][-2][1],
                         self.points[self.figure][-1][0],
@@ -204,11 +202,11 @@ class EdgesWithFlag(Frame):
 
     def fill_with_flag(self, sleep_needed=False):
         time_start = time()
-        for y in range(self.y_min - 1, self.y_max + 1):
+        for y in range(int(self.y_min) - 1, int(self.y_max) + 1):
             inside = False
             cur_color = self.color_bg
             inv_color = self.color_lines
-            for x in range(self.x_min, self.x_max + 1):
+            for x in range(int(self.x_min), int(self.x_max) + 1):
                 if self.img.get(x, y) == self.mark_color[1]:
                     inside = not inside
                 if (inside):
@@ -217,7 +215,7 @@ class EdgesWithFlag(Frame):
                     self.img.put(cur_color, (x, y))
             if (sleep_needed):
                 self.canvas.update()
-                sleep(0.1)
+                sleep(0.05)
         time_end = time() - time_start
         box.showinfo("Информация", "Закраска заняла {:12.6f} секунд".format(time_end))
 
@@ -261,52 +259,53 @@ class EdgesWithFlag(Frame):
 
     def init_ui(self):
         self.color_lines = "#000000"
-        color_lines_lbl = Label(self, text="Цвет линий")
+        color_lines_lbl = Label(self, text="Цвет линий", font=self.font)
         color_lines_lbl.grid(row=0, column=0)
         self.color_lines_btn = Button(self, bg=self.color_lines, height=1, width=3, command=self.choose_lines_color)
         self.color_lines_btn.grid(row=0, column=1)
         
         self.color_bg = "#FFFFFF"
-        color_bg_lbl = Label(self, text="Цвет фона")
+        color_bg_lbl = Label(self, text="Цвет фона", font=self.font)
         color_bg_lbl.grid(row=0, column=2)
         self.color_bg_btn = Button(self, bg=self.color_bg, height=1, width=3, command=self.choose_bg_color)
         self.color_bg_btn.grid(row=0, column=3)
 
-        draw_mode_lbl = Label(self, text="Режим закраски:")
+        draw_mode_lbl = Label(self, text="Режим закраски:", font=self.font)
         draw_mode_lbl.grid(row=1, column=0)
         self.draw_mode_chooser = ttk.Combobox(self, values=[
             'Без задержки',
-            'С задержкой'])
+            'С задержкой'], font=self.font)
         self.draw_mode_chooser.configure(width=50)
         self.draw_mode_chooser.current(0)
         self.draw_mode_chooser.grid(row=1, column=1, columnspan=3)
 
-        rules_lbl = Label(self, text="""Для добавления новой точки нажмите левую кнопку мыши
-Для завершения рисования многоугольника нажмите левую кнопку мыши""", justify=CENTER)
-        rules_lbl.grid(row=3, column=0, rowspan=2, columnspan=5)
+        rules_lbl = Label(self, text="""Алгоритм со списком ребер и флагом
+Для добавления новой точки нажмите левую кнопку мыши
+Для завершения рисования многоугольника нажмите левую кнопку мыши""", justify=CENTER, font=self.font)
+        rules_lbl.grid(row=3, column=0, rowspan=3, columnspan=5)
 
-        add_label = Label(self, text="Добавить точку", justify=CENTER)
+        add_label = Label(self, text="Добавить точку", justify=CENTER, font=self.font)
         add_label.grid(row=6, column=1, columnspan=2)
 
-        x_label = Label(self, text="X:")
+        x_label = Label(self, text="X:", font=self.font)
         x_label.grid(row=7, column=0)
         self.x_entry = Entry(self)
         self.x_entry.grid(row=7, column=1)
-        y_label = Label(self, text="Y:")
+        y_label = Label(self, text="Y:", font=self.font)
         y_label.grid(row=7, column=2)
         self.y_entry = Entry(self)
         self.y_entry.grid(row=7, column=3)
 
-        add_btn = Button(self, text="Добавить", command=self.add, justify=CENTER)
+        add_btn = Button(self, text="Добавить", command=self.add, justify=CENTER, font=self.font)
         add_btn.grid(row=8, column=1, columnspan=2)
 
-        cancel_btn = Button(self, text="Отменить последнее действие", command=self.cancel)
+        cancel_btn = Button(self, text="Отменить добавление точки", command=self.cancel, font=self.font)
         cancel_btn.grid(row=9, column=1, columnspan=2)
 
-        clear_btn = Button(self, text="Очистить полотно", command=self.clear)
+        clear_btn = Button(self, text="Очистить полотно", command=self.clear, font=self.font)
         clear_btn.grid(row=10, column=1, columnspan=2)
 
-        start_btn = Button(self, text='Закрасить фигуру', command=self.start)
+        start_btn = Button(self, text='Закрасить фигуру', command=self.start, font=self.font)
         start_btn.grid(row=11, column=1, columnspan=2)
 
         self.canvas = Canvas(self, bg = self.color_bg, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
