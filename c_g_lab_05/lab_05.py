@@ -87,7 +87,7 @@ class EdgesWithFlag(Frame):
         self.extrems.clear()
         self.extrems = [[]]
 
-        for i in range(len(self.points)):
+        for i in range(len(self.points) - 1):
             self.extrems[i].append((
                 (self.points[i][0][1] < self.points[i][-1][1] and
                     self.points[i][0][1] < self.points[i][1][1]) or
@@ -152,10 +152,28 @@ class EdgesWithFlag(Frame):
 
     def left_click(self, event):
         self.ended = True
-        if (len(self.points) == 0):
+        if (len(self.points[self.figure]) == 0):
             self.figure = 0
             self.points.append(list())
         self.points[self.figure].append([event.x, event.y, self.color_lines])
+        self.draw_line()
+
+    def left_click_horizontal(self, event):
+        self.ended = True
+        if (len(self.points[self.figure]) == 0):
+            box.showwarning("Информация", "Невозможно провести горизонтальную линию без начальной точки")
+            return
+        prev_y = self.points[self.figure][len(self.points[self.figure]) - 1][1]
+        self.points[self.figure].append([event.x, prev_y, self.color_lines])
+        self.draw_line()
+
+    def left_click_vertical(self, event):
+        self.ended = True
+        if (len(self.points[self.figure]) == 0):
+            box.showwarning("Информация", "Невозможно провести вертикальную линию без начальной точки")
+            return
+        prev_x = self.points[self.figure][len(self.points[self.figure]) - 1][0]
+        self.points[self.figure].append([prev_x, event.y, self.color_lines])
         self.draw_line()
 
     def right_click(self, event):
@@ -281,23 +299,25 @@ class EdgesWithFlag(Frame):
 
         rules_lbl = Label(self, text="""Алгоритм со списком ребер и флагом
 Для добавления новой точки нажмите левую кнопку мыши
-Для завершения рисования многоугольника нажмите левую кнопку мыши""", justify=CENTER, font=self.font)
-        rules_lbl.grid(row=3, column=0, rowspan=3, columnspan=5)
+Для завершения рисования многоугольника нажмите правую кнопку мыши
+Для рисования горизонтальной линии нажмите Ctrl и левую кнопку мыши
+Для рисования горизонтальной линии нажмите Shift и левую кнопку мыши""", justify=CENTER, font=self.font)
+        rules_lbl.grid(row=3, column=0, rowspan=5, columnspan=5)
 
-        add_label = Label(self, text="Добавить точку", justify=CENTER, font=self.font)
-        add_label.grid(row=6, column=1, columnspan=2)
+        # add_label = Label(self, text="Добавить точку", justify=CENTER, font=self.font)
+        # add_label.grid(row=6, column=1, columnspan=2)
 
-        x_label = Label(self, text="X:", font=self.font)
-        x_label.grid(row=7, column=0)
-        self.x_entry = Entry(self)
-        self.x_entry.grid(row=7, column=1)
-        y_label = Label(self, text="Y:", font=self.font)
-        y_label.grid(row=7, column=2)
-        self.y_entry = Entry(self)
-        self.y_entry.grid(row=7, column=3)
+        # x_label = Label(self, text="X:", font=self.font)
+        # x_label.grid(row=7, column=0)
+        # self.x_entry = Entry(self)
+        # self.x_entry.grid(row=7, column=1)
+        # y_label = Label(self, text="Y:", font=self.font)
+        # y_label.grid(row=7, column=2)
+        # self.y_entry = Entry(self)
+        # self.y_entry.grid(row=7, column=3)
 
-        add_btn = Button(self, text="Добавить", command=self.add, justify=CENTER, font=self.font)
-        add_btn.grid(row=8, column=1, columnspan=2)
+        # add_btn = Button(self, text="Добавить", command=self.add, justify=CENTER, font=self.font)
+        # add_btn.grid(row=8, column=1, columnspan=2)
 
         cancel_btn = Button(self, text="Отменить добавление точки", command=self.cancel, font=self.font)
         cancel_btn.grid(row=9, column=1, columnspan=2)
@@ -313,6 +333,8 @@ class EdgesWithFlag(Frame):
         self.set_image_to_canvas()
 
         self.canvas.bind('<1>', self.left_click)
+        self.canvas.bind('<Control-Button-1>', self.left_click_horizontal)
+        self.canvas.bind('<Shift-Button-1>', self.left_click_vertical)
         self.canvas.bind('<3>', self.right_click)
         self.canvas.grid(row=0, column=5, rowspan=20, columnspan=20)
         self.grid(row=0, column=0)
