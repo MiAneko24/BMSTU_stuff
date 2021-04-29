@@ -68,7 +68,7 @@ const T& constIterator<T>::operator *() const
     checkExpired(__FILE__, __LINE__);
     checkIndex(__FILE__, __LINE__);
 
-    std::shared_ptr<MatrixRow<T> []> matrix = iData.lock();
+    std::shared_ptr<typename Matrix<T>::MatrixRow []> matrix = iData.lock();
     return matrix[iIndex / iColumns][iIndex % iColumns];
 }
 
@@ -78,7 +78,7 @@ const T* constIterator<T>::operator ->() const
     checkExpired(__FILE__, __LINE__);
     checkIndex(__FILE__, __LINE__);
 
-    std::shared_ptr<MatrixRow<T> []> matrix = iData.lock();
+    std::shared_ptr<typename Matrix<T>::MatrixRow []> matrix = iData.lock();
     return matrix[iIndex / iColumns][iIndex % iColumns];
 }
 

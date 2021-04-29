@@ -48,8 +48,8 @@ START_TEST(test_transpose_square_string_matrix)
     for (int i = 0; i < mat_exp.getRows(); i++)
         for (int j = 0; j < mat_exp.getColumns(); j++)
             mat_exp[i][j] = std::to_string(j - i);
-    mat_1.transpose();
-    ck_assert(mat_1 == mat_exp);
+    Matrix<std::string> res = mat_1.transpose();
+    ck_assert(res == mat_exp);
 }
 END_TEST
 
@@ -79,7 +79,17 @@ START_TEST(test_det_non_null_double_matrix)
             cnt++;
         }
     mat_1[mat_1.getRows() - 1][mat_1.getRows() - 1]++;
+    for (Iterator<double> it = mat_1.begin(); it != mat_1.end(); it++) {
+        std::cout << *it << " ";
+    }
+    for (int i = 0; i < mat_1.getRows(); i++)
+    {
+        for (int j = 0; j < mat_1.getColumns(); j++)
+            std::cout << mat_1[i][j] << " ";
+        std::cout << std::endl;
+    }
     double det = mat_1.det();
+    std::cout << "Determinant is " << det << std::endl;
     ck_assert(abs(det - (-3)) < 1e-8);
 }
 END_TEST
@@ -106,8 +116,8 @@ START_TEST(test_reverse_matrix_usual_case)
     mat_exp[2][0] = 1 / 3;
     mat_exp[2][1] = -2 / 3;
     mat_exp[2][2] = 1 / 3;
-    mat_1.reverse_matrix();
-    ck_assert(mat_1 == mat_exp);
+    Matrix<double> res = mat_1.reverse_matrix();
+    ck_assert(res == mat_exp);
 }
 END_TEST
 

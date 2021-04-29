@@ -6,6 +6,11 @@
 #include "matrix_templates.h"
 #include "iterator_exceptions.h"
 
+
+template <typename T>
+class Matrix;
+
+
 template <typename T>
 class Iterator : public std::iterator<std::input_iterator_tag, T> 
 {
@@ -15,18 +20,16 @@ class Iterator : public std::iterator<std::input_iterator_tag, T>
 
         Iterator(const Iterator &iterator) = default;
 
-        bool operator !=(Iterator const &iter) const;
-        bool operator ==(Iterator const &iter) const;
-
         Iterator<T>& operator =(const Iterator<T> &iter);
+        
+        Iterator<T>& operator +(size_t add) const;
+        Iterator<T>& operator +=(size_t add);
 
         Iterator<T>& operator ++();
-
         Iterator<T> operator ++(int);
-
-        Iterator<T>& operator +(size_t add) const;
-
-        Iterator<T>& operator +=(size_t add);
+        
+        bool operator !=(Iterator const &iter) const;
+        bool operator ==(Iterator const &iter) const;
 
         const T& operator *() const;
 
@@ -41,7 +44,7 @@ class Iterator : public std::iterator<std::input_iterator_tag, T>
         Iterator<T>& next();
 
     private:
-        std::weak_ptr<MatrixRow<T> []> iData;
+        std::weak_ptr<typename Matrix<T>::MatrixRow[]> iData;
         size_t iIndex;
         size_t iRows;
         size_t iColumns;

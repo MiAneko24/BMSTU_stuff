@@ -26,6 +26,4 @@ class BaseMatrix {
         size_t mColumns = 0;
 };
 
-BaseMatrix :: ~BaseMatrix() {};
-
 #endif

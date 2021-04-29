@@ -1,80 +1,22 @@
 #ifndef MATRIX_ROW_METHODS_H
 #define MATRIX_ROW_METHODS_H
-#include "matrix_row.h"
+#include "matrix_templates.h"
+#define EPS 1e-7
 
 template <typename T>
-MatrixRow<T>::MatrixRow(size_t size)
+Matrix<T>::MatrixRow::MatrixRow(size_t size)
 {
     allocateMatrixRow(size);
 }
 
 template <typename T>
-bool MatrixRow<T>::operator !=(MatrixRow<T> &matRow)
+Matrix<T>::MatrixRow::MatrixRow(const Matrix<T>::MatrixRow &matRow)
 {
-    bool result = false;
-    for (int i = 0; i < rSize && !result; i++)
-        if (this->operator[](i) != matRow[i])
-            result = true;
-    return result;
-}
-
-template<>
-bool MatrixRow<double>::operator !=(MatrixRow<double> &matRow)
-{
-    bool result = false;
-    for (int i = 0; i < rSize && !result; i++)
-        if (abs(this->operator[](i) - matRow[i]) > EPS)
-            result = true;
-    return result;
-}
-
-
-template <typename T>
-bool MatrixRow<T>::operator ==(MatrixRow<T> &matRow)
-{
-    bool result = true;
-    for (int i = 0; i < rSize && result; i++)
-        if (this->operator[](i) != matRow[i])
-            result = false;
-    return result;
-}
-
-template<>
-bool MatrixRow<double>::operator ==(MatrixRow<double> &matRow)
-{
-    bool result = true;
-    for (int i = 0; i < rSize && result; i++)
-        if (abs(this->operator[](i) - matRow[i]) > EPS)
-            result = false;
-    return result;
+    copy(matRow);
 }
 
 template <typename T>
-size_t MatrixRow<T>::getSize()
-{
-    return rSize;
-}
-
-template <typename T>
-void MatrixRow<T>::checkNull(T *array)
-{
-    if (array == nullptr)
-    {
-
-        time_t time_cur = time(nullptr);
-        throw NullPointerError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Attempt of creating void line");
-    }
-}
-
-template <typename T>
-void MatrixRow<T>::reset()
-{
-    if (array)
-        array.reset();
-}
-
-template <typename T>
-MatrixRow<T>::MatrixRow(std::initializer_list<T> list, size_t columns)
+Matrix<T>::MatrixRow::MatrixRow(std::initializer_list<T> list, size_t columns)
 {
     checkList(list, columns);
     allocateMatrixRow(columns);
@@ -87,17 +29,14 @@ MatrixRow<T>::MatrixRow(std::initializer_list<T> list, size_t columns)
 };
 
 template <typename T>
-void MatrixRow<T>::checkList(std::initializer_list<T> list, size_t columns)
+Matrix<T>::MatrixRow::MatrixRow(T *t_array, size_t t_size)
 {
-    if (columns != list.size())
-    {
-        time_t time_cur = time(nullptr);
-        throw NullPointerError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "It is impossible to create a matrix with different amount of columns in a row");
-    }
+    rSize = t_size;
+    array.reset(t_array);
 }
 
 template <typename T>
-void MatrixRow<T>::allocateMatrixRow(size_t size)
+void Matrix<T>::MatrixRow::allocateMatrixRow(size_t size)
 {
     rSize = size;
     try
@@ -109,19 +48,173 @@ void MatrixRow<T>::allocateMatrixRow(size_t size)
     {
         time_t time_cur = time(nullptr);
         throw MemoryError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Failed memory allocation");
-    }
-    
+    } 
 }
 
 template <typename T>
-T& MatrixRow<T>::operator[](size_t column) const
+void Matrix<T>::MatrixRow::copy(Matrix<T>::MatrixRow &matRow)
+{
+    size_t size = matRow.rSize;
+    allocateMatrixRow(size);
+    for (int i = 0; i < rSize; i++)
+        this->operator[](i) = matRow[i];
+}
+
+template <typename T>
+void Matrix<T>::MatrixRow::copy(const Matrix<T>::MatrixRow &matRow)
+{
+    size_t size = matRow.rSize;
+    allocateMatrixRow(size);
+    for (int i = 0; i < rSize; i++)
+        this->operator[](i) = matRow[i];
+}
+
+template <typename T>
+void Matrix<T>::MatrixRow::move(Matrix<T>::MatrixRow &matRow)
+{
+    allocateMatrixRow(matRow.getSize());
+    for (int i = 0; i < rSize; i++)
+        this->operator[](i) = matRow[i];
+    matRow.reset();
+}
+
+template <typename T>
+void Matrix<T>::MatrixRow::move(Matrix<T>::MatrixRow &&matRow)
+{
+    allocateMatrixRow(matRow.getSize());
+    for (int i = 0; i < rSize; i++)
+        this->operator[](i) = matRow[i];
+    matRow.reset();
+}
+
+template <typename T>
+void Matrix<T>::MatrixRow::move(const Matrix<T>::MatrixRow &matRow)
+{
+    allocateMatrixRow(matRow.getSize());
+    for (int i = 0; i < rSize; i++)
+        this->operator[](i) = matRow[i];
+    matRow.reset();
+}
+
+template <typename T>
+void Matrix<T>::MatrixRow::move(const Matrix<T>::MatrixRow &&matRow)
+{
+    allocateMatrixRow(matRow.getSize());
+    for (int i = 0; i < rSize; i++)
+        this->operator[](i) = matRow[i];
+    matRow.reset();
+}
+
+template <typename T>
+typename Matrix<T>::MatrixRow Matrix<T>::MatrixRow::operator =(Matrix<T>::MatrixRow &matRow)
+{
+    copy(matRow);
+    return *this;
+}
+
+template <typename T>
+typename Matrix<T>::MatrixRow& Matrix<T>::MatrixRow::operator =(Matrix<T>::MatrixRow &&matRow)
+{
+    move(matRow);
+    return *this;
+}
+
+template <typename T>
+typename Matrix<T>::MatrixRow Matrix<T>::MatrixRow::operator =(const Matrix<T>::MatrixRow &matRow)
+{
+    copy(matRow);
+    return *this;
+}
+
+template <typename T>
+typename Matrix<T>::MatrixRow& Matrix<T>::MatrixRow::operator =(const Matrix<T>::MatrixRow &&matRow)
+{
+    move(matRow);
+    return *this;
+}
+
+template <typename T>
+bool Matrix<T>::MatrixRow::operator ==(Matrix<T>::MatrixRow &matRow) const noexcept
+{
+    bool result = true;
+    for (int i = 0; i < rSize && result; i++)
+        if (this->operator[](i) != matRow[i])
+            result = false;
+    return result;
+}
+
+template <typename T>
+bool Matrix<T>::MatrixRow::operator !=(Matrix<T>::MatrixRow &matRow) const noexcept
+{
+    bool result = false;
+    for (int i = 0; i < rSize && !result; i++)
+        if (this->operator[](i) != matRow[i])
+            result = true;
+    return result;
+}
+
+template <typename T>
+bool Matrix<T>::MatrixRow::operator ==(const Matrix<T>::MatrixRow &matRow) const noexcept
+{
+    bool result = true;
+    for (int i = 0; i < rSize && result; i++)
+        if (this->operator[](i) != matRow[i])
+            result = false;
+    return result;
+}
+
+template <typename T>
+bool Matrix<T>::MatrixRow::operator !=(const Matrix<T>::MatrixRow &matRow) const noexcept
+{
+    bool result = false;
+    for (int i = 0; i < rSize && !result; i++)
+        if (this->operator[](i) != matRow[i])
+            result = true;
+    return result;
+}
+
+template <>
+bool Matrix<double>::MatrixRow::operator !=(Matrix<double>::MatrixRow &matRow) const noexcept
+{
+    bool result = false;
+    for (int i = 0; i < rSize && !result; i++)
+        if (abs(this->operator[](i) - matRow[i]) > EPS)
+            result = true;
+    return result;
+}
+
+template<>
+bool Matrix<double>::MatrixRow::operator ==(Matrix<double>::MatrixRow &matRow) const noexcept
+{
+    bool result = true;
+    for (int i = 0; i < rSize && result; i++)
+        if (abs(this->operator[](i) - matRow[i]) > EPS)
+            result = false;
+    return result;
+}
+
+template <typename T>
+T& Matrix<T>::MatrixRow::operator[](size_t column) const
 {
     checkIndex(column);
     return array[column];
 }
 
 template <typename T>
-void MatrixRow<T>::checkIndex(int pos) const
+size_t Matrix<T>::MatrixRow::getSize() const noexcept
+{
+    return rSize;
+}
+
+template <typename T>
+void Matrix<T>::MatrixRow::reset() noexcept
+{
+    if (array)
+        array.reset();
+}
+
+template <typename T>
+void Matrix<T>::MatrixRow::checkIndex(int pos) const
 {
     if (pos >= rSize || pos < 0)
     {
@@ -131,51 +224,23 @@ void MatrixRow<T>::checkIndex(int pos) const
 }
 
 template <typename T>
-void MatrixRow<T>::copy(const MatrixRow<T> &matRow)
+void Matrix<T>::MatrixRow::checkList(std::initializer_list<T> list, size_t columns)
 {
-    size_t size = matRow.rSize;
-    allocateMatrixRow(size);
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = matRow[i];
+    if (columns != list.size())
+    {
+        time_t time_cur = time(nullptr);
+        throw NullPointerError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "It is impossible to create a matrix with different amount of columns in a row");
+    }
 }
 
 template <typename T>
-void MatrixRow<T>::move(MatrixRow<T> &&matRow)
+void Matrix<T>::MatrixRow::checkNull(T *array)
 {
-    allocateMatrixRow(matRow.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = matRow[i];
-    matRow.reset();
-}
-
-
-template <typename T>
-void MatrixRow<T>::move(MatrixRow<T> &matRow)
-{
-    allocateMatrixRow(matRow.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = matRow[i];
-    matRow.reset();
-}
-
-template <typename T>
-MatrixRow<T>::MatrixRow(const MatrixRow<T> &matRow)
-{
-    copy(matRow);
-}
-
-template <typename T>
-MatrixRow<T> MatrixRow<T>::operator =(MatrixRow<T> &matRow)
-{
-    copy(matRow);
-    return *this;
-}
-
-template <typename T>
-MatrixRow<T>& MatrixRow<T>::operator =(MatrixRow<T> &&matRow)
-{
-    move(matRow);
-    return *this;
+    if (array == nullptr)
+    {
+        time_t time_cur = time(nullptr);
+        throw NullPointerError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Attempt of creating void line");
+    }
 }
 
 #endif

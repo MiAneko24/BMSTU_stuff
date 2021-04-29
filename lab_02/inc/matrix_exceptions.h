@@ -1,75 +1,57 @@
 #ifndef MATRIX_EXCEPTIONS_H
 #define MATRIX_EXCEPTIONS_H
 
-#include <memory>
-#include <iostream>
+#include "base_exception.h"
 
-class BaseMatrixException : public std::exception
-{
-    public:
-        BaseMatrixException(std::string time, std::string file, std::string error_class, int line, std::string error_info) 
-        {
-            error_msg = "Time: " + time + "\n In file " + file + ", class " + error_class + ", line " + std::to_string(line) + 
-            "\n Error type: " + error_info + "\n";
-        }
-
-        virtual const char* what() const noexcept override
-        {
-            return error_msg.c_str();
-        }
-    protected:
-        std::string error_msg;
-};
-
-class MemoryError : public BaseMatrixException
+class MemoryError : public BaseException
 {
     public:
         MemoryError(std::string time, std::string file, std::string error_class, int line, std::string error_info)
-        : BaseMatrixException(time, file, error_class, line, error_info){};
+        : BaseException(time, file, error_class, line, error_info){};
         const char* what() const noexcept
         {
             return error_msg.c_str();
         }
 };
 
-class IndexError : public BaseMatrixException
+class IndexError : public BaseException
 {
     public:
         IndexError(std::string time, std::string file, std::string error_class, int line, std::string error_info)
-        : BaseMatrixException(time, file, error_class, line, error_info){};
+        : BaseException(time, file, error_class, line, error_info){};
         const char* what() const noexcept
         {
             return error_msg.c_str();
         }
 };
 
-class DivisionByZeroError : public BaseMatrixException
+class DivisionByZeroError : public BaseException
 {
     public:
         DivisionByZeroError(std::string time, std::string file, std::string error_class, int line, std::string error_info)
-        : BaseMatrixException(time, file, error_class, line, error_info){};
+        : BaseException(time, file, error_class, line, error_info){};
         const char* what() const noexcept
         {
             return error_msg.c_str();
         }
 };
 
-class NullPointerError : public BaseMatrixException
+class NullPointerError : public BaseException
 {
     public:
         NullPointerError(std::string time, std::string file, std::string error_class, int line, std::string error_info)
-        : BaseMatrixException(time, file, error_class, line, error_info){};
+        : BaseException(time, file, error_class, line, error_info){};
         const char* what() const noexcept
         {
             return error_msg.c_str();
         }
 };
 
-class TypeMatrixError : public BaseMatrixException
+class TypeMatrixError : public BaseException
 {
     public:
         TypeMatrixError(std::string time, std::string file, std::string error_class, int line, std::string error_info)
-        : BaseMatrixException(time, file, error_class, line, error_info){};
+        : BaseException(time, file, error_class, line, error_info){};
         const char* what() const noexcept
         {
             return error_msg.c_str();
@@ -77,11 +59,11 @@ class TypeMatrixError : public BaseMatrixException
 };
 
 
-class DimensionMatrixError : public BaseMatrixException
+class DimensionMatrixError : public BaseException
 {
     public:
         DimensionMatrixError(std::string time, std::string file, std::string error_class, int line, std::string error_info)
-        : BaseMatrixException(time, file, error_class, line, error_info){};
+        : BaseException(time, file, error_class, line, error_info){};
         const char* what() const noexcept
         {
             return error_msg.c_str();
