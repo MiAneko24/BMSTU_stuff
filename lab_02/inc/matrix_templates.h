@@ -214,9 +214,9 @@ class Matrix<T>::MatrixRow
         std::shared_ptr<T[]> array = nullptr;
         size_t rSize = 0;
         
-        void checkIndex(int pos) const;
-        void checkList(std::initializer_list<T> list, size_t columns);
-        void checkNull(T *array);
+        void checkIndex(int pos, std::string file, int line) const;
+        void checkList(std::initializer_list<T> list, size_t columns, std::string file, int line);
+        void checkNull(T *array, std::string file, int line);
 };
 
 #include "matrix_constructors_and_iter_methods.h"

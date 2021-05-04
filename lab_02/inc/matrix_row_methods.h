@@ -214,32 +214,32 @@ void Matrix<T>::MatrixRow::reset() noexcept
 }
 
 template <typename T>
-void Matrix<T>::MatrixRow::checkIndex(int pos) const
+void Matrix<T>::MatrixRow::checkIndex(int pos, std::string file, int line) const
 {
     if (pos >= rSize || pos < 0)
     {
         time_t time_cur = time(nullptr);
-        throw IndexError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Index of columns is out of range");
+        throw IndexError(ctime(&time_cur), file, typeid(*this).name(), line, "Index of columns is out of range");
     }
 }
 
 template <typename T>
-void Matrix<T>::MatrixRow::checkList(std::initializer_list<T> list, size_t columns)
+void Matrix<T>::MatrixRow::checkList(std::initializer_list<T> list, size_t columns, std::string file, int line)
 {
     if (columns != list.size())
     {
         time_t time_cur = time(nullptr);
-        throw NullPointerError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "It is impossible to create a matrix with different amount of columns in a row");
+        throw NullPointerError(ctime(&time_cur), file, typeid(*this).name(), line, "It is impossible to create a matrix with different amount of columns in a row");
     }
 }
 
 template <typename T>
-void Matrix<T>::MatrixRow::checkNull(T *array)
+void Matrix<T>::MatrixRow::checkNull(T *array, std::string file, int line)
 {
     if (array == nullptr)
     {
         time_t time_cur = time(nullptr);
-        throw NullPointerError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Attempt of creating void line");
+        throw NullPointerError(ctime(&time_cur), file, typeid(*this).name(), line, "Attempt of creating void line");
     }
 }
 
