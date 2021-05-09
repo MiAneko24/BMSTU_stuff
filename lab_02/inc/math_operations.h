@@ -378,7 +378,7 @@ Matrix<T>& Matrix<T>::operator /=(const T& elem)
 }
 
 template <typename T>
-bool Matrix<T>::operator ==(Matrix<T> &mat) const noexcept
+bool Matrix<T>::operator ==(Matrix<T> &mat) noexcept
 {
     bool result = true;
     if (mRows != mat.getRows() || mColumns != mat.getColumns())
@@ -392,7 +392,7 @@ bool Matrix<T>::operator ==(Matrix<T> &mat) const noexcept
 }
 
 template <typename T>
-bool Matrix<T>::operator !=(Matrix<T> &mat) const noexcept
+bool Matrix<T>::operator !=(Matrix<T> &mat) noexcept
 {
     bool result = false;
     if (mRows != mat.getRows() || mColumns != mat.getColumns())
@@ -404,7 +404,7 @@ bool Matrix<T>::operator !=(Matrix<T> &mat) const noexcept
 }
 
 template <typename T>
-bool Matrix<T>::operator ==(const Matrix<T> &mat) const noexcept
+bool Matrix<T>::operator ==(const Matrix<T> &mat) noexcept
 {
     bool result = true;
     if (mRows != mat.getRows() || mColumns != mat.getColumns())
@@ -418,7 +418,7 @@ bool Matrix<T>::operator ==(const Matrix<T> &mat) const noexcept
 }
 
 template <typename T>
-bool Matrix<T>::operator !=(const Matrix<T> &mat) const noexcept
+bool Matrix<T>::operator !=(const Matrix<T> &mat) noexcept
 {
     bool result = false;
     if (mRows != mat.getRows() || mColumns != mat.getColumns())

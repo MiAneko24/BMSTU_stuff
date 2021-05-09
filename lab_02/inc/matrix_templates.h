@@ -19,17 +19,17 @@ class Matrix : public BaseMatrix
         
         Matrix(size_t rows, size_t columns); 
         explicit Matrix(const Matrix<T> &matrix); 
-        Matrix(Matrix<T> &&matrix) noexcept; //?
+        Matrix(Matrix<T> &&matrix) noexcept; 
 
         Matrix(std::initializer_list<std::initializer_list<T>> list); 
         Matrix(T &fill_with, size_t rows, size_t columns); 
         Matrix(T **source, size_t rows, size_t columns); 
 
-        void move(Matrix<T> &matrix);
-        void move(Matrix<T> &&matrix);
+        void move(Matrix<T> &matrix) noexcept;
+        void move(Matrix<T> &&matrix) noexcept;
 
-        void move(const Matrix<T> &matrix);
-        void move(const Matrix<T> &&matrix);
+        void move(const Matrix<T> &matrix) noexcept;
+        void move(const Matrix<T> &&matrix) noexcept;
 
         void copy(Matrix<T> &matrix);
 
@@ -97,11 +97,11 @@ class Matrix : public BaseMatrix
         void divEq(const T &elem);
         Matrix<T>& operator /=(const T &elem);        
 
-        bool operator ==(Matrix<T> &mat) const noexcept;
-        bool operator != (Matrix<T> &mat) const noexcept;
+        bool operator ==(Matrix<T> &mat) noexcept;
+        bool operator != (Matrix<T> &mat) noexcept;
         
-        bool operator ==(const Matrix<T> &mat) const noexcept;
-        bool operator != (const Matrix<T> &mat) const noexcept;
+        bool operator ==(const Matrix<T> &mat) noexcept;
+        bool operator != (const Matrix<T> &mat) noexcept;
 
 
         MatrixRow& operator [](int pos); 
@@ -127,7 +127,7 @@ class Matrix : public BaseMatrix
         constIterator<T> cbegin() const noexcept;
         constIterator<T> cend() const noexcept;
 
-        ~Matrix();
+        ~Matrix() noexcept;
 
      private:
         std::shared_ptr<MatrixRow[]> data;
@@ -183,11 +183,11 @@ class Matrix<T>::MatrixRow
         
         void copy(const MatrixRow &matRow);
 
-        void move(MatrixRow &matRow);
-        void move(MatrixRow &&matRow);
+        void move(MatrixRow &matRow) noexcept;
+        void move(MatrixRow &&matRow) noexcept;
         
-        void move(const MatrixRow &matRow);
-        void move(const MatrixRow &&matRow);
+        void move(const MatrixRow &matRow) noexcept;
+        void move(const MatrixRow &&matRow) noexcept;
         
         MatrixRow operator =(MatrixRow &matRow);
         MatrixRow& operator =(MatrixRow &&matRow);
@@ -196,11 +196,11 @@ class Matrix<T>::MatrixRow
         MatrixRow operator =(const MatrixRow &matRow);
         MatrixRow& operator =(const MatrixRow &&matRow);
         
-        bool operator ==(MatrixRow &matRow) const noexcept;
-        bool operator !=(MatrixRow &matRow) const noexcept;
+        bool operator ==(MatrixRow &matRow) noexcept;
+        bool operator !=(MatrixRow &matRow) noexcept;
 
-        bool operator ==(const MatrixRow &matRow) const noexcept;
-        bool operator !=(const MatrixRow &matRow) const noexcept;
+        bool operator ==(const MatrixRow &matRow) noexcept;
+        bool operator !=(const MatrixRow &matRow) noexcept;
 
         T& operator[](size_t column) const; 
 

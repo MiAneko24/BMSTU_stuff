@@ -18,7 +18,7 @@ Matrix<T>::MatrixRow::MatrixRow(const Matrix<T>::MatrixRow &matRow)
 template <typename T>
 Matrix<T>::MatrixRow::MatrixRow(std::initializer_list<T> list, size_t columns)
 {
-    checkList(list, columns);
+    checkList(list, columns, __FILE__, __LINE__);
     allocateMatrixRow(columns);
     size_t i = 0;
     for (T elem : list)
@@ -70,38 +70,34 @@ void Matrix<T>::MatrixRow::copy(const Matrix<T>::MatrixRow &matRow)
 }
 
 template <typename T>
-void Matrix<T>::MatrixRow::move(Matrix<T>::MatrixRow &matRow)
+void Matrix<T>::MatrixRow::move(Matrix<T>::MatrixRow &matRow) noexcept
 {
-    allocateMatrixRow(matRow.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = matRow[i];
+    rSize = matRow.getSize();
+    array = matRow.array;
     matRow.reset();
 }
 
 template <typename T>
-void Matrix<T>::MatrixRow::move(Matrix<T>::MatrixRow &&matRow)
+void Matrix<T>::MatrixRow::move(Matrix<T>::MatrixRow &&matRow) noexcept
 {
-    allocateMatrixRow(matRow.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = matRow[i];
+    rSize = matRow.getSize();
+    array = matRow.array;
     matRow.reset();
 }
 
 template <typename T>
-void Matrix<T>::MatrixRow::move(const Matrix<T>::MatrixRow &matRow)
+void Matrix<T>::MatrixRow::move(const Matrix<T>::MatrixRow &matRow) noexcept
 {
-    allocateMatrixRow(matRow.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = matRow[i];
+    rSize = matRow.getSize();
+    array = matRow.array;
     matRow.reset();
 }
 
 template <typename T>
-void Matrix<T>::MatrixRow::move(const Matrix<T>::MatrixRow &&matRow)
+void Matrix<T>::MatrixRow::move(const Matrix<T>::MatrixRow &&matRow) noexcept
 {
-    allocateMatrixRow(matRow.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = matRow[i];
+    rSize = matRow.getSize();
+    array = matRow.array;
     matRow.reset();
 }
 
@@ -134,7 +130,7 @@ typename Matrix<T>::MatrixRow& Matrix<T>::MatrixRow::operator =(const Matrix<T>:
 }
 
 template <typename T>
-bool Matrix<T>::MatrixRow::operator ==(Matrix<T>::MatrixRow &matRow) const noexcept
+bool Matrix<T>::MatrixRow::operator ==(Matrix<T>::MatrixRow &matRow) noexcept
 {
     bool result = true;
     for (int i = 0; i < rSize && result; i++)
@@ -144,7 +140,7 @@ bool Matrix<T>::MatrixRow::operator ==(Matrix<T>::MatrixRow &matRow) const noexc
 }
 
 template <typename T>
-bool Matrix<T>::MatrixRow::operator !=(Matrix<T>::MatrixRow &matRow) const noexcept
+bool Matrix<T>::MatrixRow::operator !=(Matrix<T>::MatrixRow &matRow) noexcept
 {
     bool result = false;
     for (int i = 0; i < rSize && !result; i++)
@@ -154,7 +150,7 @@ bool Matrix<T>::MatrixRow::operator !=(Matrix<T>::MatrixRow &matRow) const noexc
 }
 
 template <typename T>
-bool Matrix<T>::MatrixRow::operator ==(const Matrix<T>::MatrixRow &matRow) const noexcept
+bool Matrix<T>::MatrixRow::operator ==(const Matrix<T>::MatrixRow &matRow) noexcept
 {
     bool result = true;
     for (int i = 0; i < rSize && result; i++)
@@ -164,7 +160,7 @@ bool Matrix<T>::MatrixRow::operator ==(const Matrix<T>::MatrixRow &matRow) const
 }
 
 template <typename T>
-bool Matrix<T>::MatrixRow::operator !=(const Matrix<T>::MatrixRow &matRow) const noexcept
+bool Matrix<T>::MatrixRow::operator !=(const Matrix<T>::MatrixRow &matRow) noexcept
 {
     bool result = false;
     for (int i = 0; i < rSize && !result; i++)
@@ -174,7 +170,7 @@ bool Matrix<T>::MatrixRow::operator !=(const Matrix<T>::MatrixRow &matRow) const
 }
 
 template <>
-bool Matrix<double>::MatrixRow::operator !=(Matrix<double>::MatrixRow &matRow) const noexcept
+bool Matrix<double>::MatrixRow::operator !=(Matrix<double>::MatrixRow &matRow) noexcept
 {
     bool result = false;
     for (int i = 0; i < rSize && !result; i++)
@@ -184,7 +180,7 @@ bool Matrix<double>::MatrixRow::operator !=(Matrix<double>::MatrixRow &matRow) c
 }
 
 template<>
-bool Matrix<double>::MatrixRow::operator ==(Matrix<double>::MatrixRow &matRow) const noexcept
+bool Matrix<double>::MatrixRow::operator ==(Matrix<double>::MatrixRow &matRow) noexcept
 {
     bool result = true;
     for (int i = 0; i < rSize && result; i++)
@@ -196,7 +192,7 @@ bool Matrix<double>::MatrixRow::operator ==(Matrix<double>::MatrixRow &matRow) c
 template <typename T>
 T& Matrix<T>::MatrixRow::operator[](size_t column) const
 {
-    checkIndex(column);
+    checkIndex(column, __FILE__, __LINE__);
     return array[column];
 }
 

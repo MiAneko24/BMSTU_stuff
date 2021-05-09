@@ -57,42 +57,38 @@ Matrix<T>::Matrix(T **source, size_t rows, size_t columns)
 }
 
 template <typename T>
-void Matrix<T>::move(Matrix<T> &matrix)
+void Matrix<T>::move(Matrix<T> &matrix) noexcept
 {
-    allocateMatrix(matrix.getRows(), matrix.getColumns());
-    for (int i = 0; i < mRows; i++)
-        for (int j = 0; j < mColumns; j++)
-            this->operator[](i)[j] = matrix[i][j];
+    mColumns = matrix.getColumns();
+    mRows = matrix.getRows();
+    data = matrix.data;
     matrix.reset();
 }
 
 template <typename T>
-void Matrix<T>::move(Matrix<T> &&matrix)
+void Matrix<T>::move(Matrix<T> &&matrix) noexcept
 {
-    allocateMatrix(matrix.getRows(), matrix.getColumns());
-    for (int i = 0; i < mRows; i++)
-        for (int j = 0; j < mColumns; j++)
-            this->operator[](i)[j] = matrix[i][j];
+    mColumns = matrix.getColumns();
+    mRows = matrix.getRows();
+    data = matrix.data;
     matrix.reset();
 }
 
 template <typename T>
-void Matrix<T>::move(const Matrix<T> &matrix)
+void Matrix<T>::move(const Matrix<T> &matrix) noexcept
 {
-    allocateMatrix(matrix.getRows(), matrix.getColumns());
-    for (int i = 0; i < mRows; i++)
-        for (int j = 0; j < mColumns; j++)
-            this->operator[](i)[j] = matrix[i][j];
+    mColumns = matrix.getColumns();
+    mRows = matrix.getRows();
+    data = matrix.data;
     matrix.reset();
 }
 
 template <typename T>
-void Matrix<T>::move(const Matrix<T> &&matrix)
+void Matrix<T>::move(const Matrix<T> &&matrix) noexcept
 {
-    allocateMatrix(matrix.getRows(), matrix.getColumns());
-    for (int i = 0; i < mRows; i++)
-        for (int j = 0; j < mColumns; j++)
-            this->operator[](i)[j] = matrix[i][j];
+    mColumns = matrix.getColumns();
+    mRows = matrix.getRows();
+    data = matrix.data;
     matrix.reset();
 }
 
