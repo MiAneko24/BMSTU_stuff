@@ -15,7 +15,6 @@ class Vector;
 template <typename T>
 class Matrix : public BaseMatrix 
 {        
-    class Vector;
     friend Iterator<T>;
     friend constIterator<T>;
 
@@ -108,18 +107,11 @@ class Matrix : public BaseMatrix
         bool operator != (const Matrix<T> &mat) const noexcept;
 
 
-        Vector& operator [](int pos); 
+        Vector<T>& operator [](int pos); 
         T& operator ()(int i, int j);
 
         T& get_elem(int i, int j);
         void set_elem(int i, int j, int num);
-        
-
-        T det();
-        
-        Matrix<T> transpose();
-
-        Matrix<T> reverse_matrix();
 
         void make_e_matrix();
 
@@ -154,18 +146,6 @@ class Matrix : public BaseMatrix
         
         void checkDivider(T &elem, std::string file, int line);
         
-        void check_reversing_matrix(std::string file, int line);
-
-        void checkDeterminant(std::string file, int line);
-
-        T determinant_recursive(Matrix<T> &matrix);
-        
-        void swap_rows(int i, int j);
-        
-        int sign(int i);
-
-        void fill_additional_matrix(Matrix<T> &tmp, Matrix<T> &mat,size_t k) noexcept;
-        void elementary_transf(Matrix<T> &mat_res, int &i, int step);
         
         void reset() noexcept; 
         void reset(size_t size) noexcept; 

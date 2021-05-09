@@ -115,7 +115,7 @@ void Matrix<T>::copy(const Matrix<T> &matrix)
 }
 
 template <typename T>
-typename Matrix<T>::MatrixRow& Matrix<T>::operator[](int pos)
+Vector<T>& Matrix<T>::operator[](int pos)
 {
     checkRowIndex(pos, __FILE__, __LINE__);
     return data[pos];
@@ -168,47 +168,47 @@ void Matrix<T>::allocateMatrix(size_t rows, size_t columns)
     }
 }
 
-template <typename T>
-Iterator<T> Matrix<T>::begin() noexcept
-{
-    Iterator<T> iter = Iterator<T>((*this), 0);
-    return  iter;
-}
+// template <typename T>
+// Iterator<T> Matrix<T>::begin() noexcept
+// {
+//     Iterator<T> iter = Iterator<T>((*this), 0);
+//     return  iter;
+// }
 
-template <typename T>
-Iterator<T> Matrix<T>::end() noexcept
-{
-    Iterator<T> iter = Iterator<T>((*this), mRows * mColumns);
-    return  iter;
-}
+// template <typename T>
+// Iterator<T> Matrix<T>::end() noexcept
+// {
+//     Iterator<T> iter = Iterator<T>((*this), mRows * mColumns);
+//     return  iter;
+// }
 
-template <typename T>
-constIterator<T> Matrix<T>::begin() const noexcept
-{
-    constIterator<T> iter = constIterator<T>((*this), 0);
-    return  iter;
-}
+// template <typename T>
+// constIterator<T> Matrix<T>::begin() const noexcept
+// {
+//     constIterator<T> iter = constIterator<T>((*this), 0);
+//     return  iter;
+// }
 
-template <typename T>
-constIterator<T> Matrix<T>::end() const noexcept
-{
-    constIterator<T> iter = constIterator<T>((*this), mRows * mColumns);
-    return  iter;
-}
+// template <typename T>
+// constIterator<T> Matrix<T>::end() const noexcept
+// {
+//     constIterator<T> iter = constIterator<T>((*this), mRows * mColumns);
+//     return  iter;
+// }
 
-template <typename T>
-constIterator<T> Matrix<T>::cbegin() const noexcept
-{
-    constIterator<T> iter = constIterator<T>((*this), 0);
-    return  iter;
-}
+// template <typename T>
+// constIterator<T> Matrix<T>::cbegin() const noexcept
+// {
+//     constIterator<T> iter = constIterator<T>((*this), 0);
+//     return  iter;
+// }
 
-template <typename T>
-constIterator<T> Matrix<T>::cend() const noexcept
-{
-    constIterator<T> iter = constIterator<T>((*this), mRows * mColumns);
-    return  iter;
-}
+// template <typename T>
+// constIterator<T> Matrix<T>::cend() const noexcept
+// {
+//     constIterator<T> iter = constIterator<T>((*this), mRows * mColumns);
+//     return  iter;
+// }
 
 template <typename T>
 void Matrix<T>::reset() noexcept

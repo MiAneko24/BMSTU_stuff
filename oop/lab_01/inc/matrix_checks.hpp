@@ -46,15 +46,6 @@ void Matrix<T>::checkSquare(std::string file, int line)
     }
 }
 
-template <typename T>
-void Matrix<T>::checkDeterminant(std::string file, int line)
-{
-    if (abs(det()) < 1e-8)
-    { 
-        time_t time_cur = time(nullptr);
-        throw TypeMatrixError(ctime(&time_cur), file, typeid(*this).name(), line, "It is impossible to reverse matrix with null determinant");
-    }
-}
 
 template <typename T>
 void Matrix<T>::checkRowIndex(int i, std::string file, int line)
@@ -66,13 +57,6 @@ void Matrix<T>::checkRowIndex(int i, std::string file, int line)
     }
 }
 
-template <typename T>
-void Matrix<T>::check_reversing_matrix(std::string file, int line)
-{
-    checkOperationsType(file, line);
-    checkSquare(file, line);
-    checkDeterminant(file, line);
-}
 
 template <typename T>
 void Matrix<T>::checkMatrixSource(T **source, std::string file, int line)
