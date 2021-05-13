@@ -7,7 +7,7 @@ from numpy import sign
 from math import trunc
 eps = 1e-3
 
-class EdgesWithFlag(Frame):
+class MedPointCut(Frame):
     img = 0
     font = "Calibria 14"
     ended = False
@@ -44,23 +44,11 @@ class EdgesWithFlag(Frame):
         self.canvas.config(bg=self.color_bg)
         self.set_image_to_canvas()
 
-    def add(self):
-        try:
-            x = float(self.x_entry.get())
-            y = float(self.y_entry.get())
-        except ValueError:
-            box.showerror("Ошибка", "Координаты точки должны быть вещественными числами")
-            return
-        
-        self.points[self.figure].append([x, y])
-        self.draw_line()
-
     def add_area(self):
         if (len(self.area) != 0):
             box.showinfo("Внимание!", "Невозможно добавить вторую область для отсечения")
             return
         
-
     def clear(self):
         self.canvas.delete("all")
         self.points = []
@@ -155,13 +143,14 @@ class EdgesWithFlag(Frame):
     def left_click(self, event):
         if (len(self.points) == 0):
             self.points.append(list())
+        self.canvas.create_oval(event.x, event.y, event.x, event.y, outline=self.color_lines)
             
         self.points[-1].append([event.x, event.y])
         if (len(self.points[-1]) == 2):
             self.draw_line()
             self.points.append(list())
 
-    def left_click_horizontal(self, event):
+    def right_click_horizontal(self, event):
         if ((len(self.points) == 0 or len(self.points[-1]) == 0) and len(self.area) == 0):
             box.showwarning("Информация", "Невозможно провести горизонтальную линию без начальной точки")
             return
@@ -198,9 +187,9 @@ class EdgesWithFlag(Frame):
         else:
             self.draw_area()
 
-    def left_click_vertical(self, event):
+    def right_click_vertical(self, event):
         if ((len(self.points) == 0 or len(self.points[-1]) == 0) and len(self.area) == 0):
-            box.showwarning("Информация", "Невозможно провести вертикальную линию без начальной точки")
+            box.showwarning("Внимание!", "Невозможно провести вертикальную линию без начальной точки")
             return
         if (self.yd != -10 and self.yu != -10):
             box.showwarning("Внимание!", "Ограничивающая область задается одной горизонтальной и одной вертикальной линиями")
@@ -234,65 +223,24 @@ class EdgesWithFlag(Frame):
         else:
             self.draw_area()
 
-    def right_click(self, event):
-
+    def left_click_horizontal(self, event):
+        if ((len(self.points) == 0 or len(self.points[-1]) == 0)):
+            box.showwarning("Внимание!", "Невозможно провести вертикальную линию без начальной точки")
+            return  
+        self.points[-1].append([event.x, self.points[-1][0][1]])
+        self.draw_line()
+        self.points.append(list())
+        
+    def left_click_vertical(self, event):
+        if ((len(self.points) == 0 or len(self.points[-1]) == 0)):
+            box.showwarning("Внимание!", "Невозможно провести вертикальную линию без начальной точки")
+            return  
+        self.points[-1].append([self.points[-1][0][0], event.y])
+        self.draw_line()
         self.points.append(list())
 
-    def get_rgb_tuple(self, color):
-        return (int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16))
-
-
-    def fill_area(self, pause=False):
-        draw_tuple = self.get_rgb_tuple(self.color_lines)
-        fill_tuple = self.get_rgb_tuple(self.color_fill)
-        while self.stack:
-            
-            current_point = self.stack.pop()
-            self.img.put(self.color_fill, (current_point[0], current_point[1]))
-
-            x, y = current_point[0] + 1, current_point[1]
-            while self.img.get(x, y) != draw_tuple and self.img.get(x, y) != fill_tuple and x < self.width - 1:
-                self.img.put(self.color_fill, (x, y))
-                x += 1
-            rx = x - 1
-
-            x = current_point[0] - 1
-            while self.img.get(x, y) != draw_tuple and self.img.get(x, y) != fill_tuple and x > 0:
-                self.img.put(self.color_fill, (x, y))
-                x -= 1
-            lx = x + 1
- 
-            if (0 < y < self.height - 1):
-                for i in [1, -1]:
-                    x = lx
-                    y = current_point[1] + i
-
-                    while x <= rx:
-                        flag = False
-                        while self.img.get(x, y) != draw_tuple and self.img.get(x, y) != fill_tuple and x <= rx:
-                            flag = True
-                            x += 1
-
-                        if flag:
-                            self.stack.append([x - 1, y])
-                            flag = False
-                        xi = x
-                        while (self.img.get(x, y) != draw_tuple) and self.img.get(x, y) != fill_tuple and x <= rx:
-                            x += 1
-
-                        if x == xi:
-                            x += 1
-            if pause:
-                sleep(0.1)
-                self.canvas.update()
-
-    def start_by_click(self, event):
-        self.stack.extend([[event.x, event.y]])
-        self.img.put(self.color_lines, (event.x, event.y))
-        self.start()
-
     def find_visible_part(self, p1, p2, i):
-        # 1
+        
         T1, sum1 = self.end(p1)
         T2, sum2 = self.end(p2)
         if (sum1 == 0 and sum2 == 0):
@@ -305,7 +253,7 @@ class EdgesWithFlag(Frame):
             if (self.bin_mul(T1, T2) == 0):
                 self.Bresenham_int(p1[0], p1[1], p2[0], p2[1], self.color_mark)
             return
-        # 2
+        
         if (sum2 == 0):
             p1 = p2
             p2 = point
@@ -324,19 +272,12 @@ class EdgesWithFlag(Frame):
             p1 = tmp
             p2 = pm
 
-        # 3
-        # p2 = old_p2
-        # p1, p2 = p2, p1
         p1[0] = round(p2[0])
         p1[1] = round(p2[1])
         p2 = point
         i += 1
         self.find_visible_part(p1, p2, i)
 
-        # 4
-        # if (self.bin_mul(T1, T2) == 0):
-        #     self.Bresenham_int(p1[0], p1[1], p2[0], p2[1], self.color_mark)
-            
 
     def binary_cut(self):
         for section in self.points:
@@ -378,18 +319,7 @@ class EdgesWithFlag(Frame):
             return
         self.points.pop()
 
-        delay = self.draw_mode_chooser.get()
         self.binary_cut()
-        # if (delay == "С задержкой"):
-        #     self.fill_area(True)
-        # else:
-        #     self.fill_area()
-
-
-    def set_image_to_canvas(self):
-        self.img = PhotoImage(width = self.width, height = self.height, palette=self.color_bg)
-        self.canvas.create_image((545, 508), image = self.img, state = "normal")
-        self.img.put(self.color_bg, to=(0, 0, self.width, self.height))
 
     def init_ui(self):
         self.color_lines = "#000000"
@@ -416,37 +346,14 @@ class EdgesWithFlag(Frame):
         color_mark_lbl.grid(row=1, column=2)
         self.color_mark_btn = Button(self, bg=self.color_mark, height=1, width=3, command=self.choose_mark_color)
         self.color_mark_btn.grid(row=1, column=3)
-
-        draw_mode_lbl = Label(self, text="Режим закраски:", font=self.font)
-        draw_mode_lbl.grid(row=2, column=0)
-        self.draw_mode_chooser = ttk.Combobox(self, values=[
-            'Без задержки',
-            'С задержкой'], font=self.font)
-        self.draw_mode_chooser.configure(width=50)
-        self.draw_mode_chooser.current(0)
-        self.draw_mode_chooser.grid(row=2, column=1, columnspan=3)
-
-        rules_lbl = Label(self, text="""Построчный алгоритм затравочного заполнения
+        
+        rules_lbl = Label(self, text="""Алгоритм отсечения делением отрезка пополам
 Для добавления новой точки нажмите левую кнопку мыши
-Для рисования горизонтальной линии нажмите Ctrl и левую кнопку мыши
-Для рисования горизонтальной линии нажмите Shift и левую кнопку мыши""", justify=CENTER, font=self.font)
-        rules_lbl.grid(row=3, column=0, rowspan=7, columnspan=5)
-
-        # add_label = Label(self, text="Добавить точку", justify=CENTER, font=self.font)
-        # add_label.grid(row=6, column=1, columnspan=2)
-
-        # x_label = Label(self, text="X:", font=self.font)
-        # x_label.grid(row=7, column=0)
-        # self.x_entry = Entry(self)
-        # self.x_entry.grid(row=7, column=1)
-        # y_label = Label(self, text="Y:", font=self.font)
-        # y_label.grid(row=7, column=2)
-        # self.y_entry = Entry(self)
-        # self.y_entry.grid(row=7, column=3)
-
-        # add_btn = Button(self, text="Добавить", command=self.add, justify=CENTER, font=self.font)
-        # add_btn.grid(row=8, column=1, columnspan=2)
-
+Для рисования горизонтальной стороны отсекателя нажмите Ctrl и правую кнопку мыши
+Для рисования вертикальной стороны отсекателя Shift и правую кнопку мыши
+Для рисования горизонтального отрезка нажмите Ctrl и левую кнопку мыши
+Для рисования вертикального отрезка нажмите Shift и левую кнопку мыши""", justify=CENTER, font=self.font)
+        rules_lbl.grid(row=3, column=0, rowspan=7, columnspan=7)
         cancel_btn = Button(self, text="Отменить добавление точки", command=self.cancel, font=self.font)
         cancel_btn.grid(row=10, column=1, columnspan=2)
 
@@ -456,15 +363,13 @@ class EdgesWithFlag(Frame):
         clear_btn = Button(self, text="Отсечь", command=self.start, font=self.font)
         clear_btn.grid(row=12, column=1, columnspan=2)
         self.canvas = Canvas(self, bg = self.color_bg, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
-        # self.set_image_to_canvas()
 
         self.canvas.bind('<1>', self.left_click)
-        # self.canvas.bind('<B1-Motion>', self.left_click)
+        self.canvas.bind('<Control-Button-3>', self.right_click_horizontal)
+        self.canvas.bind('<Shift-Button-3>', self.right_click_vertical)
         self.canvas.bind('<Control-Button-1>', self.left_click_horizontal)
         self.canvas.bind('<Shift-Button-1>', self.left_click_vertical)
-        # self.canvas.bind('<3>', self.right_click)
-        # self.canvas.bind('<Shift-Button-3>', self.start_by_click)
-        self.canvas.grid(row=0, column=5, rowspan=20, columnspan=20)
+        self.canvas.grid(row=0, column=8, rowspan=20, columnspan=20)
         self.grid(row=0, column=0)
 
 
@@ -472,6 +377,6 @@ class EdgesWithFlag(Frame):
 if __name__ == '__main__':
     Window = Tk()
     Window.title('Закраска')
-    ex = EdgesWithFlag(Window)
+    ex = MedPointCut(Window)
     Window.geometry("1800x1000")
     Window.mainloop()
