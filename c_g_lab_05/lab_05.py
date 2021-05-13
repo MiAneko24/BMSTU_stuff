@@ -9,13 +9,12 @@ class EdgesWithFlag(Frame):
     img = 0
     font = "Calibria 15"
     ended = False
-    extrems = [[]]
 
     mark_color = "#00C12B"
 
     points = [[]]
+    extrems = [[]]
     edges = [[]]
-    figure = 0
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -39,12 +38,11 @@ class EdgesWithFlag(Frame):
             box.showerror("Ошибка", "Координаты точки должны быть вещественными числами")
             return
         
-        self.points[self.figure].append([x, y, self.color_lines])
+        self.points[-1].append([x, y, self.color_lines])
         self.draw_line()
 
     def clear(self):
         self.canvas.delete("all")
-        self.figure = 0
         self.points = [[]]
         self.extrems = [[]]
         self.img = PhotoImage(width = 1090, height = 1016)
@@ -83,11 +81,109 @@ class EdgesWithFlag(Frame):
                     y += sy
                 e += 2 * dy
 
+    def get_mark_color(self):
+        self.mark_color = []
+        if (self.color_lines != "#0000FF" and self.color_bg != "#0000FF"):
+            self.mark_color = ["#0000FF", (0, 0, 255)]
+        if (self.color_lines != "#FF0000" and self.color_bg != "#FF0000"):
+            self.mark_color = ["#FF0000", (255, 0, 0)]
+        else:
+            self.mark_color = ["#00FF00", (0, 255, 0)]
+           
+
+
+    def cancel(self):
+        if len(self.points) == 0:
+            box.showinfo("Предупреждение", "Отменять нечего")
+            return
+        tempCol = self.color_lines
+        self.color_lines = self.color_bg
+        if len(self.points[-1]) > 1:
+            self.Bresenham_int(self.points[-1][-2][0],
+                        self.points[-1][-2][1],
+                        self.points[-1][-1][0],
+                        self.points[-1][-1][1])
+            self.points[-1].pop()
+        else:
+            self.points.pop()
+            if (len(self.points) > 0):
+                self.Bresenham_int(self.points[-1][0][0],
+                            self.points[-1][0][1],
+                            self.points[-1][-1][0],
+                            self.points[-1][-1][1])
+        self.color_lines = tempCol
+
+
+    def draw_line(self):
+        self.ended = False
+        if len(self.points[-1]) > 1:
+            self.Bresenham_int(self.points[-1][-2][0],
+                        self.points[-1][-2][1],
+                        self.points[-1][-1][0],
+                        self.points[-1][-1][1])
+
+    def left_click(self, event):
+        self.ended = True
+        if (len(self.points) == 0):
+            self.points.append(list())
+        self.points[-1].append([event.x, event.y, self.color_lines])
+        self.draw_line()
+
+    def left_click_horizontal(self, event):
+        self.ended = True
+        if (len(self.points[-1]) == 0):
+            box.showwarning("Информация", "Невозможно провести горизонтальную линию без начальной точки")
+            return
+        prev_y = self.points[-1][len(self.points[-1]) - 1][1]
+        self.points[-1].append([event.x, prev_y, self.color_lines])
+        self.draw_line()
+
+    def left_click_vertical(self, event):
+        self.ended = True
+        self.img.put(self.color_lines, (event.x, event.y))
+        if (len(self.points[-1]) == 0):
+            box.showwarning("Информация", "Невозможно провести вертикальную линию без начальной точки")
+            return
+        prev_x = self.points[-1][len(self.points[-1]) - 1][0]
+        self.points[-1].append([prev_x, event.y, self.color_lines])
+        self.draw_line()
+
+    def right_click(self, event):
+        self.Bresenham_int(self.points[-1][0][0],
+                   self.points[-1][0][1],
+                   self.points[-1][-1][0],
+                   self.points[-1][-1][1])
+
+        self.points.append(list())
+
+    def set_mark_points_for_edge(self, edge, is_extreme):
+        if edge[0][1] == edge[1][1]:
+            return
+        if edge[0][1] > edge[1][1]:
+            edge[1], edge[0] = edge[0], edge[1]
+        dy = 1
+        dx = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
+        if (is_extreme[0]):
+            edge[0][0] += dx
+            edge[0][1] += dy
+        if (is_extreme[1]):
+            edge[1][0] -= dx
+            edge[1][1] -= dy
+        x = int(edge[0][0])
+        y = int(edge[0][1])
+        while y < edge[1][1]:
+            if self.img.get(int(x), y) != self.mark_color[1]:
+                self.img.put(self.mark_color[0], (int(x), y))
+            else:
+                self.img.put(self.color_lines, (int(x), y))
+            x += dx
+            y += dy
+
     def find_extrems(self):
         self.extrems.clear()
         self.extrems = [[]]
 
-        for i in range(len(self.points) - 1):
+        for i in range(len(self.points)):
             self.extrems[i].append((
                 (self.points[i][0][1] < self.points[i][-1][1] and
                     self.points[i][0][1] < self.points[i][1][1]) or
@@ -108,107 +204,6 @@ class EdgesWithFlag(Frame):
             self.extrems.append(list())
         self.extrems.pop()
 
-    def get_mark_color(self):
-        self.mark_color = []
-        if (self.color_lines != "#0000FF" and self.color_bg != "#0000FF"):
-            self.mark_color = ["#0000FF", (0, 0, 255)]
-        if (self.color_lines != "#FF0000" and self.color_bg != "#FF0000"):
-            self.mark_color = ["#FF0000", (255, 0, 0)]
-        else:
-            self.mark_color = ["#00FF00", (0, 255, 0)]
-           
-
-
-    def cancel(self):
-        if len(self.points) == 0:
-            box.showinfo("Предупреждение", "Отменять нечего")
-            return
-        tempCol = self.color_lines
-        self.color_lines = self.color_bg
-        if len(self.points[self.figure]) > 1:
-            self.Bresenham_int(self.points[self.figure][-2][0],
-                        self.points[self.figure][-2][1],
-                        self.points[self.figure][-1][0],
-                        self.points[self.figure][-1][1])
-            self.points[self.figure].pop()
-        else:
-            self.points.pop()
-            self.figure -= 1
-            if (self.figure >= 0):
-                self.Bresenham_int(self.points[self.figure][0][0],
-                            self.points[self.figure][0][1],
-                            self.points[self.figure][-1][0],
-                            self.points[self.figure][-1][1])
-        self.color_lines = tempCol
-
-
-    def draw_line(self):
-        self.ended = False
-        if len(self.points[self.figure]) > 1:
-            self.Bresenham_int(self.points[self.figure][-2][0],
-                        self.points[self.figure][-2][1],
-                        self.points[self.figure][-1][0],
-                        self.points[self.figure][-1][1])
-
-    def left_click(self, event):
-        self.ended = True
-        if (len(self.points[self.figure]) == 0):
-            self.figure = 0
-            self.points.append(list())
-        self.points[self.figure].append([event.x, event.y, self.color_lines])
-        self.draw_line()
-
-    def left_click_horizontal(self, event):
-        self.ended = True
-        if (len(self.points[self.figure]) == 0):
-            box.showwarning("Информация", "Невозможно провести горизонтальную линию без начальной точки")
-            return
-        prev_y = self.points[self.figure][len(self.points[self.figure]) - 1][1]
-        self.points[self.figure].append([event.x, prev_y, self.color_lines])
-        self.draw_line()
-
-    def left_click_vertical(self, event):
-        self.ended = True
-        if (len(self.points[self.figure]) == 0):
-            box.showwarning("Информация", "Невозможно провести вертикальную линию без начальной точки")
-            return
-        prev_x = self.points[self.figure][len(self.points[self.figure]) - 1][0]
-        self.points[self.figure].append([prev_x, event.y, self.color_lines])
-        self.draw_line()
-
-    def right_click(self, event):
-        self.Bresenham_int(self.points[self.figure][0][0],
-                   self.points[self.figure][0][1],
-                   self.points[self.figure][-1][0],
-                   self.points[self.figure][-1][1])
-        self.figure += 1
-
-        self.points.append(list())
-
-    def set_mark_points_for_edge(self, edge, is_extreme):
-        if (is_extreme[0]):
-            edges[0][0] += dx
-            edges[0][1] += dy
-        if (is_extreme[1]):
-            edges[1][0] += dx
-            edges[1][1] += dy
-        if edge[0][1] == edge[1][1]:
-            return
-        if edge[0][1] > edge[1][1]:
-            edge[1], edge[0] = edge[0], edge[1]
-        dy = 1
-        dx = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
-
-        x = int(edge[0][0])
-        y = int(edge[0][1])
-        while y < edge[1][1]:
-            if self.img.get(int(x), y) != self.mark_color[1]:
-                self.img.put(self.mark_color[0], (int(x), y))
-            else:
-                self.img.put(self.color_bg, (int(x), y))
-            x += dx
-            y += dy
-
 
     def set_mark_points_for_figures(self):
         for i in range(len(self.points)):
@@ -226,9 +221,9 @@ class EdgesWithFlag(Frame):
             inv_color = self.color_lines
             for x in range(int(self.x_min), int(self.x_max) + 1):
                 if self.img.get(x, y) == self.mark_color[1]:
+                    self.img.put(cur_color, (x, y))
                     inside = not inside
-                if (inside):
-                    self.img.put(inv_color, (x, y))
+                    cur_color, inv_color = inv_color, cur_color
                 else:
                     self.img.put(cur_color, (x, y))
             if (sleep_needed):
