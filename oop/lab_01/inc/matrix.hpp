@@ -1,10 +1,8 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
-
 #include <iostream>
 #include <string>
 #include "base_matrix_class.hpp"
-#include "vector.hpp"
 // #include "matrix_exceptions.h"
 // #include "const_iterator_templates.h"
 // #include "iterator_template.h"
@@ -108,6 +106,7 @@ class Matrix : public BaseMatrix
 
 
         Vector<T>& operator [](int pos); 
+        const Vector<T>& operator [](int pos) const; 
         T& operator ()(int i, int j);
 
         T& get_elem(int i, int j);
@@ -155,4 +154,5 @@ class Matrix : public BaseMatrix
 #include "matrix_constructors_and_iter_methods.hpp"
 #include "matrix_impl.hpp"
 #include "exceptions.hpp"
+
 #endif

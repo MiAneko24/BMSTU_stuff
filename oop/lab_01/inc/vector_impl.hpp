@@ -1,7 +1,9 @@
-#ifndef MATRIX_ROW_METHODS_HPP
-#define MATRIX_ROW_METHODS_HPP
+#pragma once
 #include "vector.hpp"
 #define EPS 1e-7
+
+template <typename T>
+class Matrix;
 
 template <typename T>
 Vector<T>::Vector(size_t size)
@@ -15,8 +17,11 @@ Vector<T>::Vector(const Vector<T> &vector)
     copy(vector);
 }
 
+// template <typename T>
+// void Vector<T>::checkSizes(Matrix<T> &matrix)
+
 template <typename T>
-void Vector<T>::checkSizes(Matrix<T> &matrix, std::string file, int line)
+void Vector<T>::checkSizes(const Matrix<T> &matrix, std::string file, int line)
 {
     if (rSize != matrix.getRows())
     {
@@ -38,6 +43,21 @@ Vector<T> Vector<T>::operator *(Matrix<T> &matrix)
     }
     return result;
 }
+
+template <typename T>
+Vector<T> Vector<T>::operator *(const Matrix<T> &matrix)
+{
+    checkSizes(matrix, __FILE__, __LINE__);
+
+    Vector<T> result = Vector<T>(matrix.getColumns());
+    for (int i = 0; i < rSize; i++)
+    {
+        for (int j = 0; j < matrix.getColumns(); j++)
+            result[i] += this->operator[](j) * matrix[j][i];
+    }
+    return result;
+}
+
 
 template <typename T>
 Vector<T>::Vector(std::initializer_list<T> list, size_t columns)
@@ -97,8 +117,8 @@ template <typename T>
 void Vector<T>::move(Vector<T> &vector)
 {
     allocateVector(vector.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = vector[i];
+    this->rSize = vector.rSize;
+    this->array = vector.array;
     vector.reset();
 }
 
@@ -106,8 +126,8 @@ template <typename T>
 void Vector<T>::move(Vector<T> &&vector)
 {
     allocateVector(vector.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = vector[i];
+    this->rSize = vector.rSize;
+    this->array = vector.array;
     vector.reset();
 }
 
@@ -127,6 +147,32 @@ void Vector<T>::move(const Vector<T> &&vector)
     for (int i = 0; i < rSize; i++)
         this->operator[](i) = vector[i];
     vector.reset();
+}
+
+template <typename T>
+void Vector<T>::add(T &obj)
+{
+    Vector<T> tmp = this;
+    allocateVector(rSize + 1);
+    for (int i = 0; i < tmp.rSize; i++)
+    {
+        this->operator[](i) = tmp[i];
+    }
+    this->operator[](rSize - 1) = obj;
+    tmp.reset();
+}
+
+template <typename T>
+void Vector<T>::add(const T &obj)
+{
+    Vector<T> tmp = this;
+    allocateVector(rSize + 1);
+    for (int i = 0; i < tmp.rSize; i++)
+    {
+        this->operator[](i) = tmp[i];
+    }
+    this->operator[](rSize - 1) = obj;
+    tmp.reset();
 }
 
 template <typename T>
@@ -218,7 +264,14 @@ bool Vector<double>::operator ==(Vector<double> &vector) const noexcept
 }
 
 template <typename T>
-T& Vector<T>::operator[](size_t column) const
+T& Vector<T>::operator[](size_t column)
+{
+    checkIndex(column);
+    return array[column];
+}
+
+template <typename T>
+const T& Vector<T>::operator[](size_t column) const
 {
     checkIndex(column);
     return array[column];
@@ -235,6 +288,45 @@ void Vector<T>::reset() noexcept
 {
     if (array)
         array.reset();
+}
+
+template <typename T>
+void Vector<T>::remove(VectorIterator<T> &del)
+{
+    Vector<T> tmp = this;
+    allocateVector(rSize - 1);
+    auto old = this;
+    for (auto i : tmp)
+    {
+        if (i != del)
+            old = i;
+        *old++;
+    }
+    tmp.reset();
+}
+
+template <typename T>
+VectorIterator<T> Vector<T>::begin()
+{
+    return VectorIterator<T>((*this), 0);
+}
+
+template <typename T>
+VectorIterator<T> Vector<T>::end()
+{
+    return VectorIterator<T>((*this), rSize);
+}
+
+template <typename T>
+VectorConstIterator<T> Vector<T>::begin() const
+{
+    return VectorConstIterator<T>((*this), 0);
+}
+
+template <typename T>
+VectorConstIterator<T> Vector<T>::end() const
+{
+    return VectorConstIterator<T>((*this), rSize);
 }
 
 template <typename T>
@@ -266,5 +358,3 @@ void Vector<T>::checkNull(T *array, std::string file, int line)
         throw NullPointerError(ctime(&time_cur), file, typeid(*this).name(), line, "Attempt of creating void line");
     }
 }
-
-#endif

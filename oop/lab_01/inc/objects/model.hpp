@@ -10,25 +10,24 @@ class Model : public Object
 {
     public:
         Model() = default;
-        explicit Model(std::string name);
         Model(const Model &);
         Model(Model &&) noexcept;
         ~Model() = default;
 
-        bool isVisible() const final;
+        bool isVisible();
 
         Model& operator =(const Model&);
         Model& operator =(Model &&) noexcept;
 
-        Vector<Point>& getPoints();
-        Vector<Connection>& getConnections();
-        void transform(const std::shared_ptr<Matrix<double>> transformation_matrix);
-        void add(const Vector<Point>& points);
-        void add(const Vector<Connection> &connections);
+        Vector<Point> getPoints();
+        Vector<Connection> getConnections();
+        void transform(const Matrix<double> &transformation_matrix);
+        void fill(const Vector<Point>& points);
+        void fill(const Vector<Connection> &connections);
 
     private:
-        Vector<Point> points;
-        Vector<Connection> connections;
+        Vector<Point>& points;
+        Vector<Connection>& connections;
 };
 
 #endif

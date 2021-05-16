@@ -1,6 +1,8 @@
 #ifndef MATRIX_CONSTRUCTORS_AND_ITER_METHODS_HPP
 #define MATRIX_CONSTRUCTORS_AND_ITER_METHODS_HPP
 #include "matrix.hpp"
+#include "vector.hpp"
+
 
 template <typename T>
 Matrix<T>::Matrix(size_t rows, size_t columns)
@@ -116,6 +118,13 @@ void Matrix<T>::copy(const Matrix<T> &matrix)
 
 template <typename T>
 Vector<T>& Matrix<T>::operator[](int pos)
+{
+    checkRowIndex(pos, __FILE__, __LINE__);
+    return data[pos];
+}
+
+template <typename T>
+const Vector<T>& Matrix<T>::operator[](int pos) const
 {
     checkRowIndex(pos, __FILE__, __LINE__);
     return data[pos];

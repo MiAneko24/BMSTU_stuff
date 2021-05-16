@@ -6,10 +6,7 @@
 class Camera : public Object
 {
     public:
-        Camera(std::string name);
-
-        explicit Camera() = default;
-        ~Camera() = default;
+        explicit Camera();
 
         bool isVisible() const final;
 
@@ -17,16 +14,20 @@ class Camera : public Object
         void setPosition(const Point &position);
         
         double getXAngle() const;
-        double setXAngle(double x_angle);
+        void setXAngle(double x_angle);
 
         double getYAngle() const;
-        double setYAngle(double y_angle);
+        void setYAngle(double y_angle);
 
         double getZAngle() const;
-        double setZAngle(double z_angle);
+        void setZAngle(double z_angle);
 
-        void transform(const std::shared_ptr<Matrix<double>> mat);
-
-}
+        void transform(const Matrix<double> &mat);
+    
+        ~Camera() = default;
+    private:
+        Point position;
+        Vector<double> angles = Vector<double>(3);
+};
 
 #endif

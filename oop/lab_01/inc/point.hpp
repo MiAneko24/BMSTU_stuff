@@ -10,6 +10,9 @@ class Point {
         Point(const Point &) = default;
         Point(const Vector<double> vector); //?
         Point &operator =(const Point&) = default;
+        
+        void transform(const Matrix<double> &transform_matrix);
+        
         double getX() const {
             return pX;
         }
@@ -20,6 +23,7 @@ class Point {
             return pZ;
         }
         Vector<double> toVector();
+        void setFromVector(Vector<double> &vector);
 
     private:
         double pX;

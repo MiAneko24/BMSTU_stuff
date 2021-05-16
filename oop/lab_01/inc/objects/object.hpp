@@ -1,15 +1,16 @@
 #include <iostream>
 #include <memory>
-#include "matrix.hpp"
+#include "../matrix.hpp"
+#include "../vectorIterator.hpp"
+
 class Object
 {
     public:
         Object() = default;
-        Object(std::string name) : oName(name){};
         ~Object() = default;
 
         virtual bool isVisible() const = 0;
-        virtual bool isScene() const 
+        virtual bool isComposite() const 
         {
             return false;
         }
@@ -17,18 +18,21 @@ class Object
         {
             return false;
         }
-        virtual bool remove(IteratorObject &it)
+        virtual bool remove(VectorIterator<std::shared_ptr<Object>> it)
         {
             return false;
         }
 
         virtual void transform(std::shared_ptr<Matrix<double>> mat) = 0;
-        virtual std::string getName()
+
+        virtual VectorIterator<std::shared_ptr<Object>> begin() 
         {
-            return oName; 
+            return VectorIterator<std::shared_ptr<Object>>();
         }
 
-    protected:
-        std::string oName;
+        virtual VectorIterator<std::shared_ptr<Object>> end()
+        {
+            return VectorIterator<std::shared_ptr<Object>>();
+        }
 };
 

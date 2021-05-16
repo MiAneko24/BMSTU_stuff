@@ -1,6 +1,7 @@
 #ifndef MATRIX_IMPL_HPP
 #define MATRIX_IMPL_HPP
 #include "matrix.hpp"
+#include "vector.hpp"
 
 template <typename T>
 Matrix<T>& Matrix<T>::operator =(Matrix<T> &matrix)
