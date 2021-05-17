@@ -1,7 +1,7 @@
 #ifndef VECTOR_ITERATOR_METHODS_HPP
 #define VECTOR_ITERATOR_METHODS_HPP
 #include "vectorIterator.hpp"
-
+#include "vector.hpp"
 
 template <typename T>
 bool VectorIterator<T>::operator !=(VectorIterator const &iter) const 

@@ -1,6 +1,7 @@
 #ifndef POINT_HPP
 #define POINT_HPP
 #include "vector.hpp"
+#include <memory>
 #define DIMENSION 3
 
 class Point {
@@ -11,7 +12,7 @@ class Point {
         Point(const Vector<double> vector); //?
         Point &operator =(const Point&) = default;
         
-        void transform(const Matrix<double> &transform_matrix);
+        void transform(std::shared_ptr<Matrix<double>> transform_matrix);
         
         double getX() const {
             return pX;

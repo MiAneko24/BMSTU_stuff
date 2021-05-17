@@ -22,7 +22,7 @@ class Camera : public Object
         double getZAngle() const;
         void setZAngle(double z_angle);
 
-        void transform(const Matrix<double> &mat);
+        void transform(std::shared_ptr<Matrix<double>> mat) override;
     
         ~Camera() = default;
     private:
