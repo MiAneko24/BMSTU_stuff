@@ -93,20 +93,28 @@ class MedPointCut(Frame):
                 e += 2 * dy
 
     def cancel(self):
-        if len(self.points) == 0:
+        if len(self.points) == 0 or (len(self.points) == 1 and len(self.points[0]) == 0):
             box.showinfo("Предупреждение", "Отменять нечего")
             return
-        tempCol = self.color_lines
-        self.color_lines = self.color_bg
+        if (len(self.points[-1]) == 0):
+                self.points.pop()
         if len(self.points[-1]) > 1:
+            print("Khem well")
             self.Bresenham_int(self.points[-1][-2][0],
                         self.points[-1][-2][1],
                         self.points[-1][-1][0],
-                        self.points[-1][-1][1], self.color_lines)
+                        self.points[-1][-1][1], self.color_bg)
             del self.points[-1][-1]
+            self.Bresenham_int(self.points[-1][-1][0],
+                        self.points[-1][-1][1],
+                        self.points[-1][-1][0],
+                        self.points[-1][-1][1], self.color_lines)
         else:
-            self.points.pop()
-        self.color_lines = tempCol
+            self.Bresenham_int(self.points[-1][0][0],
+                        self.points[-1][0][1],
+                        self.points[-1][0][0],
+                        self.points[-1][0][1], self.color_bg)
+            self.points[-1].pop()
 
     def draw_area(self):
         if len(self.area) > 1:
@@ -314,8 +322,11 @@ class MedPointCut(Frame):
         return mul
 
     def start(self):
-        if (len(self.points[-1]) == -1):
+        if (len(self.points[-1]) == z1):
             box.showerror("Ошибка", "Необходимо завершить все отрезки")
+            return
+        if (len(self.area) == 0):
+            box.showerror("Ошибка", "необходимо ввести отсекатель")
             return
         self.points.pop()
 
