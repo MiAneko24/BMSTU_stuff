@@ -8,10 +8,10 @@ class Camera : public Object
     public:
         explicit Camera();
 
-        bool isVisible() const final;
+        bool isVisible() const final override;
 
         const Point& getPosition() const;
-        void setPosition(const Point &position);
+        void setPosition(Point &position);
         
         double getXAngle() const;
         void setXAngle(double x_angle);
@@ -22,7 +22,7 @@ class Camera : public Object
         double getZAngle() const;
         void setZAngle(double z_angle);
 
-        void transform(std::shared_ptr<Matrix<double>> mat) override;
+        void transform(const Matrix<double> &mat) override;
     
         ~Camera() = default;
     private:

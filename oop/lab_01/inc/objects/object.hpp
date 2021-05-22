@@ -23,7 +23,7 @@ class Object
             return false;
         }
 
-        virtual void transform(std::shared_ptr<Matrix<double>> mat) = 0;
+        virtual void transform(const Matrix<double> &transform_mat) = 0;
 
         virtual VectorIterator<std::shared_ptr<Object>> begin() 
         {

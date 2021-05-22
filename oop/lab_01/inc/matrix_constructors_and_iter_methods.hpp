@@ -59,16 +59,6 @@ Matrix<T>::Matrix(T **source, size_t rows, size_t columns)
 }
 
 template <typename T>
-void Matrix<T>::move(Matrix<T> &matrix)
-{
-    allocateMatrix(matrix.getRows(), matrix.getColumns());
-    for (int i = 0; i < mRows; i++)
-        for (int j = 0; j < mColumns; j++)
-            this->operator[](i)[j] = matrix[i][j];
-    matrix.reset();
-}
-
-template <typename T>
 void Matrix<T>::move(Matrix<T> &&matrix)
 {
     allocateMatrix(matrix.getRows(), matrix.getColumns());
@@ -76,35 +66,6 @@ void Matrix<T>::move(Matrix<T> &&matrix)
         for (int j = 0; j < mColumns; j++)
             this->operator[](i)[j] = matrix[i][j];
     matrix.reset();
-}
-
-template <typename T>
-void Matrix<T>::move(const Matrix<T> &matrix)
-{
-    allocateMatrix(matrix.getRows(), matrix.getColumns());
-    for (int i = 0; i < mRows; i++)
-        for (int j = 0; j < mColumns; j++)
-            this->operator[](i)[j] = matrix[i][j];
-    matrix.reset();
-}
-
-template <typename T>
-void Matrix<T>::move(const Matrix<T> &&matrix)
-{
-    allocateMatrix(matrix.getRows(), matrix.getColumns());
-    for (int i = 0; i < mRows; i++)
-        for (int j = 0; j < mColumns; j++)
-            this->operator[](i)[j] = matrix[i][j];
-    matrix.reset();
-}
-
-template <typename T>
-void Matrix<T>::copy(Matrix<T> &matrix)
-{
-    allocateMatrix(matrix.getRows(), matrix.getColumns());
-    for (int i = 0; i < mRows; i++)
-        for (int j = 0; j < mColumns; j++)
-            this->operator[](i)[j] = matrix[i][j];
 }
 
 template <typename T>
@@ -128,25 +89,6 @@ const Vector<T>& Matrix<T>::operator[](int pos) const
 {
     checkRowIndex(pos, __FILE__, __LINE__);
     return data[pos];
-}
-
-template <typename T>
-T& Matrix<T>::operator ()(int i, int j)
-{
-    return this->operator[](i)[j];
-}
-
-template <typename T>
-T& Matrix<T>::get_elem(int i, int j)
-{
-    return this->operator[](i)[j];
-}
-
-template <typename T>
-void Matrix<T>::set_elem(int i, int j, int num)
-{
-    checkIndexes(i, j, __FILE__, __LINE__);
-    this->operator[](i)[j] = num;
 }
 
 template <typename T>

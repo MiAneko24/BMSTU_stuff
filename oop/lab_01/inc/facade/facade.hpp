@@ -1,6 +1,6 @@
 #ifndef FACADE_HPP
 #define FACADE_HPP
-#include "../commands.hpp"
+#include "../commands/commands.hpp"
 #include "../controller/controller.hpp"
 
 class Facade

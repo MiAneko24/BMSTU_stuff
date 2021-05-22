@@ -11,7 +11,7 @@ bool CompositeObject::add(std::shared_ptr<Object> obj)
     return true;
 }
 
-bool CompositeObject::remove(VectorIterator<std::shared_ptr<Object>> it)
+bool CompositeObject::remove(VectorIterator<std::shared_ptr<Object>>& it)
 {
     objects.remove(it);
     return true;
@@ -22,7 +22,7 @@ bool CompositeObject::isComposite() const
     return true;
 }
 
-void CompositeObject::transform(std::shared_ptr<Matrix<double>> transform_matrix)
+void CompositeObject::transform(const Matrix<double> &transform_matrix)
 {
     for (auto &obj : objects)
         obj->transform(transform_matrix);

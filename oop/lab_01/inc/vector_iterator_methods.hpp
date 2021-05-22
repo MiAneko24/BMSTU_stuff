@@ -4,19 +4,19 @@
 #include "vector.hpp"
 
 template <typename T>
-bool VectorIterator<T>::operator !=(VectorIterator const &iter) const 
+bool VectorIterator<T>::operator !=(VectorIterator &iter) 
 {
     return iter.iIndex != iIndex;
 }
 
 template <typename T>
-bool VectorIterator<T>::operator ==(VectorIterator const &iter) const
+bool VectorIterator<T>::operator ==(VectorIterator &iter)
 {
     return iter.iIndex == iIndex;
 }
 
 template <typename T>
-VectorIterator<T>& VectorIterator<T>::operator =(const VectorIterator<T> &iter)
+VectorIterator<T>& VectorIterator<T>::operator =(VectorIterator<T> &iter)
 {
     iData = iter.iData;
     iIndex = iter.iIndex;
@@ -40,7 +40,7 @@ VectorIterator<T> VectorIterator<T>::operator ++(int)
 }
 
 template <typename T>
-VectorIterator<T>& VectorIterator<T>::operator +(size_t add) const
+VectorIterator<T> VectorIterator<T>::operator +(size_t add)
 {
     VectorIterator<T> iter(*this);
 
@@ -62,7 +62,7 @@ VectorIterator<T>& VectorIterator<T>::operator +=(size_t add)
 }
 
 template <typename T>
-const T& VectorIterator<T>::operator *() const
+T& VectorIterator<T>::operator *()
 {
     checkExpired(__FILE__, __LINE__);
     checkIndex(__FILE__, __LINE__);
@@ -72,7 +72,7 @@ const T& VectorIterator<T>::operator *() const
 }
 
 template <typename T>
-const T* VectorIterator<T>::operator ->() const 
+T* VectorIterator<T>::operator ->()
 {
     checkExpired(__FILE__, __LINE__);
     checkIndex(__FILE__, __LINE__);
@@ -82,7 +82,7 @@ const T* VectorIterator<T>::operator ->() const
 }
 
 template <typename T>
-VectorIterator<T>::operator bool() const 
+VectorIterator<T>::operator bool()
 {
     return iData.expired();
 }

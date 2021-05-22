@@ -10,7 +10,7 @@ void Scene::add(std::shared_ptr<Object> object)
     compositeObject->add(std::move(object));
 }
 
-void Scene::remove(VectorIterator<std::shared_ptr<Object>> it)
+void Scene::remove(VectorIterator<std::shared_ptr<Object>> &it)
 {
     compositeObject->remove(it);
 }

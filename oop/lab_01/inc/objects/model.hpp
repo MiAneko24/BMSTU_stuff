@@ -14,20 +14,20 @@ class Model : public Object
         Model(Model &&) noexcept;
         ~Model() = default;
 
-        bool isVisible();
+        bool isVisible() const override;
 
         Model& operator =(const Model&);
         Model& operator =(Model &&) noexcept;
 
-        Vector<Point> getPoints();
-        Vector<Connection> getConnections();
-        void transform(const Matrix<double> &transformation_matrix);
+        const Vector<Point> getPoints();
+        const Vector<Connection> getConnections();
+        void transform(const Matrix<double> &transform_matrix) override;
         void fill(const Vector<Point>& points);
         void fill(const Vector<Connection> &connections);
 
     private:
-        Vector<Point>& points;
-        Vector<Connection>& connections;
+        Vector<Point> points;
+        Vector<Connection> connections;
 };
 
 #endif

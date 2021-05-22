@@ -1,7 +1,7 @@
 #pragma once
 #include "vectorIterator.hpp"
 #include "vectorConstIterator.hpp"
-
+#include "exceptions.hpp"
 template <typename T>
 class Matrix;
 
@@ -20,31 +20,17 @@ class Vector
 
         void allocateVector(size_t size);
 
-        void copy(Vector<T> &vector);
-        
         void copy(const Vector<T> &vector);
 
-        void move(Vector<T> &vector);
         void move(Vector<T> &&vector);
-        
-        void move(const Vector<T> &vector);
-        void move(const Vector<T> &&vector);
 
-        void add(T &obj);
         void add(const T &obj);
         
-        Vector operator =(Vector<T> &vector);
-        Vector& operator =(Vector<T> &&vector);
+        Vector<T>& operator =(Vector<T> &&vector);
 
-
-        Vector operator =(const Vector<T> &vector);
-        Vector& operator =(const Vector<T> &&vector);
+        Vector<T>& operator =(const Vector<T> &vector);
         
-        Vector operator *(Matrix<T> &matrix);
-        Vector operator *(const Matrix<T> &matrix);
-
-        bool operator ==(Vector<T> &vector) const noexcept;
-        bool operator !=(Vector<T> &vector) const noexcept;
+        Vector<T> operator *(const Matrix<T> &matrix) const;
 
         bool operator ==(const Vector<T> &vector) const noexcept;
         bool operator !=(const Vector<T> &vector) const noexcept;

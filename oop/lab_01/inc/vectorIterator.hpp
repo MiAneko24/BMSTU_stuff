@@ -14,22 +14,22 @@ class VectorIterator : public std::iterator<std::input_iterator_tag, T>
 
         VectorIterator() = default;
         
-        VectorIterator<T>& operator =(const VectorIterator<T> &iter);
+        VectorIterator<T>& operator =(VectorIterator<T> &iter);
         
-        VectorIterator<T>& operator +(size_t add) const;
+        VectorIterator<T> operator +(size_t add);
         VectorIterator<T>& operator +=(size_t add);
 
         VectorIterator<T>& operator ++();
         VectorIterator<T> operator ++(int);
         
-        bool operator !=(VectorIterator const &iter) const;
-        bool operator ==(VectorIterator const &iter) const;
+        bool operator !=(VectorIterator<T> &iter);
+        bool operator ==(VectorIterator<T> &iter);
 
-        const T& operator *() const;
+        T& operator *();
 
-        const T* operator ->() const;
+        T* operator ->();
 
-        operator bool() const;
+        operator bool();
 
         bool isEnd();
 

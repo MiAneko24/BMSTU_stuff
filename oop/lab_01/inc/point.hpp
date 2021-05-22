@@ -12,7 +12,7 @@ class Point {
         Point(const Vector<double> vector); //?
         Point &operator =(const Point&) = default;
         
-        void transform(std::shared_ptr<Matrix<double>> transform_matrix);
+        void transform(const Matrix<double> &transform_matrix);
         
         double getX() const {
             return pX;
@@ -36,10 +36,12 @@ class Point {
 
 Vector<double> Point::toVector()
 {
-    Vector<double> pointVector = Vector<double>(DIMENSION + 1);
+    Vector<double> pointVector = Vector<double>(4);
     pointVector[0] = pX;
     pointVector[1] = pY;
     pointVector[2] = pZ;
+    pointVector[3] = 1;
+
     return pointVector;
 }
 

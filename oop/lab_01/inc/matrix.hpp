@@ -3,9 +3,7 @@
 #include <iostream>
 #include <string>
 #include "base_matrix_class.hpp"
-// #include "matrix_exceptions.h"
-// #include "const_iterator_templates.h"
-// #include "iterator_template.h"
+#include "exceptions.hpp"
 
 template <typename T>
 class Vector;
@@ -13,115 +11,63 @@ class Vector;
 template <typename T>
 class Matrix : public BaseMatrix 
 {        
-    friend Iterator<T>;
-    friend constIterator<T>;
-
     public:
         
         Matrix(size_t rows, size_t columns); 
         explicit Matrix(const Matrix<T> &matrix); 
-        Matrix(Matrix<T> &&matrix) noexcept; //?
+        Matrix(Matrix<T> &&matrix) noexcept; 
 
         Matrix(std::initializer_list<std::initializer_list<T>> list); 
         Matrix(T &fill_with, size_t rows, size_t columns); 
         Matrix(T **source, size_t rows, size_t columns); 
 
-        void move(Matrix<T> &matrix);
         void move(Matrix<T> &&matrix);
-
-        void move(const Matrix<T> &matrix);
-        void move(const Matrix<T> &&matrix);
-
-        void copy(Matrix<T> &matrix);
 
         void copy(const Matrix<T> &matrix);
 
-        Matrix<T>& operator =(Matrix<T> &matrix);
-        Matrix<T>& operator =(Matrix<T> &&matrix);
-
         Matrix<T>& operator =(const Matrix<T> &matrix);
-        Matrix<T>& operator =(const Matrix<T> &&matrix);
+        Matrix<T>& operator =(Matrix<T> &&matrix);
 
         Matrix<T>& operator =(std::initializer_list<std::initializer_list<T>> list);
 
-        Matrix<T> add(Matrix<T> &mat); 
-        Matrix<T> operator +(Matrix<T> &mat); 
-
-        Matrix<T> add(const Matrix<T> &mat); 
-        Matrix<T> operator +(const Matrix<T> &mat); 
-        
-        void addEq(Matrix<T> &matrix);
-        Matrix<T>& operator +=(Matrix<T> &mat);
-
+        Matrix<T> add(const Matrix<T> &mat) const; 
+        Matrix<T> operator +(const Matrix<T> &mat) const; 
+    
         void addEq(const Matrix<T> &matrix);
         Matrix<T>& operator +=(const Matrix<T> &mat);
-        
-        Matrix<T> sub(Matrix<T> &mat); 
-        Matrix<T> operator -(Matrix<T> &mat); 
 
-        Matrix<T> sub(const Matrix<T> &mat); 
-        Matrix<T> operator -(const Matrix<T> &mat); 
-
-        void subEq(Matrix<T> &matrix);
-        Matrix<T>& operator -=(Matrix<T> &mat);
+        Matrix<T> sub(const Matrix<T> &mat) const; 
+        Matrix<T> operator -(const Matrix<T> &mat) const; 
 
         void subEq(const Matrix<T> &matrix);
         Matrix<T>& operator -=(const Matrix<T> &mat);
 
-        Matrix<T> mul(Matrix<T> &mat); 
-        Matrix<T> operator *(Matrix<T> &mat); 
+        Matrix<T> mul(const Matrix<T> &mat) const; 
+        Matrix<T> operator *(const Matrix<T> &mat) const; 
 
-        Matrix<T> mul(const Matrix<T> &mat); 
-        Matrix<T> operator *(const Matrix<T> &mat); 
-
-        Matrix<T> mul(T &elem);
-        Matrix<T> operator *(T &elem); 
-
-        Matrix<T> mul(const T &elem);
-        Matrix<T> operator *(const T &elem);
-
-        void mulEq(T &elem);
-        Matrix<T>& operator *=(T &elem); 
+        Matrix<T> mul(const T &elem) const;
+        Matrix<T> operator *(const T &elem) const;
         
         void mulEq(const T &elem);
         Matrix<T>& operator *=(const T &elem); 
 
-        Matrix<T> div(T &elem);
-        Matrix<T> operator /(T &elem); 
-
-        Matrix<T> div(const T &elem);
-        Matrix<T> operator /(const T &elem); 
-        
-        void divEq(T &elem);
-        Matrix<T>& operator /=(T &elem);   
-        
-        void divEq(const T &elem);
-        Matrix<T>& operator /=(const T &elem);        
-
-        bool operator ==(Matrix<T> &mat) const noexcept;
-        bool operator != (Matrix<T> &mat) const noexcept;
-        
         bool operator ==(const Matrix<T> &mat) const noexcept;
         bool operator != (const Matrix<T> &mat) const noexcept;
 
 
         Vector<T>& operator [](int pos); 
         const Vector<T>& operator [](int pos) const; 
-        T& operator ()(int i, int j);
-
-        T& get_elem(int i, int j);
-        void set_elem(int i, int j, int num);
 
         void make_e_matrix();
 
-        Iterator<T> begin() noexcept;
-        Iterator<T> end() noexcept;
+        void make_move_matrix(Vector<T> &params);
+        void make_scale_matrix(Vector<T> &params);
+        void make_rotate_matrix(Vector<T> &params);
 
-        constIterator<T> begin() const noexcept;
-        constIterator<T> end() const noexcept;
-        constIterator<T> cbegin() const noexcept;
-        constIterator<T> cend() const noexcept;
-
+        Matrix<T> make_rotate_ox_matrix(T obj);
+        Matrix<T> make_rotate_oy_matrix(T obj);
+        Matrix<T> make_rotate_oz_matrix(T obj);
+        
         ~Matrix();
 
      private:
@@ -144,7 +90,6 @@ class Matrix : public BaseMatrix
         void checkMulSizes(Matrix<T> &mat, std::string file, int line);
         
         void checkDivider(T &elem, std::string file, int line);
-        
         
         void reset() noexcept; 
         void reset(size_t size) noexcept; 

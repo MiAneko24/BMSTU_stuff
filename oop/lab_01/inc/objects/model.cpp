@@ -4,7 +4,7 @@ Model::Model(const Model &model) : points(model.points), connections(model.conne
 
 Model::Model(Model &&model) noexcept : points(model.points), connections(model.connections) {};
 
-bool Model::isVisible()
+bool Model::isVisible() const
 {
     return true;
 }
@@ -29,20 +29,20 @@ Model& Model::operator =(const Model& model) noexcept
     return *this;
 }
 
-Vector<Point> Model::getPoints()
+const Vector<Point> Model::getPoints()
 {
     return points;
 }
 
-Vector<Connection> Model::getConnections()
+const Vector<Connection> Model::getConnections()
 {
     return connections;
 }
 
-void Model::transform(const Matrix<double> &transformation_matrix)
+void Model::transform(const Matrix<double> &transform_matrix)
 {
     for (size_t i = 0; i < points.getSize(); i++)
-        points[i].transform(transformation_matrix);
+        points[i].transform(transform_matrix);
 }
 
 void Model::fill(const Vector<Point> &new_points)

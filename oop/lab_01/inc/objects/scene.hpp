@@ -11,7 +11,7 @@ class Scene
         Scene();
 
         void add(std::shared_ptr<Object> obj);
-        void remove(VectorIterator<std::shared_ptr<Object>> it);
+        void remove(VectorIterator<std::shared_ptr<Object>> &it);
         VectorIterator<std::shared_ptr<Object>> getIterator(ObjectType type_obj, int index);
         std::shared_ptr<Object> getObject(ObjectType type_obj, int index);
         // std::shared_ptr<CompositeObject> getObject();

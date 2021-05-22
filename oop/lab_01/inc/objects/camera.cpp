@@ -20,6 +20,11 @@ double Camera::getXAngle() const
     return angles[0];
 }
 
+void Camera::setPosition(Point &position)
+{
+    this->position = position;
+}
+
 void Camera::setXAngle(double x_angle)
 {
     angles[0] = x_angle;
@@ -45,7 +50,7 @@ void Camera::setZAngle(double z_angle)
     angles[2] = z_angle;
 }
 
-void Camera::transform(std::shared_ptr<Matrix<double>> mat)
+void Camera::transform(const Matrix<double> &mat)
 {
     position.transform(mat);
 }

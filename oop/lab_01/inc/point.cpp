@@ -1,10 +1,10 @@
 #include "point.hpp"
 
-void Point::transform(std::shared_ptr<Matrix<double>> transform_matrix)
+void Point::transform(const Matrix<double> &transform_matrix)
 {
     Vector<double> result(4);
     Vector<double> point = toVector();
-    result = point * (*transform_matrix);
+    result = point * transform_matrix;
     setFromVector(result);
 }
 

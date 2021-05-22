@@ -18,7 +18,6 @@ class SceneManager : public BaseManager
         Scene scene;
         int curCamera;
         int curModel;
-        bool checkFullness();
 };
 
 #endif
