@@ -4,7 +4,6 @@
 
 class CompositeObject : public Object 
 {
-    // cur obj??
     public:
         CompositeObject() = default;
 

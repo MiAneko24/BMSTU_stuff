@@ -18,7 +18,7 @@ class Object
         {
             return false;
         }
-        virtual bool remove(VectorIterator<std::shared_ptr<Object>> it)
+        virtual bool remove(VectorIterator<std::shared_ptr<Object>> &it)
         {
             return false;
         }

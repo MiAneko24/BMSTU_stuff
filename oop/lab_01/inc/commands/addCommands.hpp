@@ -6,7 +6,7 @@
 class AddCameraCommand : public BaseCommand
 {
     public:
-        AddCameraCommand();
+        AddCameraCommand() = default;
         void execute(std::shared_ptr<Controller> controller) override;
 };
 

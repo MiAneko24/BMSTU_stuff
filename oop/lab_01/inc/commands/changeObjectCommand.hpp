@@ -7,6 +7,10 @@ class ChangeObjectCommand : public BaseCommand
     public:
         explicit ChangeObjectCommand(ObjectType type_obj, int diff);
         void execute(std::shared_ptr<Controller> controller) override;
+
+    private:
+        ObjectType object_type;
+        int change;
 };
 
 
