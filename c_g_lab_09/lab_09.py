@@ -8,7 +8,7 @@ from numpy import sign
 from math import trunc
 eps = 1e-3
 
-class MedPointCut(Frame):
+class SazerlandHodge(Frame):
     img = 0
     font = "Calibria 14"
     ended = False
@@ -244,15 +244,18 @@ class MedPointCut(Frame):
         if len(self.cutter) < 3:
             return False
 
-        prev = sign(self.vectorMultiplication([self.cutter[0][0] - self.cutter[-1][0], self.cutter[0][1] - self.cutter[-1][1]],
-            [self.cutter[-1][0] - self.cutter[-2][0], self.cutter[-1][1] - self.cutter[-2][1]]))
+        prev = self.vectorMultiplication([self.cutter[0][0] - self.cutter[-1][0], self.cutter[0][1] - self.cutter[-1][1]],
+            [self.cutter[-1][0] - self.cutter[-2][0], self.cutter[-1][1] - self.cutter[-2][1]])
+        sign_res = prev
         for i in range(0, len(self.cutter)):
-            cur = sign(self.vectorMultiplication([self.cutter[i][0] - self.cutter[i - 1][0], self.cutter[i][1] - self.cutter[i - 1][1]],
-            [self.cutter[i - 1][0] - self.cutter[i - 2][0], self.cutter[i - 1][1] - self.cutter[i - 2][1]]))
-            if prev != cur:
-                return False
+            cur = self.vectorMultiplication([self.cutter[i][0] - self.cutter[i - 1][0], self.cutter[i][1] - self.cutter[i - 1][1]],
+            [self.cutter[i - 1][0] - self.cutter[i - 2][0], self.cutter[i - 1][1] - self.cutter[i - 2][1]])
+            if sign(prev) != sign(cur):
+                return False, 0
+            sign_res += cur
             prev = cur
-        return True
+        sign_res = sign(sign_res)
+        return True, sign_res
 
     def normal(self, fromPoint,  toPoint, nextCheckPoint):
         vector = [toPoint[0] - fromPoint[0], toPoint[1] - fromPoint[1]]
@@ -275,37 +278,11 @@ class MedPointCut(Frame):
         for i in range(-1, len(self.cutter) - 1):
             self.normals.append(self.normal(self.cutter[i], self.cutter[i], self.cutter[(i + 2) % length]))
 
-    def cutLine(self, line):
-        tmin = 0
-        tmax = 1
-        D = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
-        for i in range(len(self.cutter)):
-            w = [line[0][0] - self.cutter[i][0], line[0][1] - self.cutter[i][1]]
-            dScalar = self.scalarMultiplication(D, self.normals[i])
-            wScalar = self.scalarMultiplication(w, self.normals[i])
-            if (dScalar == 0):
-                if (wScalar < 0):
-                    return
-                else:
-                    continue
-            t = - wScalar / dScalar
-            if (dScalar > 0):
-                if (t > 1):
-                    return
-                tmin = max(t, tmin)
-            else:
-                if (t < 0):
-                    return
-                tmax = min(t, tmax)
-        if (tmin <= tmax):
-            self.Bresenham_int(round(line[0][0] + D[0] * tmin), round(line[0][1] + D[1] * tmin), round(line[0][0] + D[0] * tmax), round(line[0][1] + D[1] * tmax), self.color_mark)
-          
     def drawCuttedFigure(self, result):
         for i in range(len(result)):
             self.Bresenham_int(result[i-1][0], result[i-1][1], result[i][0], result[i][1], self.color_mark)
 
     def isVisible(self, point, fPointOfSide, sPointOfSide):
-        # print("point = ", point, ", fps = ", fPointOfSide, ", sps = ", sPointOfSide)
         if self.vectorMultiplication([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) < 0:
             return False
         else:
@@ -363,14 +340,10 @@ class MedPointCut(Frame):
 
 
 
-    def CyrusBeckCut(self):
+    def SazeralndHodge(self):
         new_fig = self.cutSide()
-        print(new_fig)
         for i in range(-1, len(new_fig) - 1):
             self.Bresenham_int(new_fig[i][0], new_fig[i][1], new_fig[i + 1][0], new_fig[i + 1][1], self.color_mark)
-        # result = self.points
-        # for i in range(-1, len(self.cutter) - 1):
-        #     self.cutLine(line)
 
 
     def start(self):
@@ -386,13 +359,15 @@ class MedPointCut(Frame):
         if (not self.cutterFin):
             box.showerror("Ошибка", "Необходимо замкнуть отсекатель")
             return
-        if (not self.isConvex()):
+        convex, sign = self.isConvex()
+        if (not convex):
             box.showerror("Ошибка", "Алгоритм работает только с выпуклым отсекателем")
             return
-        # self.points.pop()
+        if (sign < 0):
+            self.cutter.reverse()
         self.setNormals()
 
-        self.CyrusBeckCut()
+        self.SazeralndHodge()
 
     def init_ui(self):
         self.color_lines = "#000000"
@@ -459,6 +434,6 @@ class MedPointCut(Frame):
 if __name__ == '__main__':
     Window = Tk()
     Window.title('Закраска')
-    ex = MedPointCut(Window)
+    ex = SazerlandHodge(Window)
     Window.geometry("1800x1000")
     Window.mainloop()
