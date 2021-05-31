@@ -42,7 +42,6 @@ class MedPointCut(Frame):
         self.color_bg = colorchooser.askcolor()[1]
         self.color_bg_btn.config(bg=self.color_bg)
         self.canvas.config(bg=self.color_bg)
-        self.set_image_to_canvas()
 
     def add_area(self):
         if (len(self.area) != 0):
@@ -57,7 +56,6 @@ class MedPointCut(Frame):
         self.yd = -10
         self.yu = -10
         self.area = []
-        self.set_image_to_canvas()
         
 
     def Bresenham_int(self, x1, y1, x2, y2, color):
@@ -268,7 +266,7 @@ class MedPointCut(Frame):
             i += 1
             self.find_visible_part(p1, p2, i)
         old_p2 = p2
-        while (abs(p1[0] - p2[0]) > eps and abs(p1[1] - p2[1]) > eps):
+        while (abs(p1[0] - p2[0]) > eps or abs(p1[1] - p2[1]) > eps):
             pm = []
             pm.append((p1[0] + p2[0]) / 2)
             pm.append((p1[1] + p2[1]) / 2)
@@ -322,7 +320,10 @@ class MedPointCut(Frame):
         return mul
 
     def start(self):
-        if (len(self.points[-1]) == z1):
+        if (len(self.points) == 0):
+            box.showerror("Ошибка", "Нечего отсекать")
+            return
+        if (len(self.points[-1]) == 1):
             box.showerror("Ошибка", "Необходимо завершить все отрезки")
             return
         if (len(self.area) == 0):

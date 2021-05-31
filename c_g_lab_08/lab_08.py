@@ -7,7 +7,7 @@ from numpy import sign
 from math import trunc
 eps = 1e-3
 
-class MedPointCut(Frame):
+class CyrusBeckAlg(Frame):
     img = 0
     font = "Calibria 14"
     ended = False
@@ -282,6 +282,9 @@ class MedPointCut(Frame):
 
 
     def start(self):
+        if (len(self.points) == 0):
+            box.showerror("Ошибка", "Нечего отсекать")
+            return
         if (len(self.points[-1]) == 1):
             box.showerror("Ошибка", "Необходимо завершить все отрезки")
             return
@@ -362,6 +365,6 @@ class MedPointCut(Frame):
 if __name__ == '__main__':
     Window = Tk()
     Window.title('Закраска')
-    ex = MedPointCut(Window)
+    ex = CyrusBeckAlg(Window)
     Window.geometry("1800x1000")
     Window.mainloop()

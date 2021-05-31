@@ -1,7 +1,12 @@
+#ifndef OBJECT_H
+#define OBJECT_H
+
 #include <iostream>
 #include <memory>
 #include "../matrix.hpp"
 #include "../vectorIterator.hpp"
+
+class Visitor;
 
 class Object
 {
@@ -25,6 +30,8 @@ class Object
 
         virtual void transform(const Matrix<double> &transform_mat) = 0;
 
+        virtual void accept(std::shared_ptr<Visitor> visitor);
+
         virtual VectorIterator<std::shared_ptr<Object>> begin() 
         {
             return VectorIterator<std::shared_ptr<Object>>();
@@ -36,3 +43,5 @@ class Object
         }
 };
 
+
+#endif

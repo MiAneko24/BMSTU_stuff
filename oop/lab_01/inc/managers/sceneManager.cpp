@@ -1,38 +1,29 @@
 #include "sceneManager.hpp"
 
-SceneManager::SceneManager()
+void SceneManager::setScene(std::shared_ptr<Scene> new_scene)
 {
-    scene = Scene();
-    curCamera = 0;
-    curModel = 0;
+    scene = new_scene;
 }
 
-std::shared_ptr<Object> SceneManager::getObject(ObjectType type_obj)
+std::shared_ptr<Scene> SceneManager::getScene()
 {
-    //check?
-    return (type_obj == ObjectType::MODEL) ? scene.getObject(type_obj, curModel) : scene.getObject(type_obj, curCamera);
+    return scene;
 }
 
-void SceneManager::addObject(std::shared_ptr<Object> obj)
-{
-    scene.add(obj);
-}
-
-void SceneManager::removeObject(ObjectType type_obj)
-{
-    int index = (type_obj == ObjectType::MODEL) ? curModel : curCamera;
-    VectorIterator<std::shared_ptr<Object>> it = scene.getIterator(type_obj, index);
-    scene.remove(it);
-}
-
-void SceneManager::changeObject(ObjectType type_obj, int diff)
+void SceneManager::setCurrentObjectPos(ObjectType type_obj, int pos)
 {
     if (type_obj == ObjectType::CAMERA)
-        curCamera += diff;
+        curCamera = pos;
     else if (type_obj == ObjectType::MODEL)
-        curModel += diff;
-    else
-    {
-        //throw error
-    }
+        curModel = pos;
+}
+
+int SceneManager::getCurrentObjectPos(ObjectType type_obj)
+{
+    int pos = -1;
+    if (type_obj == ObjectType::CAMERA)
+        pos = curCamera;
+    else if (type_obj == ObjectType::MODEL)
+        pos = curModel;
+    return pos;
 }

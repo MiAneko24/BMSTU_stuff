@@ -1,23 +1,60 @@
 #include "objectManager.hpp"
 #include "../matrix.hpp"
-void ObjectManager::move(std::shared_ptr<Object> obj, Vector<double> &params)
+#include "../objects/camera.hpp"
+
+ObjectManager::ObjectManager(std::shared_ptr<SceneManager> manager)
 {
-    Matrix<double> transform_mat = Matrix<double>(4, 4);
-    transform_mat.make_move_matrix(params);
-    obj->transform(transform_mat);
+    sceneManager = manager;
 }
 
-void ObjectManager::scale(std::shared_ptr<Object> obj, Vector<double> &params)
+void ObjectManager::removeObject(ObjectType type_obj)
 {
-    Matrix<double> transform_mat = Matrix<double>(4, 4);
-    transform_mat.make_scale_matrix(params);
-    obj->transform(transform_mat);
+    std::shared_ptr<Scene> scene = sceneManager->getScene();
+    int pos = sceneManager->getCurrentObjectPos(type_obj);
+    VectorIterator<std::shared_ptr<Object>> iter = scene->getIterator(type_obj, pos);
+    scene->remove(iter);
 }
 
-void ObjectManager::rotate(std::shared_ptr<Object> obj, Vector<double> &params)
+void ObjectManager::changeCurrentObject(ObjectType type_obj, int diff)
 {
-    Matrix<double> transform_mat = Matrix<double>(4, 4);
-    transform_mat.make_rotate_matrix(params);
-    obj->transform(transform_mat);
+    int cur_pos = sceneManager->getCurrentObjectPos(type_obj);
+    sceneManager->setCurrentObjectPos(type_obj, cur_pos + diff);
+    //всякие исключения продумать надо
 }
 
+void ObjectManager::addObject(ObjectType type_obj)
+{
+    if (type_obj == ObjectType::CAMERA)
+        sceneManager->getScene()->add(std::shared_ptr<Object>(new Camera()));
+}
+
+
+// std::shared_ptr<Object> ObjectManager::getObject(ObjectType type_obj)
+// {
+//     //check?
+//     return (type_obj == ObjectType::MODEL) ? scene.getObject(type_obj, curModel) : scene.getObject(type_obj, curCamera);
+// }
+
+// void ObjectManager::addObject(std::shared_ptr<Object> obj)
+// {
+//     scene.add(obj);
+// }
+
+// void ObjectManager::removeObject(ObjectType type_obj)
+// {
+//     int index = (type_obj == ObjectType::MODEL) ? curModel : curCamera;
+//     VectorIterator<std::shared_ptr<Object>> it = scene.getIterator(type_obj, index);
+//     scene.remove(it);
+// }
+
+// void ObjectManager::changeObject(ObjectType type_obj, int diff)
+// {
+//     if (type_obj == ObjectType::CAMERA)
+//         curCamera += diff;
+//     else if (type_obj == ObjectType::MODEL)
+//         curModel += diff;
+//     else
+//     {
+//         //throw error
+//     }
+// }

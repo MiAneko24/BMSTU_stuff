@@ -267,4 +267,14 @@ Matrix<T> Matrix<T>::make_rotate_oz_matrix(T obj)
     return mat;
 }
 
+template <typename T>
+void Matrix<T>::make_project_matrix()
+{
+    (*this)[0][0] = 1;
+    (*this)[1][1] = 1;
+    (*this)[2][2] = 10/9;
+    (*this)[2][3] = 1;
+    (*this)[3][2] = -10/9;
+}
+
 #endif

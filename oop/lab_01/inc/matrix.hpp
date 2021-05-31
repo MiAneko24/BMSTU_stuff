@@ -67,6 +67,8 @@ class Matrix : public BaseMatrix
         Matrix<T> make_rotate_ox_matrix(T obj);
         Matrix<T> make_rotate_oy_matrix(T obj);
         Matrix<T> make_rotate_oz_matrix(T obj);
+
+        void make_project_matrix();
         
         ~Matrix();
 

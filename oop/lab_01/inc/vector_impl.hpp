@@ -30,8 +30,9 @@ void Vector<T>::checkSizes(const Matrix<T> &matrix, std::string file, int line)
     }
 }
 
+
 template <typename T>
-Vector<T> Vector<T>::operator *(Matrix<T> &matrix)
+Vector<T> Vector<T>::operator *(const Matrix<T> &matrix) const
 {
     checkSizes(matrix, __FILE__, __LINE__);
 
@@ -45,19 +46,17 @@ Vector<T> Vector<T>::operator *(Matrix<T> &matrix)
 }
 
 template <typename T>
-Vector<T> Vector<T>::operator *(const Matrix<T> &matrix)
+Vector<T>& Vector<T>::operator *=(const Matrix<T> &matrix)
 {
     checkSizes(matrix, __FILE__, __LINE__);
 
-    Vector<T> result = Vector<T>(matrix.getColumns());
     for (int i = 0; i < rSize; i++)
     {
         for (int j = 0; j < matrix.getColumns(); j++)
-            result[i] += this->operator[](j) * matrix[j][i];
+            (*this) *= matrix[j][i];
     }
-    return result;
+    return (*this);
 }
-
 
 template <typename T>
 Vector<T>::Vector(std::initializer_list<T> list, size_t columns)
@@ -95,14 +94,6 @@ void Vector<T>::allocateVector(size_t size)
     } 
 }
 
-template <typename T>
-void Vector<T>::copy(Vector<T> &vector)
-{
-    size_t size = vector.rSize;
-    allocateVector(size);
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = vector[i];
-}
 
 template <typename T>
 void Vector<T>::copy(const Vector<T> &vector)
@@ -113,14 +104,6 @@ void Vector<T>::copy(const Vector<T> &vector)
         this->operator[](i) = vector[i];
 }
 
-template <typename T>
-void Vector<T>::move(Vector<T> &vector)
-{
-    allocateVector(vector.getSize());
-    this->rSize = vector.rSize;
-    this->array = vector.array;
-    vector.reset();
-}
 
 template <typename T>
 void Vector<T>::move(Vector<T> &&vector)
@@ -131,36 +114,6 @@ void Vector<T>::move(Vector<T> &&vector)
     vector.reset();
 }
 
-template <typename T>
-void Vector<T>::move(const Vector<T> &vector)
-{
-    allocateVector(vector.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = vector[i];
-    vector.reset();
-}
-
-template <typename T>
-void Vector<T>::move(const Vector<T> &&vector)
-{
-    allocateVector(vector.getSize());
-    for (int i = 0; i < rSize; i++)
-        this->operator[](i) = vector[i];
-    vector.reset();
-}
-
-template <typename T>
-void Vector<T>::add(T &obj)
-{
-    Vector<T> tmp = this;
-    allocateVector(rSize + 1);
-    for (int i = 0; i < tmp.rSize; i++)
-    {
-        this->operator[](i) = tmp[i];
-    }
-    this->operator[](rSize - 1) = obj;
-    tmp.reset();
-}
 
 template <typename T>
 void Vector<T>::add(const T &obj)
@@ -175,12 +128,6 @@ void Vector<T>::add(const T &obj)
     tmp.reset();
 }
 
-template <typename T>
-Vector<T> Vector<T>::operator =(Vector<T> &vector)
-{
-    copy(vector);
-    return *this;
-}
 
 template <typename T>
 Vector<T>& Vector<T>::operator =(Vector<T> &&vector)
@@ -190,37 +137,10 @@ Vector<T>& Vector<T>::operator =(Vector<T> &&vector)
 }
 
 template <typename T>
-Vector<T> Vector<T>::operator =(const Vector<T> &vector)
+Vector<T>& Vector<T>::operator =(const Vector<T> &vector)
 {
     copy(vector);
     return *this;
-}
-
-template <typename T>
-Vector<T>& Vector<T>::operator =(const Vector<T> &&vector)
-{
-    move(vector);
-    return *this;
-}
-
-template <typename T>
-bool Vector<T>::operator ==(Vector<T> &vector) const noexcept
-{
-    bool result = true;
-    for (int i = 0; i < rSize && result; i++)
-        if (this->operator[](i) != vector[i])
-            result = false;
-    return result;
-}
-
-template <typename T>
-bool Vector<T>::operator !=(Vector<T> &vector) const noexcept
-{
-    bool result = false;
-    for (int i = 0; i < rSize && !result; i++)
-        if (this->operator[](i) != vector[i])
-            result = true;
-    return result;
 }
 
 template <typename T>
@@ -243,25 +163,6 @@ bool Vector<T>::operator !=(const Vector<T> &vector) const noexcept
     return result;
 }
 
-template <>
-bool Vector<double>::operator !=(Vector<double> &vector) const noexcept
-{
-    bool result = false;
-    for (int i = 0; i < rSize && !result; i++)
-        if (abs(this->operator[](i) - vector[i]) > EPS)
-            result = true;
-    return result;
-}
-
-template<>
-bool Vector<double>::operator ==(Vector<double> &vector) const noexcept
-{
-    bool result = true;
-    for (int i = 0; i < rSize && result; i++)
-        if (abs(this->operator[](i) - vector[i]) > EPS)
-            result = false;
-    return result;
-}
 
 template <typename T>
 T& Vector<T>::operator[](size_t column)
@@ -357,4 +258,19 @@ void Vector<T>::checkNull(T *array, std::string file, int line)
         time_t time_cur = time(nullptr);
         throw NullPointerError(ctime(&time_cur), file, typeid(*this).name(), line, "Attempt of creating void line");
     }
+}
+
+template <typename T>
+Vector<T>& Vector<T>::operator =(std::initializer_list<T> list)
+{
+    auto it = list.begin();
+    size_t columns = it->size();
+    allocateVector(columns);
+    int i = 0;
+    for (const auto &elem : list)
+    {
+        (*this)[i] = elem;
+        i++;
+    }
+    return *this;
 }

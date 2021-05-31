@@ -29,8 +29,10 @@ class Vector
         Vector<T>& operator =(Vector<T> &&vector);
 
         Vector<T>& operator =(const Vector<T> &vector);
+        Vector<T>& operator =(std::initializer_list<T> list);
         
         Vector<T> operator *(const Matrix<T> &matrix) const;
+        Vector<T>& operator *=(const Matrix<T> &matrix);
 
         bool operator ==(const Vector<T> &vector) const noexcept;
         bool operator !=(const Vector<T> &vector) const noexcept;

@@ -1,16 +1,22 @@
 #ifndef OBJECTMANAGER_HPP
 #define OBJECTMANAGER_HPP
-
 #include "baseManager.hpp"
-#include <memory>
-#include "../objects/object.hpp"
+#include "../objects/scene.hpp"
+#include "sceneManager.hpp"
 
 class ObjectManager : public BaseManager
 {
     public:
-        void move(std::shared_ptr<Object> obj, Vector<double> &params);
-        void scale(std::shared_ptr<Object> obj, Vector<double> &params);
-        void rotate(std::shared_ptr<Object> obj, Vector<double> &params);
+        ObjectManager(std::shared_ptr<SceneManager> manager);
+
+        std::shared_ptr<Object> getObject(ObjectType type_obj);
+        // void addObject();
+        void addObject(ObjectType type_obj);
+        void removeObject(ObjectType type_obj);
+        void changeCurrentObject(ObjectType type_obj, int diff);
+    private:
+        std::shared_ptr<SceneManager> sceneManager;
 };
+
 
 #endif

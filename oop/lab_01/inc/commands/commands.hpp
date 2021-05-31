@@ -4,7 +4,6 @@
 #include <memory>
 #include "../objects/objectType.hpp"
 #include "../vector.hpp"
-#include "../controller/controller.hpp"
 
 class BaseCommand
 {
@@ -12,12 +11,12 @@ class BaseCommand
         BaseCommand() = default;
         ~BaseCommand() = default;
 
-        virtual void execute(std::shared_ptr<Controller> controller) = 0;
+        virtual void execute() = 0;
 };
 
-#include "addCommands.hpp"
-#include "removeCommand.hpp"
-#include "changeObjectCommand.hpp"
+#include "loadCommand.hpp"
+#include "objectCommands.hpp"
 #include "transformCommands.hpp"
+#include "drawCommand.h"
 
 #endif

@@ -3,9 +3,9 @@
 
 #include "vector.hpp"
 #include "matrix.hpp"
-#include "point.hpp"
 #include "object.hpp"
-#include "connection.hpp"
+#include "frameModel.h"
+
 class Model : public Object
 {
     public:
@@ -18,16 +18,12 @@ class Model : public Object
 
         Model& operator =(const Model&);
         Model& operator =(Model &&) noexcept;
-
-        const Vector<Point> getPoints();
-        const Vector<Connection> getConnections();
+        std::shared_ptr<FrameModel> getFrame();
         void transform(const Matrix<double> &transform_matrix) override;
-        void fill(const Vector<Point>& points);
-        void fill(const Vector<Connection> &connections);
+        void accept(std::shared_ptr<Visitor> visitor) override;
 
     private:
-        Vector<Point> points;
-        Vector<Connection> connections;
+        std::shared_ptr<FrameModel> frame;
 };
 
 #endif

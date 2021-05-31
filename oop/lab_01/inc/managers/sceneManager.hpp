@@ -1,21 +1,19 @@
 #ifndef SCENEMANAGER_HPP
 #define SCENEMANAGER_HPP
-
 #include "baseManager.hpp"
+#include <memory>
 #include "../objects/scene.hpp"
 
 class SceneManager : public BaseManager
 {
     public:
-        SceneManager();
+        std::shared_ptr<Scene> getScene();
+        void setScene(std::shared_ptr<Scene> new_scene);
+        void setCurrentObjectPos(ObjectType type_obj, int pos);
+        int getCurrentObjectPos(ObjectType type_obj);
 
-        std::shared_ptr<Object> getObject(ObjectType type_obj);
-        // void addObject();
-        void addObject(std::shared_ptr<Object> obj);
-        void removeObject(ObjectType type_obj);
-        void changeObject(ObjectType type_obj, int diff);
     private:
-        Scene scene;
+        std::shared_ptr<Scene> scene;
         int curCamera;
         int curModel;
 };

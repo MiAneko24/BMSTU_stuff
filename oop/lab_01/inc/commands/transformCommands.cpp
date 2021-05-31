@@ -1,35 +1,25 @@
 #include "transformCommands.hpp"
+#include "commands.hpp"
 
-RotateCommand::RotateCommand(ObjectType type_obj, Vector<double> &angles)
+RotateCommand::RotateCommand(std::shared_ptr<TransformManager> manager, Action method, ObjectType type_obj, Vector<double>& angles) : call(manager, method), object_type(type_obj), rotate_params(angles) {};
+
+void RotateCommand::execute()
 {
-    object_type = type_obj;
-    rotate_params = angles;
+    ((*call.first).*call.second)(object_type, rotate_params);
+}
+        
+
+ScaleCommand::ScaleCommand(std::shared_ptr<TransformManager> manager, Action method, ObjectType type_obj, Vector<double>& scale) : call(manager, method), object_type(type_obj), scale_params(scale) {};
+
+void ScaleCommand::execute()
+{
+    ((*call.first).*call.second)(object_type, scale_params);
 }
 
-void RotateCommand::execute(std::shared_ptr<Controller> controller)
-{
-    controller->rotate(object_type, rotate_params);
-}
 
+MoveCommand::MoveCommand(std::shared_ptr<TransformManager> manager, Action method, ObjectType type_obj, Vector<double>& move) : call(manager, method), object_type(type_obj), move_params(move) {};
 
-MoveCommand::MoveCommand(ObjectType type_obj, Vector<double> &move)
+void MoveCommand::execute()
 {
-    object_type = type_obj;
-    move_params = move;
-}
-
-void MoveCommand::execute(std::shared_ptr<Controller> controller)
-{
-    controller->move(object_type, move_params);
-}
-
-ScaleCommand::ScaleCommand(ObjectType type_obj, Vector<double> &scale)
-{
-    object_type = type_obj;
-    scale_params = scale;
-}
-
-void ScaleCommand::execute(std::shared_ptr<Controller> controller)
-{
-    controller->scale(object_type, scale_params);
+    ((*call.first).*call.second)(object_type, move_params);
 }

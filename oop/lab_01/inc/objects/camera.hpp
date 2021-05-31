@@ -2,7 +2,8 @@
 #define CAMERA_HPP
 
 #include "object.hpp"
-#include "point.hpp"
+#include "cameraPosition.h"
+
 class Camera : public Object
 {
     public:
@@ -10,24 +11,13 @@ class Camera : public Object
 
         bool isVisible() const final override;
 
-        const Point& getPosition() const;
-        void setPosition(Point &position);
-        
-        double getXAngle() const;
-        void setXAngle(double x_angle);
-
-        double getYAngle() const;
-        void setYAngle(double y_angle);
-
-        double getZAngle() const;
-        void setZAngle(double z_angle);
-
         void transform(const Matrix<double> &mat) override;
-    
+        void accept(std::shared_ptr<Visitor> visitor) override;
+        std::shared_ptr<CameraPosition> getPosition();
+
         ~Camera() = default;
     private:
-        Point position;
-        Vector<double> angles = Vector<double>(3);
+        std::shared_ptr<CameraPosition> position;
 };
 
 #endif
