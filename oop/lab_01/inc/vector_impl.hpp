@@ -1,6 +1,8 @@
 #pragma once
 #include "vector.hpp"
+#include "matrix.hpp"
 #define EPS 1e-7
+#include "exceptions.hpp"
 
 template <typename T>
 class Matrix;
@@ -17,11 +19,20 @@ Vector<T>::Vector(const Vector<T> &vector)
     copy(vector);
 }
 
+template <typename T>
+Vector<T>::Vector(Vector<T> &&vector)
+{
+    allocateVector(vector.getSize());
+    this->rSize = vector.rSize;
+    this->array = vector.array;
+    vector.reset();
+}
+
 // template <typename T>
 // void Vector<T>::checkSizes(Matrix<T> &matrix)
 
 template <typename T>
-void Vector<T>::checkSizes(const Matrix<T> &matrix, std::string file, int line)
+void Vector<T>::checkSizes(const Matrix<T> &matrix, std::string file, int line) const
 {
     if (rSize != matrix.getRows())
     {
@@ -53,7 +64,7 @@ Vector<T>& Vector<T>::operator *=(const Matrix<T> &matrix)
     for (int i = 0; i < rSize; i++)
     {
         for (int j = 0; j < matrix.getColumns(); j++)
-            (*this) *= matrix[j][i];
+            (*this)[i] *= matrix[j][i];
     }
     return (*this);
 }
@@ -61,7 +72,7 @@ Vector<T>& Vector<T>::operator *=(const Matrix<T> &matrix)
 template <typename T>
 Vector<T>::Vector(std::initializer_list<T> list, size_t columns)
 {
-    checkList(list, columns);
+    checkList(list, columns, __FILE__, __LINE__);
     allocateVector(columns);
     size_t i = 0;
     for (T elem : list)
@@ -87,7 +98,7 @@ void Vector<T>::allocateVector(size_t size)
         T *new_array = new T[size]{};
         array.reset(new_array);
     }
-    catch(const std::bad_alloc)
+    catch(const std::bad_alloc& e)
     {
         time_t time_cur = time(nullptr);
         throw MemoryError(ctime(&time_cur), __FILE__, typeid(*this).name(), __LINE__, "Failed memory allocation");
@@ -100,7 +111,7 @@ void Vector<T>::copy(const Vector<T> &vector)
 {
     size_t size = vector.rSize;
     allocateVector(size);
-    for (int i = 0; i < rSize; i++)
+    for (size_t i = 0; i < rSize; i++)
         this->operator[](i) = vector[i];
 }
 
@@ -118,7 +129,7 @@ void Vector<T>::move(Vector<T> &&vector)
 template <typename T>
 void Vector<T>::add(const T &obj)
 {
-    Vector<T> tmp = this;
+    Vector<T> tmp = *this;
     allocateVector(rSize + 1);
     for (int i = 0; i < tmp.rSize; i++)
     {
@@ -132,7 +143,10 @@ void Vector<T>::add(const T &obj)
 template <typename T>
 Vector<T>& Vector<T>::operator =(Vector<T> &&vector)
 {
-    move(vector);
+    allocateVector(vector.getSize());
+    this->rSize = vector.rSize;
+    this->array = vector.array;
+    vector.reset();
     return *this;
 }
 
@@ -167,14 +181,14 @@ bool Vector<T>::operator !=(const Vector<T> &vector) const noexcept
 template <typename T>
 T& Vector<T>::operator[](size_t column)
 {
-    checkIndex(column);
+    checkIndex(column, __FILE__, __LINE__);
     return array[column];
 }
 
 template <typename T>
 const T& Vector<T>::operator[](size_t column) const
 {
-    checkIndex(column);
+    checkIndex(column, __FILE__, __LINE__);
     return array[column];
 }
 
@@ -194,14 +208,17 @@ void Vector<T>::reset() noexcept
 template <typename T>
 void Vector<T>::remove(VectorIterator<T> &del)
 {
-    Vector<T> tmp = this;
+    Vector<T> tmp = (*this);
     allocateVector(rSize - 1);
-    auto old = this;
-    for (auto i : tmp)
+    auto old = (*this).begin();
+    auto i = tmp.begin();
+    for (i; i != tmp.end(); i++)
     {
         if (i != del)
+        {
             old = i;
-        *old++;
+            old++;
+        }
     }
     tmp.reset();
 }
@@ -241,7 +258,7 @@ void Vector<T>::checkIndex(int pos, std::string file, int line) const
 }
 
 template <typename T>
-void Vector<T>::checkList(std::initializer_list<T> list, size_t columns, std::string file, int line)
+void Vector<T>::checkList(std::initializer_list<T> list, size_t columns, std::string file, int line) const
 {
     if (columns != list.size())
     {
@@ -251,7 +268,7 @@ void Vector<T>::checkList(std::initializer_list<T> list, size_t columns, std::st
 }
 
 template <typename T>
-void Vector<T>::checkNull(T *array, std::string file, int line)
+void Vector<T>::checkNull(T *array, std::string file, int line) const
 {
     if (array == nullptr)
     {
@@ -264,7 +281,7 @@ template <typename T>
 Vector<T>& Vector<T>::operator =(std::initializer_list<T> list)
 {
     auto it = list.begin();
-    size_t columns = it->size();
+    size_t columns = list.size();
     allocateVector(columns);
     int i = 0;
     for (const auto &elem : list)

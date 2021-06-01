@@ -19,7 +19,11 @@ Matrix<T>::Matrix(const Matrix<T> &matrix)
 template <typename T>
 Matrix<T>::Matrix(Matrix<T> &&matrix) noexcept
 {
-    move(matrix);
+    allocateMatrix(matrix.getRows(), matrix.getColumns());
+    for (int i = 0; i < mRows; i++)
+        for (int j = 0; j < mColumns; j++)
+            this->operator[](i)[j] = matrix[i][j];
+    matrix.reset();
 }
 
 template <typename T>
@@ -115,7 +119,7 @@ void Matrix<T>::allocateMatrix(size_t rows, size_t columns)
     
     for (int i = 0; i < mRows; i++)
     {
-        operator[](i).allocateMatrixRow(mColumns);
+        operator[](i).allocateVector(mColumns);
     }
 }
 
@@ -176,7 +180,7 @@ template <typename T>
 void Matrix<T>::reset(size_t size) noexcept
 {
     reset();
-    data.reset(new Matrix<T>::MatrixRow[mRows]);
+    data.reset(new Vector<T>[mRows]);
 }
 
 template <typename T>

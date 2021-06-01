@@ -70,28 +70,28 @@ class Matrix : public BaseMatrix
 
         void make_project_matrix();
         
-        ~Matrix();
+        ~Matrix() noexcept;
 
      private:
-        std::shared_ptr<Vector[]> data;
+        std::shared_ptr<Vector<T>[]> data;
         
-        void checkMatrixSource(T **source, std::string file, int line);
-        void checkList(std::initializer_list<std::initializer_list<T>> list, std::string file, int line);
-        void checkNull(std::string file, int line);
+        void checkMatrixSource(T **source, std::string file, int line) const;
+        void checkList(std::initializer_list<std::initializer_list<T>> list, std::string file, int line) const;
+        void checkNull(std::string file, int line) const;
 
         void allocateDataArray(size_t rows, size_t columns);
         void allocateMatrix(size_t rows, size_t columns); 
         
-        void checkIndexes(int i, int j, std::string file, int line);
-        void checkRowIndex(int i, std::string file, int line);
+        void checkIndexes(int i, int j, std::string file, int line) const;
+        void checkRowIndex(int i, std::string file, int line) const;
 
-        void checkOperationsType(std::string file, int line);
+        void checkOperationsType(std::string file, int line) const;
         
-        void checkSquare(std::string file, int line);
-        void checkAddSizes(Matrix<T> &mat, std::string file, int line);
-        void checkMulSizes(Matrix<T> &mat, std::string file, int line);
+        void checkSquare(std::string file, int line) const;
+        void checkAddSizes(const Matrix<T> &mat, std::string file, int line) const;
+        void checkMulSizes(const Matrix<T> &mat, std::string file, int line) const;
         
-        void checkDivider(T &elem, std::string file, int line);
+        void checkDivider(T &elem, std::string file, int line) const;
         
         void reset() noexcept; 
         void reset(size_t size) noexcept; 

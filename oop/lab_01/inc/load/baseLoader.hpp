@@ -16,7 +16,7 @@ class BaseLoader
         BaseLoader();
         ~BaseLoader();
         void open(std::string filename);
-        std::shared_ptr<Object> loadModel(ObjectType type_obj, std::string file);
+        std::shared_ptr<Object> loadObject(ObjectType type_obj, std::string file);
         void close();
         
     private:

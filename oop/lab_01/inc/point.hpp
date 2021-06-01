@@ -34,15 +34,4 @@ class Point {
 
 //убрать потом в cpp потому что это не шаблон!
 
-Vector<double> Point::toVector()
-{
-    Vector<double> pointVector = Vector<double>(4);
-    pointVector[0] = pX;
-    pointVector[1] = pY;
-    pointVector[2] = pZ;
-    pointVector[3] = 1;
-
-    return pointVector;
-}
-
 #endif

@@ -1,6 +1,8 @@
 #ifndef OBJECTMANAGERCREATOR_H
 #define OBJECTMANAGERCREATOR_H
 #include "sceneManagerCreator.h"
+#include <memory>
+#include "../objectManager.hpp"
 
 class ObjectManagerCreator
 {

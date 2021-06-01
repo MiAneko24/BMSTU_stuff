@@ -8,11 +8,11 @@
 class BaseBuilder
 {
     public:
-        virtual bool buildModel(std::ifstream&);
-        virtual bool buildCamera(std::ifstream&);
+        virtual bool buildModel(std::ifstream&) = 0;
+        virtual bool buildCamera(std::ifstream&) = 0;
         std::shared_ptr<Object> getObject();
 
-    private:
+    protected:
         std::shared_ptr<Object> object;
 };
 

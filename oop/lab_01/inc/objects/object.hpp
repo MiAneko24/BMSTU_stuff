@@ -14,7 +14,7 @@ class Object
         Object() = default;
         ~Object() = default;
 
-        virtual bool isVisible() const = 0;
+        virtual bool isVisible() const;
         virtual bool isComposite() const 
         {
             return false;
@@ -28,7 +28,7 @@ class Object
             return false;
         }
 
-        virtual void transform(const Matrix<double> &transform_mat) = 0;
+        virtual void transform(const Matrix<double> &transform_mat);
 
         virtual void accept(std::shared_ptr<Visitor> visitor);
 

@@ -6,8 +6,8 @@
 class Drawer
 {
     public:
-        virtual void drawLine(Point& point1, Point& point2);
-        virtual void clear();
+        virtual void drawLine(Point& point1, Point& point2) = 0;
+        virtual void clear() = 0;
 };
 
 #endif

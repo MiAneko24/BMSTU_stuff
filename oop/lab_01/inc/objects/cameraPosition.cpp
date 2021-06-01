@@ -17,7 +17,7 @@ double CameraPosition::getXAngle() const
     return angles[0];
 }
 
-void CameraPosition::setPosition(Point &position)
+void CameraPosition::setPosition(Point position)
 {
     this->position = position;
 }

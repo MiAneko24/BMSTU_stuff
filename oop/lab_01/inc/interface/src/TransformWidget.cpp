@@ -205,8 +205,8 @@ TransformWidget::TransformWidget(QWidget *parent)
 
 	facade = std::make_shared<Facade>(Facade());
 
-	connect(cameraBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, SLOT(cameraChanged()));
-	connect(modelBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, SLOT(modelChanged()));
+	connect(cameraBox, SIGNAL(currentIndexChanged), this, SLOT(cameraChanged()));
+	connect(modelBox, SIGNAL(currentIndexChanged), this, SLOT(modelChanged()));
 
 }
 

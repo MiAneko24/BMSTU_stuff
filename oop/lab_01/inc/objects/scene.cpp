@@ -5,14 +5,14 @@ Scene::Scene()
     compositeObject.reset(new CompositeObject());
 }
 
-void Scene::add(std::shared_ptr<Object> object)
+bool Scene::add(std::shared_ptr<Object> object)
 {
-    compositeObject->add(std::move(object));
+    return compositeObject->add(std::move(object));
 }
 
-void Scene::remove(VectorIterator<std::shared_ptr<Object>> &it)
+bool Scene::remove(VectorIterator<std::shared_ptr<Object>> &it)
 {
-    compositeObject->remove(it);
+    return compositeObject->remove(it);
 }
 
 VectorIterator<std::shared_ptr<Object>> Scene::getIterator(ObjectType type_obj, int index)

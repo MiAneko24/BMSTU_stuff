@@ -1,6 +1,7 @@
 #ifndef SCENEMANAGERCREATOR_H
 #define SCENEMANAGERCREATOR_H
-
+#include <memory>
+#include "../sceneManager.hpp"
 class SceneManagerCreator
 {
     public:

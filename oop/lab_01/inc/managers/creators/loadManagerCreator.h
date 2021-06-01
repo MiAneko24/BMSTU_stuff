@@ -1,6 +1,8 @@
 #ifndef LOADMANAGERCREATOR_H
 #define LOADMANAGERCREATOR_H
 #include "sceneManagerCreator.h"
+#include <memory>
+#include "../loadManager.hpp"
 
 class LoadManagerCreator
 {

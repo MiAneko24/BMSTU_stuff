@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include "../draw/visitor.h"
 
 Camera::Camera()
 {

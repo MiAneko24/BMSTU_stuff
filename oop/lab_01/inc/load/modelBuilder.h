@@ -9,12 +9,11 @@ class ModelBuilder : public BaseBuilder
 {
     public:
         bool buildModel(std::ifstream& file) override;
+        bool buildCamera(std::ifstream& file) override;
+        
+    private:
         bool buildPoints(std::ifstream& file);
         bool buildConnections(std::ifstream& file);
-    
-    private:
-        Vector<Point> points;
-        Vector<Connection> connections;
 };
 
 #endif

@@ -2,7 +2,7 @@
 #define LOADCOMMAND_HPP
 #include "../managers/loadManager.hpp"
 
-class BaseCommand;
+#include "commands.hpp"
 
 class LoadCommand : public BaseCommand
 {

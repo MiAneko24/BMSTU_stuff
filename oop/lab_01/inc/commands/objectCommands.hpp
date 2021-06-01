@@ -1,8 +1,7 @@
 #ifndef OBJECTCOMMANDS_HPP
 #define OBJECTCOMMANDS_HPP
 #include "../managers/objectManager.hpp"
-
-class BaseCommand;
+#include "commands.hpp"
 
 class RemoveCommand : public BaseCommand
 {

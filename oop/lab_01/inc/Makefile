@@ -15,8 +15,8 @@ EQ            = =
 CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
-CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
+CFLAGS        = -pipe -O2  -W -D_REENTRANT -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -O2  -W -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
@@ -57,6 +57,7 @@ SOURCES       = commands/drawCommand.cpp \
 		commands/objectCommands.cpp \
 		commands/transformCommands.cpp \
 		draw/QtDrawerFactory.cpp \
+		draw/QTDrawer.cpp \
 		facade/facade.cpp \
 		interface/src/TransformWidget.cpp \
 		interface/src/interface.cpp \
@@ -65,6 +66,7 @@ SOURCES       = commands/drawCommand.cpp \
 		load/cameraBuilder.cpp \
 		load/modelBuilder.cpp \
 		load/sceneBuilder.cpp \
+		load/director.cpp \
 		managers/drawManager.cpp \
 		managers/loadManager.cpp \
 		managers/objectManager.cpp \
@@ -87,6 +89,7 @@ OBJECTS       = drawCommand.o \
 		objectCommands.o \
 		transformCommands.o \
 		QtDrawerFactory.o \
+		QTDrawer.o \
 		facade.o \
 		TransformWidget.o \
 		interface.o \
@@ -95,6 +98,7 @@ OBJECTS       = drawCommand.o \
 		cameraBuilder.o \
 		modelBuilder.o \
 		sceneBuilder.o \
+		director.o \
 		drawManager.o \
 		loadManager.o \
 		objectManager.o \
@@ -243,6 +247,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		commands/objectCommands.cpp \
 		commands/transformCommands.cpp \
 		draw/QtDrawerFactory.cpp \
+		draw/QTDrawer.cpp \
 		facade/facade.cpp \
 		interface/src/TransformWidget.cpp \
 		interface/src/interface.cpp \
@@ -251,6 +256,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		load/cameraBuilder.cpp \
 		load/modelBuilder.cpp \
 		load/sceneBuilder.cpp \
+		load/director.cpp \
 		managers/drawManager.cpp \
 		managers/loadManager.cpp \
 		managers/objectManager.cpp \
@@ -448,7 +454,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents commands/commands.hpp commands/drawCommand.h commands/loadCommand.hpp commands/objectCommands.hpp commands/transformCommands.hpp draw/drawer.h draw/drawerFactory.h draw/QTDrawer.h draw/QtDrawerFactory.h draw/visitor.h facade/facade.hpp interface/inc/TransformWidget.h load/baseBuilder.hpp load/baseLoader.hpp load/cameraBuilder.h load/director.h load/modelBuilder.h load/sceneBuilder.h managers/baseManager.hpp managers/drawManager.hpp managers/loadManager.hpp managers/objectManager.hpp managers/sceneManager.hpp managers/transformManager.h managers/creators/drawManagerCreator.h managers/creators/loadManagerCreator.h managers/creators/objectManagerCreator.h managers/creators/sceneManagerCreator.h managers/creators/transformManagerCreator.h objects/camera.hpp objects/cameraPosition.h objects/compositeObject.hpp objects/frameModel.h objects/model.hpp objects/object.hpp objects/objectType.hpp objects/scene.hpp base_matrix_class.hpp connection.hpp exceptions.hpp matrix_checks.hpp matrix_constructors_and_iter_methods.hpp matrix_impl.hpp matrix.hpp point.hpp vector_const_iterator_methods.hpp vector_impl.hpp vector_iterator_methods.hpp vector.hpp vectorConstIterator.hpp vectorIterator.hpp $(DISTDIR)/
-	$(COPY_FILE) --parents commands/drawCommand.cpp commands/loadCommand.cpp commands/objectCommands.cpp commands/transformCommands.cpp draw/QtDrawerFactory.cpp facade/facade.cpp interface/src/TransformWidget.cpp interface/src/interface.cpp load/baseBuilder.cpp load/baseLoader.cpp load/cameraBuilder.cpp load/modelBuilder.cpp load/sceneBuilder.cpp managers/drawManager.cpp managers/loadManager.cpp managers/objectManager.cpp managers/sceneManager.cpp managers/transformManager.cpp managers/creators/drawManagerCreator.cpp managers/creators/loadManagerCreator.cpp managers/creators/objectManagerCreator.cpp managers/creators/sceneManagerCreator.cpp managers/creators/transformManagerCreator.cpp objects/camera.cpp objects/cameraPosition.cpp objects/compositeObject.cpp objects/frameModel.cpp objects/model.cpp objects/scene.cpp point.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents commands/drawCommand.cpp commands/loadCommand.cpp commands/objectCommands.cpp commands/transformCommands.cpp draw/QtDrawerFactory.cpp draw/QTDrawer.cpp facade/facade.cpp interface/src/TransformWidget.cpp interface/src/interface.cpp load/baseBuilder.cpp load/baseLoader.cpp load/cameraBuilder.cpp load/modelBuilder.cpp load/sceneBuilder.cpp load/director.cpp managers/drawManager.cpp managers/loadManager.cpp managers/objectManager.cpp managers/sceneManager.cpp managers/transformManager.cpp managers/creators/drawManagerCreator.cpp managers/creators/loadManagerCreator.cpp managers/creators/objectManagerCreator.cpp managers/creators/sceneManagerCreator.cpp managers/creators/transformManagerCreator.cpp objects/camera.cpp objects/cameraPosition.cpp objects/compositeObject.cpp objects/frameModel.cpp objects/model.cpp objects/scene.cpp point.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -744,6 +750,31 @@ QtDrawerFactory.o: draw/QtDrawerFactory.cpp draw/QtDrawerFactory.h \
 		draw/QTDrawer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o QtDrawerFactory.o draw/QtDrawerFactory.cpp
 
+QTDrawer.o: draw/QTDrawer.cpp draw/QTDrawer.h \
+		draw/drawer.h \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/object.hpp \
+		matrix.hpp \
+		base_matrix_class.hpp \
+		exceptions.hpp \
+		matrix_checks.hpp \
+		matrix_constructors_and_iter_methods.hpp \
+		vector.hpp \
+		vectorIterator.hpp \
+		vector_iterator_methods.hpp \
+		vectorConstIterator.hpp \
+		vector_const_iterator_methods.hpp \
+		vector_impl.hpp \
+		matrix_impl.hpp \
+		objects/cameraPosition.h \
+		point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		connection.hpp \
+		objects/compositeObject.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o QTDrawer.o draw/QTDrawer.cpp
+
 facade.o: facade/facade.cpp facade/facade.hpp \
 		commands/commands.hpp \
 		objects/objectType.hpp \
@@ -936,14 +967,80 @@ cameraBuilder.o: load/cameraBuilder.cpp load/cameraBuilder.h \
 		vector_const_iterator_methods.hpp \
 		vector_impl.hpp \
 		matrix_impl.hpp \
-		objects/objectType.hpp
+		objects/objectType.hpp \
+		point.hpp \
+		objects/camera.hpp \
+		objects/cameraPosition.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cameraBuilder.o load/cameraBuilder.cpp
 
-modelBuilder.o: load/modelBuilder.cpp 
+modelBuilder.o: load/modelBuilder.cpp load/modelBuilder.h \
+		load/baseBuilder.hpp \
+		objects/object.hpp \
+		matrix.hpp \
+		base_matrix_class.hpp \
+		exceptions.hpp \
+		matrix_checks.hpp \
+		matrix_constructors_and_iter_methods.hpp \
+		vector.hpp \
+		vectorIterator.hpp \
+		vector_iterator_methods.hpp \
+		vectorConstIterator.hpp \
+		vector_const_iterator_methods.hpp \
+		vector_impl.hpp \
+		matrix_impl.hpp \
+		objects/objectType.hpp \
+		point.hpp \
+		connection.hpp \
+		objects/model.hpp \
+		objects/frameModel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o modelBuilder.o load/modelBuilder.cpp
 
-sceneBuilder.o: load/sceneBuilder.cpp 
+sceneBuilder.o: load/sceneBuilder.cpp load/sceneBuilder.h \
+		load/cameraBuilder.h \
+		load/baseBuilder.hpp \
+		objects/object.hpp \
+		matrix.hpp \
+		base_matrix_class.hpp \
+		exceptions.hpp \
+		matrix_checks.hpp \
+		matrix_constructors_and_iter_methods.hpp \
+		vector.hpp \
+		vectorIterator.hpp \
+		vector_iterator_methods.hpp \
+		vectorConstIterator.hpp \
+		vector_const_iterator_methods.hpp \
+		vector_impl.hpp \
+		matrix_impl.hpp \
+		objects/objectType.hpp \
+		load/modelBuilder.h \
+		point.hpp \
+		connection.hpp \
+		objects/scene.hpp \
+		objects/compositeObject.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sceneBuilder.o load/sceneBuilder.cpp
+
+director.o: load/director.cpp load/director.h \
+		load/baseBuilder.hpp \
+		objects/object.hpp \
+		matrix.hpp \
+		base_matrix_class.hpp \
+		exceptions.hpp \
+		matrix_checks.hpp \
+		matrix_constructors_and_iter_methods.hpp \
+		vector.hpp \
+		vectorIterator.hpp \
+		vector_iterator_methods.hpp \
+		vectorConstIterator.hpp \
+		vector_const_iterator_methods.hpp \
+		vector_impl.hpp \
+		matrix_impl.hpp \
+		objects/objectType.hpp \
+		load/cameraBuilder.h \
+		load/modelBuilder.h \
+		point.hpp \
+		connection.hpp \
+		load/sceneBuilder.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o director.o load/director.cpp
 
 drawManager.o: managers/drawManager.cpp managers/drawManager.hpp \
 		managers/baseManager.hpp \

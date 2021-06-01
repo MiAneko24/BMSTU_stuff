@@ -2,6 +2,7 @@
 #define VECTORITERATOR_HPP
 
 #include <iterator>
+#include <memory>
 
 template <typename T>
 class Vector;

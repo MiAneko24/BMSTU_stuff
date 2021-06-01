@@ -10,7 +10,7 @@ bool Model::isVisible() const
     return true;
 }
 
-Model& Model::operator =(const Model& model) noexcept
+Model& Model::operator =(const Model& model)
 {
     if (this != &model)
     {

@@ -2,6 +2,7 @@
 #define VECTOR_CONST_ITERATOR_METHODS_HPP
 #include "vectorConstIterator.hpp"
 #include "vector.hpp"
+#include "exceptions.hpp"
 
 template <typename T>
 bool VectorConstIterator<T>::operator !=(VectorConstIterator const &iter) const 
@@ -111,7 +112,7 @@ void VectorConstIterator<T>::checkIndex(std::string file, int line) const
     if (iIndex > iAmount)
     {
         time_t time_cur = time(nullptr);
-        throw IndexIteratorError(ctime(&time_cur), file, typeid(*this).name(), line, "VectorConstIterator out of bounds");
+        throw IndexError(ctime(&time_cur), file, typeid(*this).name(), line, "VectorConstIterator out of bounds");
     }
 }
 

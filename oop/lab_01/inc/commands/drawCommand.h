@@ -1,6 +1,7 @@
 #ifndef DRAWCOMMAND_H
 #define DRAWCOMMAND_H
 #include "../managers/drawManager.hpp"
+#include "commands.hpp"
 
 class DrawCommand : public BaseCommand
 {

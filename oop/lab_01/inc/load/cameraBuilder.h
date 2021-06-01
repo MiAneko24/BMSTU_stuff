@@ -6,6 +6,11 @@ class CameraBuilder : public BaseBuilder
 {
     public:
         bool buildCamera(std::ifstream& file) override;
+        bool buildModel(std::ifstream& file) override;
+        
+    private:
+        bool buildPosition(std::ifstream& file);
+        bool buildAngles(std::ifstream &file);
 };
 
 #endif

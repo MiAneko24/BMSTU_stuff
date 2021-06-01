@@ -30,10 +30,10 @@ HEADERS += base_matrix_class.hpp connection.hpp exceptions.hpp matrix_checks.hpp
 
 
 SOURCES += commands/drawCommand.cpp commands/loadCommand.cpp commands/objectCommands.cpp commands/transformCommands.cpp
-SOURCES += draw/QtDrawerFactory.cpp
+SOURCES += draw/QtDrawerFactory.cpp draw/QTDrawer.cpp
 SOURCES += facade/facade.cpp
 SOURCES += interface/src/TransformWidget.cpp interface/src/interface.cpp
-SOURCES += load/baseBuilder.cpp load/baseLoader.cpp load/cameraBuilder.cpp  load/modelBuilder.cpp load/sceneBuilder.cpp
+SOURCES += load/baseBuilder.cpp load/baseLoader.cpp load/cameraBuilder.cpp  load/modelBuilder.cpp load/sceneBuilder.cpp load/director.cpp
 SOURCES += managers/drawManager.cpp managers/loadManager.cpp managers/objectManager.cpp managers/sceneManager.cpp managers/transformManager.cpp
 SOURCES += managers/creators/drawManagerCreator.cpp managers/creators/loadManagerCreator.cpp managers/creators/objectManagerCreator.cpp managers/creators/sceneManagerCreator.cpp managers/creators/transformManagerCreator.cpp
 SOURCES += objects/camera.cpp objects/cameraPosition.cpp objects/compositeObject.cpp objects/frameModel.cpp objects/model.cpp objects/scene.cpp

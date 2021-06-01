@@ -1,6 +1,8 @@
 #ifndef TRANSFORMMANAGERCREATOR_H
 #define TRANSFORMMANAGERCREATOR_H
 #include "sceneManagerCreator.h"
+#include "../transformManager.h"
+#include <memory>
 
 class TransformManagerCreator
 {

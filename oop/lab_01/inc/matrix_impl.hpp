@@ -2,6 +2,7 @@
 #define MATRIX_IMPL_HPP
 #include "matrix.hpp"
 #include "vector.hpp"
+#include <math.h>
 
 template <typename T>
 Matrix<T>& Matrix<T>::operator =(const Matrix<T> &matrix)
@@ -13,7 +14,11 @@ Matrix<T>& Matrix<T>::operator =(const Matrix<T> &matrix)
 template <typename T>
 Matrix<T>& Matrix<T>::operator =(Matrix<T> &&matrix)
 {
-    move(matrix);
+    allocateMatrix(matrix.getRows(), matrix.getColumns());
+    for (int i = 0; i < mRows; i++)
+        for (int j = 0; j < mColumns; j++)
+            this->operator[](i)[j] = matrix[i][j];
+    matrix.reset();
     return *this;
 }
 

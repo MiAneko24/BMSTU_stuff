@@ -6,7 +6,7 @@
 
 
 template <typename T>
-void Matrix<T>::checkNull(std::string file, int line)
+void Matrix<T>::checkNull(std::string file, int line) const
 {
     if (mRows == 0 || mColumns == 0)
     {
@@ -16,7 +16,7 @@ void Matrix<T>::checkNull(std::string file, int line)
 }
 
 template <typename T>
-void Matrix<T>::checkMulSizes(Matrix<T> &mat, std::string file, int line)
+void Matrix<T>::checkMulSizes(const Matrix<T> &mat, std::string file, int line) const
 {
     if (mColumns != mat.getRows())
     {
@@ -26,7 +26,7 @@ void Matrix<T>::checkMulSizes(Matrix<T> &mat, std::string file, int line)
 }
 
 template <typename T>
-void Matrix<T>::checkAddSizes(Matrix<T> &mat, std::string file, int line)
+void Matrix<T>::checkAddSizes(const Matrix<T> &mat, std::string file, int line) const
 {
     if (mRows != mat.getRows() || mColumns != mat.getColumns())
     {
@@ -37,7 +37,7 @@ void Matrix<T>::checkAddSizes(Matrix<T> &mat, std::string file, int line)
 }
 
 template <typename T>
-void Matrix<T>::checkSquare(std::string file, int line)
+void Matrix<T>::checkSquare(std::string file, int line) const
 {
     if (mRows != mColumns)
     {
@@ -48,7 +48,7 @@ void Matrix<T>::checkSquare(std::string file, int line)
 
 
 template <typename T>
-void Matrix<T>::checkRowIndex(int i, std::string file, int line)
+void Matrix<T>::checkRowIndex(int i, std::string file, int line) const
 {
     if (i < 0 || i >= mRows)
     {
@@ -59,7 +59,7 @@ void Matrix<T>::checkRowIndex(int i, std::string file, int line)
 
 
 template <typename T>
-void Matrix<T>::checkMatrixSource(T **source, std::string file, int line)
+void Matrix<T>::checkMatrixSource(T **source, std::string file, int line) const
 {
     if (source == nullptr)
     {
@@ -69,7 +69,7 @@ void Matrix<T>::checkMatrixSource(T **source, std::string file, int line)
 }
 
 template <typename T>
-void Matrix<T>::checkDivider(T &elem, std::string file, int line)
+void Matrix<T>::checkDivider(T &elem, std::string file, int line) const
 {
     if (abs(elem) < 1e-8)
     {
@@ -79,7 +79,7 @@ void Matrix<T>::checkDivider(T &elem, std::string file, int line)
 }
 
 template <typename T>
-void Matrix<T>::checkOperationsType(std::string file, int line)
+void Matrix<T>::checkOperationsType(std::string file, int line) const
 {
     if (typeid(T).name() != typeid(int).name() && typeid(T).name() != typeid(float).name() && typeid(T).name() != typeid(double).name())
     {
@@ -89,7 +89,7 @@ void Matrix<T>::checkOperationsType(std::string file, int line)
 }
 
 template <typename T>
-void Matrix<T>::checkList(std::initializer_list<std::initializer_list<T>> list, std::string file, int line)
+void Matrix<T>::checkList(std::initializer_list<std::initializer_list<T>> list, std::string file, int line) const
 {
     if (list.size() == 0)
     {

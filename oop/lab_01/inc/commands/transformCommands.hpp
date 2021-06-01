@@ -2,7 +2,7 @@
 #define TRANSFORMCOMMANDS_HPP
 #include "../managers/transformManager.h"
 
-class BaseCommand;
+#include "commands.hpp"
 
 class RotateCommand : public BaseCommand
 {

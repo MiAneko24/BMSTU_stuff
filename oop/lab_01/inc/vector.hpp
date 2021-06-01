@@ -15,6 +15,7 @@ class Vector
         Vector() : array(nullptr), rSize(0) {};
         Vector(size_t size);
         Vector(const Vector<T> &vector);
+        Vector(Vector<T> &&vector);
         Vector(std::initializer_list<T> list, size_t columns);
         Vector(T *t_array, size_t t_size);
 
@@ -58,9 +59,9 @@ class Vector
         size_t rSize = 0;
         
         void checkIndex(int pos, std::string file, int line) const;
-        void checkList(std::initializer_list<T> list, size_t columns, std::string file, int line);
-        void checkNull(T *array, std::string file, int line);
-        void checkSizes(const Matrix<T> &matrix, std::string file, int line);
+        void checkList(std::initializer_list<T> list, size_t columns, std::string file, int line) const;
+        void checkNull(T *array, std::string file, int line) const;
+        void checkSizes(const Matrix<T> &matrix, std::string file, int line) const;
 };
 
 #include "vector_impl.hpp"

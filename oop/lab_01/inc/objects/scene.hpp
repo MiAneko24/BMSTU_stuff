@@ -5,13 +5,14 @@
 #include "compositeObject.hpp"
 #include "objectType.hpp"
 
-class Scene
+class Scene : public Object
 {
     public:
         Scene();
+        ~Scene() = default;
 
-        void add(std::shared_ptr<Object> obj);
-        void remove(VectorIterator<std::shared_ptr<Object>> &it);
+        bool add(std::shared_ptr<Object> obj) override;
+        bool remove(VectorIterator<std::shared_ptr<Object>> &it) override;
         VectorIterator<std::shared_ptr<Object>> getIterator(ObjectType type_obj, int index);
         std::shared_ptr<Object> getObject(ObjectType type_obj, int index);
         // std::shared_ptr<CompositeObject> getObject();

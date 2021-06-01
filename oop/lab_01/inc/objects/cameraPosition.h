@@ -9,7 +9,7 @@ class CameraPosition
     public:
         CameraPosition();
         const Point& getPosition() const;
-        void setPosition(Point &position);
+        void setPosition(Point position);
         
         double getXAngle() const;
         void setXAngle(double x_angle);

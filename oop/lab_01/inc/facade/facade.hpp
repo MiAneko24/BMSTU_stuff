@@ -5,11 +5,11 @@
 class Facade
 {
     public:
-        Facade();
+        Facade() = default;
         
         void execute(std::shared_ptr<BaseCommand> command);
         
-        ~Facade();
+        ~Facade() = default;
 };
 
 #endif

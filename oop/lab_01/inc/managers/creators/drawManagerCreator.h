@@ -1,6 +1,8 @@
 #ifndef DRAWMANAGERCREATOR_H
 #define DRAWMANAGERCREATOR_H
 #include "sceneManagerCreator.h"
+#include <memory>
+#include "../drawManager.hpp"
 
 class DrawManagerCreator
 {

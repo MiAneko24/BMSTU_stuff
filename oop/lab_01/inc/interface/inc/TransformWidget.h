@@ -20,11 +20,21 @@ class TransformWidget : public QWidget
 	Q_OBJECT
 
 private slots:
-	void loadToClicked();
-	void loadFromClicked();
-	void moveClicked();
-	void scaleClicked();
-	void rotateClicked();
+	void loadModelClicked();
+	void removeModelClicked();
+	void moveModelClicked();
+	void scaleModelClicked();
+	void rotateModelClicked();
+
+
+	void addCameraClicked();
+	void removeCameraClicked();
+	void moveCameraClicked();
+	void scaleCameraClicked();
+	void rotateCameraClicked();
+
+	void cameraChanged();
+	void modelChanged();
 
 public: 
 	TransformWidget(QWidget *parent = nullptr);

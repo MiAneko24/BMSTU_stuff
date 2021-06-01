@@ -2,6 +2,7 @@
 #define VECTOR_ITERATOR_METHODS_HPP
 #include "vectorIterator.hpp"
 #include "vector.hpp"
+#include "exceptions.hpp"
 
 template <typename T>
 bool VectorIterator<T>::operator !=(VectorIterator &iter) 
@@ -21,6 +22,7 @@ VectorIterator<T>& VectorIterator<T>::operator =(VectorIterator<T> &iter)
     iData = iter.iData;
     iIndex = iter.iIndex;
     iAmount = iter.iAmount;
+    return *this;
 }
 
 template <typename T>
@@ -111,7 +113,7 @@ void VectorIterator<T>::checkIndex(std::string file, int line) const
     if (iIndex > iAmount)
     {
         time_t time_cur = time(nullptr);
-        throw IndexIteratorError(ctime(&time_cur), file, typeid(*this).name(), line, "VectorIterator out of bounds");
+        throw IndexError(ctime(&time_cur), file, typeid(*this).name(), line, "VectorIterator out of bounds");
     }
 }
 
