@@ -11,6 +11,7 @@ class LoadManager : public BaseManager
     public:
         LoadManager(std::shared_ptr<SceneManager> manager);
         void loadObject(ObjectType type_obj, std::string filename);
+        ~LoadManager();
     
     private:
         std::shared_ptr<SceneManager> sceneManager;

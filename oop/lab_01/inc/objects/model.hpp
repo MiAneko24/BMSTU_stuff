@@ -1,18 +1,17 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
-#include "vector.hpp"
-#include "matrix.hpp"
+#include "../base_elems/vector.hpp"
+#include "../base_elems/matrix.hpp"
 #include "object.hpp"
 #include "frameModel.h"
 
 class Model : public Object
 {
     public:
-        Model() = default;
+        Model();
         Model(const Model &);
         Model(Model &&) noexcept;
-        ~Model() = default;
 
         bool isVisible() const override;
 
@@ -20,7 +19,9 @@ class Model : public Object
         Model& operator =(Model &&) noexcept;
         std::shared_ptr<FrameModel> getFrame();
         void transform(const Matrix<double> &transform_matrix) override;
-        void accept(std::shared_ptr<Visitor> visitor) override;
+        void accept(Visitor &visitor) override;
+
+        ~Model();
 
     private:
         std::shared_ptr<FrameModel> frame;

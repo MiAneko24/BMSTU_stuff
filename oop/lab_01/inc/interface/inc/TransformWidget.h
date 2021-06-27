@@ -12,6 +12,11 @@
 #include <QtWidgets/QGraphicsView>
 #include "../../draw/drawer.h"
 #include "../../facade/facade.hpp"
+#include "../../managers/creators/drawManagerCreator.h"
+#include "../../managers/creators/loadManagerCreator.h"
+#include "../../managers/creators/transformManagerCreator.h"
+#include "../../managers/creators/objectManagerCreator.h"
+#include "../../managers/creators/sceneManagerCreator.h"
 
 #define VALID_EXP "^([\\+ | \\-]?[1-9][0-9]*[\\.][0-9]*|0|[\\+ | \\-]?[0]{1}[\\.][0-9]*)"
 
@@ -21,6 +26,7 @@ class TransformWidget : public QWidget
 
 private slots:
 	void loadModelClicked();
+	void loadSceneClicked();
 	void removeModelClicked();
 	void moveModelClicked();
 	void scaleModelClicked();
@@ -33,8 +39,10 @@ private slots:
 	void scaleCameraClicked();
 	void rotateCameraClicked();
 
-	void cameraChanged();
-	void modelChanged();
+	void cameraChanged(int index);
+	void modelChanged(int index);
+	void sceneChanged(int index);
+
 
 public: 
 	TransformWidget(QWidget *parent = nullptr);
@@ -111,14 +119,21 @@ public:
 	QPushButton *scale_camera_btn;
 	QPushButton *rotate_camera_btn;
 
+	QLabel *sceneBoxLabel;
+	QComboBox *sceneBox;
+
 	QGraphicsView *graphicsView;
 
 	QGridLayout *mainLayout;
 
 	private:
 		QGraphicsScene *scene;
+		int number_objects = 0;
+		int number_cameras = 0;
+		int number_scenes = 0;
 		std::shared_ptr<Facade> facade;
 		std::shared_ptr<Drawer> drawer;
+		void drawScene();
 };
 
 #endif

@@ -20,7 +20,7 @@ class BaseMatrix {
         {
             return mRows && mColumns;
         }
-        virtual ~BaseMatrix() = 0;
+        ~BaseMatrix() = default;
     protected:
         size_t mRows = 0;
         size_t mColumns = 0;

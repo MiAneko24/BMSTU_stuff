@@ -3,15 +3,13 @@
 #include <iostream>
 #include <memory>
 #include "../objects/objectType.hpp"
-#include "../vector.hpp"
+#include "../base_elems/vector.hpp"
 
 class BaseCommand
 {
     public:
-        BaseCommand() = default;
-        ~BaseCommand() = default;
-
         virtual void execute() = 0;
+        virtual ~BaseCommand() = default;
 };
 
 #include "loadCommand.hpp"

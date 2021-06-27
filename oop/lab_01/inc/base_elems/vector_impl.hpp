@@ -60,12 +60,13 @@ template <typename T>
 Vector<T>& Vector<T>::operator *=(const Matrix<T> &matrix)
 {
     checkSizes(matrix, __FILE__, __LINE__);
-
+    Vector<T> result = Vector<T>(matrix.getColumns());
     for (int i = 0; i < rSize; i++)
     {
         for (int j = 0; j < matrix.getColumns(); j++)
-            (*this)[i] *= matrix[j][i];
+            result[i] += (*this)[j] * matrix[j][i];
     }
+    (*this) = result;
     return (*this);
 }
 
@@ -208,19 +209,17 @@ void Vector<T>::reset() noexcept
 template <typename T>
 void Vector<T>::remove(VectorIterator<T> &del)
 {
-    Vector<T> tmp = (*this);
-    allocateVector(rSize - 1);
-    auto old = (*this).begin();
-    auto i = tmp.begin();
-    for (i; i != tmp.end(); i++)
+    Vector<T> tmp = Vector<T>(rSize - 1);
+    int j = 0;
+    for (VectorIterator<T> i = begin(); !(i.isEnd()); i++)
     {
         if (i != del)
         {
-            old = i;
-            old++;
+            tmp[j] = *i;
+            j++;
         }
     }
-    tmp.reset();
+    move(std::move(tmp));
 }
 
 template <typename T>

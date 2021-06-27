@@ -1,7 +1,8 @@
 #include "modelBuilder.h"
 #include "../objects/model.hpp"
-#include "../point.hpp"
-#include "../connection.hpp"
+#include "../base_elems/point.hpp"
+#include "../base_elems/connection.hpp"
+#include "../objects/frameModel.h"
 
 bool ModelBuilder::buildModel(std::ifstream& file)
 {

@@ -1,8 +1,8 @@
 #ifndef CAMERAPOSITION_H
 #define CAMERAPOSITION_H
 
-#include "../point.hpp"
-#include "../vector.hpp"
+#include "../base_elems/point.hpp"
+#include "../base_elems/vector.hpp"
 
 class CameraPosition
 {
@@ -12,16 +12,15 @@ class CameraPosition
         void setPosition(Point position);
         
         double getXAngle() const;
-        void setXAngle(double x_angle);
-
         double getYAngle() const;
-        void setYAngle(double y_angle);
-
         double getZAngle() const;
-        void setZAngle(double z_angle);
+
+        void setAngles(Vector<double> &new_angles);
 
         Point getProjection(Point& point);
         void transform(const Matrix<double> &transform_mat);
+
+        ~CameraPosition() = default;
     
     private:
         Point position;

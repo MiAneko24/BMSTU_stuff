@@ -3,19 +3,16 @@
 
 #include <iostream>
 #include <memory>
-#include "../matrix.hpp"
-#include "../vectorIterator.hpp"
+#include "../base_elems/matrix.hpp"
+#include "../base_elems/vectorIterator.hpp"
 
 class Visitor;
 
 class Object
 {
     public:
-        Object() = default;
-        ~Object() = default;
-
-        virtual bool isVisible() const;
-        virtual bool isComposite() const 
+        virtual bool isVisible() const = 0;
+        virtual bool isComposite() const
         {
             return false;
         }
@@ -28,9 +25,9 @@ class Object
             return false;
         }
 
-        virtual void transform(const Matrix<double> &transform_mat);
+        virtual void transform(const Matrix<double> &transform_mat) = 0;
 
-        virtual void accept(std::shared_ptr<Visitor> visitor);
+        virtual void accept(Visitor &visitor) = 0;
 
         virtual VectorIterator<std::shared_ptr<Object>> begin() 
         {
@@ -41,6 +38,8 @@ class Object
         {
             return VectorIterator<std::shared_ptr<Object>>();
         }
+
+        virtual ~Object() = default;
 };
 
 

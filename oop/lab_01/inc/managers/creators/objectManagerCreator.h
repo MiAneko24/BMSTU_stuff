@@ -10,9 +10,8 @@ class ObjectManagerCreator
         std::shared_ptr<ObjectManager> getManager();
 
     private:
-        std::shared_ptr<SceneManagerCreator> sceneManagerCreator;
         std::shared_ptr<ObjectManager> manager;
-        std::shared_ptr<ObjectManager> createManager();
+        void createManager();
 };
 
 #endif

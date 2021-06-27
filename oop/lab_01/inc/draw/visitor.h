@@ -7,9 +7,10 @@
 class Visitor
 {
     public:
-        virtual void visit(Model &);
-        virtual void visit(Camera &);
-        virtual void visit(CompositeObject &); 
+        virtual void visit(Model &) = 0;
+        virtual void visit(Camera &) = 0;
+        virtual void visit(CompositeObject &) = 0; 
+        virtual ~Visitor() = default;
 };
 
 #endif

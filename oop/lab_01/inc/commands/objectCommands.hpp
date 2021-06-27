@@ -3,7 +3,7 @@
 #include "../managers/objectManager.hpp"
 #include "commands.hpp"
 
-class RemoveCommand : public BaseCommand
+class RemoveObjectCommand : public BaseCommand
 {
     private:
         ObjectType object_type;
@@ -11,8 +11,23 @@ class RemoveCommand : public BaseCommand
         std::pair<std::shared_ptr<ObjectManager>, Action> call;
     
     public:
-        explicit RemoveCommand(std::shared_ptr<ObjectManager> manager, Action method, ObjectType type_obj);
+        explicit RemoveObjectCommand(std::shared_ptr<ObjectManager> manager, Action method, ObjectType type_obj);
         void execute() override;
+        ~RemoveObjectCommand() = default;
+};
+
+class GetAmountCommand : public BaseCommand
+{
+    private:
+        ObjectType object_type;
+        int& amount;
+        using Action = void (ObjectManager::*)(ObjectType, int&);
+        std::pair<std::shared_ptr<ObjectManager>, Action> call;
+    
+    public:
+        explicit GetAmountCommand(std::shared_ptr<ObjectManager> manager, Action method, ObjectType type_obj, int& num);
+        void execute() override;
+        ~GetAmountCommand() = default;
 };
 
 class ChangeObjectCommand : public BaseCommand
@@ -26,6 +41,7 @@ class ChangeObjectCommand : public BaseCommand
     public:
         explicit ChangeObjectCommand(std::shared_ptr<ObjectManager> manager, Action method, ObjectType type_obj, int diff);
         void execute() override;
+        ~ChangeObjectCommand() = default;
 };
 
 class AddObjectCommand : public BaseCommand
@@ -38,6 +54,7 @@ class AddObjectCommand : public BaseCommand
     public:
         explicit AddObjectCommand(std::shared_ptr<ObjectManager> manager, Action method, ObjectType type_obj);
         void execute() override;
+        ~AddObjectCommand() = default;
 };
 
 

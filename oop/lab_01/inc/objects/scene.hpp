@@ -4,21 +4,24 @@
 #include "object.hpp"
 #include "compositeObject.hpp"
 #include "objectType.hpp"
+#include "../base_elems/vector.hpp"
+#include "../draw/visitor.h"
 
-class Scene : public Object
+class Scene
 {
     public:
         Scene();
+
+        void add(ObjectType type_obj, std::shared_ptr<Object> obj, int curScene);
+        void remove(ObjectType type_obj, VectorIterator<std::shared_ptr<Object>> &it, int curScene);
+        VectorIterator<std::shared_ptr<Object>> getIterator(ObjectType type_obj, int index, int curScene);
+        std::shared_ptr<Object> getObject(ObjectType type_obj, int index, int curScene);
+        int getObjectsAmount(ObjectType type_obj, int curScene);
+
         ~Scene() = default;
-
-        bool add(std::shared_ptr<Object> obj) override;
-        bool remove(VectorIterator<std::shared_ptr<Object>> &it) override;
-        VectorIterator<std::shared_ptr<Object>> getIterator(ObjectType type_obj, int index);
-        std::shared_ptr<Object> getObject(ObjectType type_obj, int index);
-        // std::shared_ptr<CompositeObject> getObject();
-
+        
     private:
-        std::shared_ptr<CompositeObject> compositeObject;
+        Vector<std::shared_ptr<Object>> objects;
         
 };
 

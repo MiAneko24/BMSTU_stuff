@@ -7,6 +7,7 @@ class CameraBuilder : public BaseBuilder
     public:
         bool buildCamera(std::ifstream& file) override;
         bool buildModel(std::ifstream& file) override;
+        ~CameraBuilder() = default;
         
     private:
         bool buildPosition(std::ifstream& file);

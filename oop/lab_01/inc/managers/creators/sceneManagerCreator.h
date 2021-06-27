@@ -2,6 +2,7 @@
 #define SCENEMANAGERCREATOR_H
 #include <memory>
 #include "../sceneManager.hpp"
+
 class SceneManagerCreator
 {
     public:
@@ -9,7 +10,7 @@ class SceneManagerCreator
 
     private:
         std::shared_ptr<SceneManager> manager;
-        std::shared_ptr<SceneManager> createManager();
+        void createManager();
     
 };
 

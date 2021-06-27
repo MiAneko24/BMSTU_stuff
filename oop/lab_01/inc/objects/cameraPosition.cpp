@@ -1,5 +1,5 @@
 #include "cameraPosition.h"
-#include "../matrix.hpp"
+#include "../base_elems/matrix.hpp"
 
 CameraPosition::CameraPosition()
 {
@@ -22,19 +22,9 @@ void CameraPosition::setPosition(Point position)
     this->position = position;
 }
 
-void CameraPosition::setXAngle(double x_angle)
-{
-    angles[0] = x_angle;
-}
-
 double CameraPosition::getYAngle() const
 {
     return angles[1];
-}
-
-void CameraPosition::setYAngle(double y_angle)
-{
-    angles[1] = y_angle;
 }
 
 double CameraPosition::getZAngle() const
@@ -42,14 +32,17 @@ double CameraPosition::getZAngle() const
     return angles[2];
 }
 
-void CameraPosition::setZAngle(double z_angle)
+void CameraPosition::setAngles(Vector<double> &params)
 {
-    angles[2] = z_angle;
+    for (int i = 0; i < 3; i++)
+    {
+        angles[i] += params[i];
+    }
 }
 
 void CameraPosition::transform(const Matrix<double> &mat)
 {
-
+    position.transform(mat);
 }
 
 Point CameraPosition::getProjection(Point& point)
@@ -61,8 +54,6 @@ Point CameraPosition::getProjection(Point& point)
     vect_point *= move_mat;
     params = {-angles[0], -angles[1], -angles[2]};
     move_mat.make_rotate_matrix(params);
-    vect_point *= move_mat;
-    move_mat.make_project_matrix();
     vect_point *= move_mat;
     Point res;
     res.setFromVector(vect_point);

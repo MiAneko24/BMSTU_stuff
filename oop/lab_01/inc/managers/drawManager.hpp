@@ -5,20 +5,20 @@
 #include <memory>
 #include "sceneManager.hpp"
 #include "../draw/drawer.h"
+#include "../base_elems/connection.hpp"
+#include "../base_elems/point.hpp"
 
-class DrawManager : public BaseManager, public Visitor
+class DrawManager : public BaseManager
 {
     public:
         DrawManager(std::shared_ptr<SceneManager> manager);
         void setDrawer(std::shared_ptr<Drawer> new_drawer);
         void drawModel();
-        void visit(Model &model) override;
-        void visit(Camera &camera) override;
-        void visit(CompositeObject &composite) override;
+        ~DrawManager();
+        
     private:
         std::shared_ptr<Drawer> drawer;
         std::shared_ptr<SceneManager> sceneManager;
-        std::shared_ptr<Camera> cam;
 };
 
 #endif

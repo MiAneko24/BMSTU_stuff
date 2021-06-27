@@ -7,6 +7,7 @@ class DrawerFactory
 {
     public:
         virtual std::shared_ptr<Drawer> createDrawer() = 0;
+        virtual ~DrawerFactory() = default;
 };
 
 #endif

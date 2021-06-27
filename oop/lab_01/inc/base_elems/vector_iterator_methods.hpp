@@ -36,7 +36,7 @@ VectorIterator<T>& VectorIterator<T>::operator ++()
 template <typename T>
 VectorIterator<T> VectorIterator<T>::operator ++(int)
 {
-    VectorIterator<T> tmp(*this);
+    VectorIterator<T> tmp = *this;
     ++(*this);
     return tmp;
 }

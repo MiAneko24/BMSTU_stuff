@@ -15,8 +15,8 @@ EQ            = =
 CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
-CFLAGS        = -pipe -O2  -W -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -O2  -W -D_REENTRANT -fPIC $(DEFINES)
+CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
@@ -58,6 +58,7 @@ SOURCES       = commands/drawCommand.cpp \
 		commands/transformCommands.cpp \
 		draw/QtDrawerFactory.cpp \
 		draw/QTDrawer.cpp \
+		draw/ObjectsVisitor.cpp \
 		facade/facade.cpp \
 		interface/src/TransformWidget.cpp \
 		interface/src/interface.cpp \
@@ -65,7 +66,7 @@ SOURCES       = commands/drawCommand.cpp \
 		load/baseLoader.cpp \
 		load/cameraBuilder.cpp \
 		load/modelBuilder.cpp \
-		load/sceneBuilder.cpp \
+		load/compositeBuilder.cpp \
 		load/director.cpp \
 		managers/drawManager.cpp \
 		managers/loadManager.cpp \
@@ -83,13 +84,15 @@ SOURCES       = commands/drawCommand.cpp \
 		objects/frameModel.cpp \
 		objects/model.cpp \
 		objects/scene.cpp \
-		point.cpp moc_TransformWidget.cpp
+		base_elems/point.cpp \
+		base_elems/connection.cpp moc_TransformWidget.cpp
 OBJECTS       = drawCommand.o \
 		loadCommand.o \
 		objectCommands.o \
 		transformCommands.o \
 		QtDrawerFactory.o \
 		QTDrawer.o \
+		ObjectsVisitor.o \
 		facade.o \
 		TransformWidget.o \
 		interface.o \
@@ -97,7 +100,7 @@ OBJECTS       = drawCommand.o \
 		baseLoader.o \
 		cameraBuilder.o \
 		modelBuilder.o \
-		sceneBuilder.o \
+		compositeBuilder.o \
 		director.o \
 		drawManager.o \
 		loadManager.o \
@@ -116,6 +119,7 @@ OBJECTS       = drawCommand.o \
 		model.o \
 		scene.o \
 		point.o \
+		connection.o \
 		moc_TransformWidget.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -173,7 +177,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		../.qmake.stash \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -202,6 +206,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		draw/QTDrawer.h \
 		draw/QtDrawerFactory.h \
 		draw/visitor.h \
+		draw/ObjectsVisitor.h \
 		facade/facade.hpp \
 		interface/inc/TransformWidget.h \
 		load/baseBuilder.hpp \
@@ -209,7 +214,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		load/cameraBuilder.h \
 		load/director.h \
 		load/modelBuilder.h \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		managers/baseManager.hpp \
 		managers/drawManager.hpp \
 		managers/loadManager.hpp \
@@ -229,25 +234,26 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		objects/object.hpp \
 		objects/objectType.hpp \
 		objects/scene.hpp \
-		base_matrix_class.hpp \
-		connection.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		matrix_impl.hpp \
-		matrix.hpp \
-		point.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		vector_iterator_methods.hpp \
-		vector.hpp \
-		vectorConstIterator.hpp \
-		vectorIterator.hpp commands/drawCommand.cpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/connection.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/point.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vectorIterator.hpp commands/drawCommand.cpp \
 		commands/loadCommand.cpp \
 		commands/objectCommands.cpp \
 		commands/transformCommands.cpp \
 		draw/QtDrawerFactory.cpp \
 		draw/QTDrawer.cpp \
+		draw/ObjectsVisitor.cpp \
 		facade/facade.cpp \
 		interface/src/TransformWidget.cpp \
 		interface/src/interface.cpp \
@@ -255,7 +261,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		load/baseLoader.cpp \
 		load/cameraBuilder.cpp \
 		load/modelBuilder.cpp \
-		load/sceneBuilder.cpp \
+		load/compositeBuilder.cpp \
 		load/director.cpp \
 		managers/drawManager.cpp \
 		managers/loadManager.cpp \
@@ -273,7 +279,8 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		objects/frameModel.cpp \
 		objects/model.cpp \
 		objects/scene.cpp \
-		point.cpp
+		base_elems/point.cpp \
+		base_elems/connection.cpp
 QMAKE_TARGET  = lab_03.out
 DESTDIR       = 
 TARGET        = lab_03.out
@@ -341,7 +348,7 @@ Makefile: lab_01.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf 
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		../.qmake.stash \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -418,7 +425,7 @@ Makefile: lab_01.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf 
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
-../.qmake.stash:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -453,8 +460,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents commands/commands.hpp commands/drawCommand.h commands/loadCommand.hpp commands/objectCommands.hpp commands/transformCommands.hpp draw/drawer.h draw/drawerFactory.h draw/QTDrawer.h draw/QtDrawerFactory.h draw/visitor.h facade/facade.hpp interface/inc/TransformWidget.h load/baseBuilder.hpp load/baseLoader.hpp load/cameraBuilder.h load/director.h load/modelBuilder.h load/sceneBuilder.h managers/baseManager.hpp managers/drawManager.hpp managers/loadManager.hpp managers/objectManager.hpp managers/sceneManager.hpp managers/transformManager.h managers/creators/drawManagerCreator.h managers/creators/loadManagerCreator.h managers/creators/objectManagerCreator.h managers/creators/sceneManagerCreator.h managers/creators/transformManagerCreator.h objects/camera.hpp objects/cameraPosition.h objects/compositeObject.hpp objects/frameModel.h objects/model.hpp objects/object.hpp objects/objectType.hpp objects/scene.hpp base_matrix_class.hpp connection.hpp exceptions.hpp matrix_checks.hpp matrix_constructors_and_iter_methods.hpp matrix_impl.hpp matrix.hpp point.hpp vector_const_iterator_methods.hpp vector_impl.hpp vector_iterator_methods.hpp vector.hpp vectorConstIterator.hpp vectorIterator.hpp $(DISTDIR)/
-	$(COPY_FILE) --parents commands/drawCommand.cpp commands/loadCommand.cpp commands/objectCommands.cpp commands/transformCommands.cpp draw/QtDrawerFactory.cpp draw/QTDrawer.cpp facade/facade.cpp interface/src/TransformWidget.cpp interface/src/interface.cpp load/baseBuilder.cpp load/baseLoader.cpp load/cameraBuilder.cpp load/modelBuilder.cpp load/sceneBuilder.cpp load/director.cpp managers/drawManager.cpp managers/loadManager.cpp managers/objectManager.cpp managers/sceneManager.cpp managers/transformManager.cpp managers/creators/drawManagerCreator.cpp managers/creators/loadManagerCreator.cpp managers/creators/objectManagerCreator.cpp managers/creators/sceneManagerCreator.cpp managers/creators/transformManagerCreator.cpp objects/camera.cpp objects/cameraPosition.cpp objects/compositeObject.cpp objects/frameModel.cpp objects/model.cpp objects/scene.cpp point.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents commands/commands.hpp commands/drawCommand.h commands/loadCommand.hpp commands/objectCommands.hpp commands/transformCommands.hpp draw/drawer.h draw/drawerFactory.h draw/QTDrawer.h draw/QtDrawerFactory.h draw/visitor.h draw/ObjectsVisitor.h facade/facade.hpp interface/inc/TransformWidget.h load/baseBuilder.hpp load/baseLoader.hpp load/cameraBuilder.h load/director.h load/modelBuilder.h load/compositeBuilder.h managers/baseManager.hpp managers/drawManager.hpp managers/loadManager.hpp managers/objectManager.hpp managers/sceneManager.hpp managers/transformManager.h managers/creators/drawManagerCreator.h managers/creators/loadManagerCreator.h managers/creators/objectManagerCreator.h managers/creators/sceneManagerCreator.h managers/creators/transformManagerCreator.h objects/camera.hpp objects/cameraPosition.h objects/compositeObject.hpp objects/frameModel.h objects/model.hpp objects/object.hpp objects/objectType.hpp objects/scene.hpp base_elems/base_matrix_class.hpp base_elems/connection.hpp base_elems/exceptions.hpp base_elems/matrix_checks.hpp base_elems/matrix_constructors_and_iter_methods.hpp base_elems/matrix_impl.hpp base_elems/matrix.hpp base_elems/point.hpp base_elems/vector_const_iterator_methods.hpp base_elems/vector_impl.hpp base_elems/vector_iterator_methods.hpp base_elems/vector.hpp base_elems/vectorConstIterator.hpp base_elems/vectorIterator.hpp $(DISTDIR)/
+	$(COPY_FILE) --parents commands/drawCommand.cpp commands/loadCommand.cpp commands/objectCommands.cpp commands/transformCommands.cpp draw/QtDrawerFactory.cpp draw/QTDrawer.cpp draw/ObjectsVisitor.cpp facade/facade.cpp interface/src/TransformWidget.cpp interface/src/interface.cpp load/baseBuilder.cpp load/baseLoader.cpp load/cameraBuilder.cpp load/modelBuilder.cpp load/compositeBuilder.cpp load/director.cpp managers/drawManager.cpp managers/loadManager.cpp managers/objectManager.cpp managers/sceneManager.cpp managers/transformManager.cpp managers/creators/drawManagerCreator.cpp managers/creators/loadManagerCreator.cpp managers/creators/objectManagerCreator.cpp managers/creators/sceneManagerCreator.cpp managers/creators/transformManagerCreator.cpp objects/camera.cpp objects/cameraPosition.cpp objects/compositeObject.cpp objects/frameModel.cpp objects/model.cpp objects/scene.cpp base_elems/point.cpp base_elems/connection.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -464,6 +471,7 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) $(TARGET) 
+	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 
@@ -493,23 +501,23 @@ moc_TransformWidget.cpp: interface/inc/TransformWidget.h \
 		draw/visitor.h \
 		objects/camera.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/cameraPosition.h \
-		point.hpp \
+		base_elems/point.hpp \
 		objects/model.hpp \
 		objects/frameModel.h \
-		connection.hpp \
+		base_elems/connection.hpp \
 		objects/compositeObject.hpp \
 		facade/facade.hpp \
 		commands/commands.hpp \
@@ -524,13 +532,18 @@ moc_TransformWidget.cpp: interface/inc/TransformWidget.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		commands/objectCommands.hpp \
 		managers/objectManager.hpp \
 		commands/transformCommands.hpp \
 		managers/transformManager.h \
 		commands/drawCommand.h \
 		managers/drawManager.hpp \
+		managers/creators/drawManagerCreator.h \
+		managers/creators/sceneManagerCreator.h \
+		managers/creators/loadManagerCreator.h \
+		managers/creators/transformManagerCreator.h \
+		managers/creators/objectManagerCreator.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/mianeko/university_stuff/BMSTU_stuff/oop/lab_01/inc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/mianeko/university_stuff/BMSTU_stuff/oop/lab_01/inc -I/home/mianeko/university_stuff/BMSTU_stuff/oop/lab_01/inc -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include interface/inc/TransformWidget.h -o moc_TransformWidget.cpp
@@ -553,88 +566,88 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 
 drawCommand.o: commands/drawCommand.cpp commands/commands.hpp \
 		objects/objectType.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		exceptions.hpp \
-		vector_impl.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp \
 		commands/loadCommand.hpp \
 		managers/loadManager.hpp \
 		managers/baseManager.hpp \
 		managers/sceneManager.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		matrix_impl.hpp \
 		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
 		load/baseLoader.hpp \
-		point.hpp \
 		load/director.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		connection.hpp \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		commands/objectCommands.hpp \
 		managers/objectManager.hpp \
 		commands/transformCommands.hpp \
 		managers/transformManager.h \
 		commands/drawCommand.h \
 		managers/drawManager.hpp \
-		draw/drawer.h \
-		draw/visitor.h \
-		objects/camera.hpp \
-		objects/cameraPosition.h \
-		objects/model.hpp \
-		objects/frameModel.h
+		draw/drawer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o drawCommand.o commands/drawCommand.cpp
 
 loadCommand.o: commands/loadCommand.cpp commands/commands.hpp \
 		objects/objectType.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		exceptions.hpp \
-		vector_impl.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp \
 		commands/loadCommand.hpp \
 		managers/loadManager.hpp \
 		managers/baseManager.hpp \
 		managers/sceneManager.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		matrix_impl.hpp \
 		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
 		load/baseLoader.hpp \
-		point.hpp \
 		load/director.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		connection.hpp \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		commands/objectCommands.hpp \
 		managers/objectManager.hpp \
 		commands/transformCommands.hpp \
 		managers/transformManager.h \
 		commands/drawCommand.h \
 		managers/drawManager.hpp \
-		draw/drawer.h \
-		draw/visitor.h \
-		objects/camera.hpp \
-		objects/cameraPosition.h \
-		objects/model.hpp \
-		objects/frameModel.h
+		draw/drawer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o loadCommand.o commands/loadCommand.cpp
 
 objectCommands.o: commands/objectCommands.cpp commands/objectCommands.hpp \
@@ -643,41 +656,41 @@ objectCommands.o: commands/objectCommands.cpp commands/objectCommands.hpp \
 		objects/objectType.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
 		managers/sceneManager.hpp \
 		commands/commands.hpp \
 		commands/loadCommand.hpp \
 		managers/loadManager.hpp \
 		load/baseLoader.hpp \
-		point.hpp \
 		load/director.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		connection.hpp \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		commands/transformCommands.hpp \
 		managers/transformManager.h \
 		commands/drawCommand.h \
 		managers/drawManager.hpp \
-		draw/drawer.h \
-		draw/visitor.h \
-		objects/camera.hpp \
-		objects/cameraPosition.h \
-		objects/model.hpp \
-		objects/frameModel.h
+		draw/drawer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objectCommands.o commands/objectCommands.cpp
 
 transformCommands.o: commands/transformCommands.cpp commands/transformCommands.hpp \
@@ -685,42 +698,42 @@ transformCommands.o: commands/transformCommands.cpp commands/transformCommands.h
 		managers/baseManager.hpp \
 		objects/objectType.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		managers/sceneManager.hpp \
 		objects/scene.hpp \
 		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
 		commands/commands.hpp \
 		commands/loadCommand.hpp \
 		managers/loadManager.hpp \
 		load/baseLoader.hpp \
-		point.hpp \
 		load/director.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		connection.hpp \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		commands/objectCommands.hpp \
 		managers/objectManager.hpp \
 		commands/drawCommand.h \
 		managers/drawManager.hpp \
-		draw/drawer.h \
-		draw/visitor.h \
-		objects/camera.hpp \
-		objects/cameraPosition.h \
-		objects/model.hpp \
-		objects/frameModel.h
+		draw/drawer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o transformCommands.o commands/transformCommands.cpp
 
 QtDrawerFactory.o: draw/QtDrawerFactory.cpp draw/QtDrawerFactory.h \
@@ -729,23 +742,23 @@ QtDrawerFactory.o: draw/QtDrawerFactory.cpp draw/QtDrawerFactory.h \
 		draw/visitor.h \
 		objects/camera.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/cameraPosition.h \
-		point.hpp \
+		base_elems/point.hpp \
 		objects/model.hpp \
 		objects/frameModel.h \
-		connection.hpp \
+		base_elems/connection.hpp \
 		objects/compositeObject.hpp \
 		draw/QTDrawer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o QtDrawerFactory.o draw/QtDrawerFactory.cpp
@@ -755,68 +768,93 @@ QTDrawer.o: draw/QTDrawer.cpp draw/QTDrawer.h \
 		draw/visitor.h \
 		objects/camera.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/cameraPosition.h \
-		point.hpp \
+		base_elems/point.hpp \
 		objects/model.hpp \
 		objects/frameModel.h \
-		connection.hpp \
+		base_elems/connection.hpp \
 		objects/compositeObject.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o QTDrawer.o draw/QTDrawer.cpp
+
+ObjectsVisitor.o: draw/ObjectsVisitor.cpp draw/ObjectsVisitor.h \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/object.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
+		objects/compositeObject.hpp \
+		draw/drawer.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ObjectsVisitor.o draw/ObjectsVisitor.cpp
 
 facade.o: facade/facade.cpp facade/facade.hpp \
 		commands/commands.hpp \
 		objects/objectType.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		exceptions.hpp \
-		vector_impl.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp \
 		commands/loadCommand.hpp \
 		managers/loadManager.hpp \
 		managers/baseManager.hpp \
 		managers/sceneManager.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		matrix_impl.hpp \
 		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
 		load/baseLoader.hpp \
-		point.hpp \
 		load/director.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		connection.hpp \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		commands/objectCommands.hpp \
 		managers/objectManager.hpp \
 		commands/transformCommands.hpp \
 		managers/transformManager.h \
 		commands/drawCommand.h \
 		managers/drawManager.hpp \
-		draw/drawer.h \
-		draw/visitor.h \
-		objects/camera.hpp \
-		objects/cameraPosition.h \
-		objects/model.hpp \
-		objects/frameModel.h
+		draw/drawer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o facade.o facade/facade.cpp
 
 TransformWidget.o: interface/src/TransformWidget.cpp interface/inc/TransformWidget.h \
@@ -824,23 +862,23 @@ TransformWidget.o: interface/src/TransformWidget.cpp interface/inc/TransformWidg
 		draw/visitor.h \
 		objects/camera.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/cameraPosition.h \
-		point.hpp \
+		base_elems/point.hpp \
 		objects/model.hpp \
 		objects/frameModel.h \
-		connection.hpp \
+		base_elems/connection.hpp \
 		objects/compositeObject.hpp \
 		facade/facade.hpp \
 		commands/commands.hpp \
@@ -855,13 +893,18 @@ TransformWidget.o: interface/src/TransformWidget.cpp interface/inc/TransformWidg
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		commands/objectCommands.hpp \
 		managers/objectManager.hpp \
 		commands/transformCommands.hpp \
 		managers/transformManager.h \
 		commands/drawCommand.h \
 		managers/drawManager.hpp \
+		managers/creators/drawManagerCreator.h \
+		managers/creators/sceneManagerCreator.h \
+		managers/creators/loadManagerCreator.h \
+		managers/creators/transformManagerCreator.h \
+		managers/creators/objectManagerCreator.h \
 		draw/QtDrawerFactory.h \
 		draw/drawerFactory.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o TransformWidget.o interface/src/TransformWidget.cpp
@@ -871,23 +914,23 @@ interface.o: interface/src/interface.cpp interface/inc/TransformWidget.h \
 		draw/visitor.h \
 		objects/camera.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/cameraPosition.h \
-		point.hpp \
+		base_elems/point.hpp \
 		objects/model.hpp \
 		objects/frameModel.h \
-		connection.hpp \
+		base_elems/connection.hpp \
 		objects/compositeObject.hpp \
 		facade/facade.hpp \
 		commands/commands.hpp \
@@ -902,144 +945,161 @@ interface.o: interface/src/interface.cpp interface/inc/TransformWidget.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		load/sceneBuilder.h \
+		load/compositeBuilder.h \
 		commands/objectCommands.hpp \
 		managers/objectManager.hpp \
 		commands/transformCommands.hpp \
 		managers/transformManager.h \
 		commands/drawCommand.h \
-		managers/drawManager.hpp
+		managers/drawManager.hpp \
+		managers/creators/drawManagerCreator.h \
+		managers/creators/sceneManagerCreator.h \
+		managers/creators/loadManagerCreator.h \
+		managers/creators/transformManagerCreator.h \
+		managers/creators/objectManagerCreator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o interface.o interface/src/interface.cpp
 
 baseBuilder.o: load/baseBuilder.cpp load/baseBuilder.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/objectType.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o baseBuilder.o load/baseBuilder.cpp
 
 baseLoader.o: load/baseLoader.cpp load/baseLoader.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		exceptions.hpp \
-		vector_impl.hpp \
-		point.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp \
+		base_elems/point.hpp \
 		load/director.h \
 		load/baseBuilder.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		matrix_impl.hpp \
 		objects/objectType.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		connection.hpp \
-		load/sceneBuilder.h
+		base_elems/connection.hpp \
+		load/compositeBuilder.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o baseLoader.o load/baseLoader.cpp
 
 cameraBuilder.o: load/cameraBuilder.cpp load/cameraBuilder.h \
 		load/baseBuilder.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/objectType.hpp \
-		point.hpp \
 		objects/camera.hpp \
-		objects/cameraPosition.h
+		objects/cameraPosition.h \
+		base_elems/point.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cameraBuilder.o load/cameraBuilder.cpp
 
 modelBuilder.o: load/modelBuilder.cpp load/modelBuilder.h \
 		load/baseBuilder.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/objectType.hpp \
-		point.hpp \
-		connection.hpp \
+		base_elems/point.hpp \
+		base_elems/connection.hpp \
 		objects/model.hpp \
 		objects/frameModel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o modelBuilder.o load/modelBuilder.cpp
 
-sceneBuilder.o: load/sceneBuilder.cpp load/sceneBuilder.h \
+compositeBuilder.o: load/compositeBuilder.cpp load/compositeBuilder.h \
 		load/cameraBuilder.h \
 		load/baseBuilder.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/objectType.hpp \
 		load/modelBuilder.h \
-		point.hpp \
-		connection.hpp \
+		base_elems/point.hpp \
+		base_elems/connection.hpp \
 		objects/scene.hpp \
-		objects/compositeObject.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sceneBuilder.o load/sceneBuilder.cpp
+		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		objects/model.hpp \
+		objects/frameModel.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o compositeBuilder.o load/compositeBuilder.cpp
 
 director.o: load/director.cpp load/director.h \
 		load/baseBuilder.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/objectType.hpp \
-		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		point.hpp \
-		connection.hpp \
-		load/sceneBuilder.h
+		base_elems/point.hpp \
+		base_elems/connection.hpp \
+		load/compositeBuilder.h \
+		load/cameraBuilder.h \
+		objects/scene.hpp \
+		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		objects/model.hpp \
+		objects/frameModel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o director.o load/director.cpp
 
 drawManager.o: managers/drawManager.cpp managers/drawManager.hpp \
@@ -1048,27 +1108,31 @@ drawManager.o: managers/drawManager.cpp managers/drawManager.hpp \
 		managers/sceneManager.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/compositeObject.hpp \
-		draw/drawer.h \
 		draw/visitor.h \
 		objects/camera.hpp \
 		objects/cameraPosition.h \
-		point.hpp \
+		base_elems/point.hpp \
 		objects/model.hpp \
 		objects/frameModel.h \
-		connection.hpp
+		base_elems/connection.hpp \
+		draw/drawer.h \
+		draw/QtDrawerFactory.h \
+		draw/drawerFactory.h \
+		draw/QTDrawer.h \
+		draw/ObjectsVisitor.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o drawManager.o managers/drawManager.cpp
 
 loadManager.o: managers/loadManager.cpp managers/loadManager.hpp \
@@ -1077,27 +1141,32 @@ loadManager.o: managers/loadManager.cpp managers/loadManager.hpp \
 		managers/sceneManager.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
 		load/baseLoader.hpp \
-		point.hpp \
 		load/director.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		connection.hpp \
-		load/sceneBuilder.h
+		load/compositeBuilder.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o loadManager.o managers/loadManager.cpp
 
 objectManager.o: managers/objectManager.cpp managers/objectManager.hpp \
@@ -1105,23 +1174,27 @@ objectManager.o: managers/objectManager.cpp managers/objectManager.hpp \
 		objects/objectType.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/compositeObject.hpp \
-		managers/sceneManager.hpp \
+		draw/visitor.h \
 		objects/camera.hpp \
 		objects/cameraPosition.h \
-		point.hpp
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
+		managers/sceneManager.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objectManager.o managers/objectManager.cpp
 
 sceneManager.o: managers/sceneManager.cpp managers/sceneManager.hpp \
@@ -1129,125 +1202,151 @@ sceneManager.o: managers/sceneManager.cpp managers/sceneManager.hpp \
 		objects/objectType.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
-		objects/compositeObject.hpp
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
+		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sceneManager.o managers/sceneManager.cpp
 
 transformManager.o: managers/transformManager.cpp managers/transformManager.h \
 		managers/baseManager.hpp \
 		objects/objectType.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		managers/sceneManager.hpp \
 		objects/scene.hpp \
-		objects/compositeObject.hpp
+		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o transformManager.o managers/transformManager.cpp
 
 drawManagerCreator.o: managers/creators/drawManagerCreator.cpp managers/creators/drawManagerCreator.h \
 		managers/creators/sceneManagerCreator.h \
-		managers/drawManager.hpp \
+		managers/sceneManager.hpp \
 		managers/baseManager.hpp \
 		objects/objectType.hpp \
-		managers/sceneManager.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/compositeObject.hpp \
-		draw/drawer.h \
 		draw/visitor.h \
 		objects/camera.hpp \
 		objects/cameraPosition.h \
-		point.hpp \
+		base_elems/point.hpp \
 		objects/model.hpp \
 		objects/frameModel.h \
-		connection.hpp
+		base_elems/connection.hpp \
+		managers/drawManager.hpp \
+		draw/drawer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o drawManagerCreator.o managers/creators/drawManagerCreator.cpp
 
 loadManagerCreator.o: managers/creators/loadManagerCreator.cpp managers/creators/loadManagerCreator.h \
 		managers/creators/sceneManagerCreator.h \
-		managers/loadManager.hpp \
+		managers/sceneManager.hpp \
 		managers/baseManager.hpp \
 		objects/objectType.hpp \
-		managers/sceneManager.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
+		managers/loadManager.hpp \
 		load/baseLoader.hpp \
-		point.hpp \
 		load/director.h \
 		load/baseBuilder.hpp \
 		load/cameraBuilder.h \
 		load/modelBuilder.h \
-		connection.hpp \
-		load/sceneBuilder.h
+		load/compositeBuilder.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o loadManagerCreator.o managers/creators/loadManagerCreator.cpp
 
 objectManagerCreator.o: managers/creators/objectManagerCreator.cpp managers/creators/objectManagerCreator.h \
 		managers/creators/sceneManagerCreator.h \
-		managers/objectManager.hpp \
+		managers/sceneManager.hpp \
 		managers/baseManager.hpp \
 		objects/objectType.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/compositeObject.hpp \
-		managers/sceneManager.hpp
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
+		managers/objectManager.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objectManagerCreator.o managers/creators/objectManagerCreator.cpp
 
 sceneManagerCreator.o: managers/creators/sceneManagerCreator.cpp managers/creators/sceneManagerCreator.h \
@@ -1256,123 +1355,155 @@ sceneManagerCreator.o: managers/creators/sceneManagerCreator.cpp managers/creato
 		objects/objectType.hpp \
 		objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
-		objects/compositeObject.hpp
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
+		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sceneManagerCreator.o managers/creators/sceneManagerCreator.cpp
 
 transformManagerCreator.o: managers/creators/transformManagerCreator.cpp managers/creators/transformManagerCreator.h \
 		managers/creators/sceneManagerCreator.h \
-		managers/transformManager.h \
+		managers/sceneManager.hpp \
 		managers/baseManager.hpp \
 		objects/objectType.hpp \
-		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
-		managers/sceneManager.hpp \
 		objects/scene.hpp \
-		objects/compositeObject.hpp
+		objects/object.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
+		objects/compositeObject.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
+		managers/transformManager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o transformManagerCreator.o managers/creators/transformManagerCreator.cpp
 
 camera.o: objects/camera.cpp objects/camera.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/cameraPosition.h \
-		point.hpp
+		base_elems/point.hpp \
+		draw/visitor.h \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
+		objects/compositeObject.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o camera.o objects/camera.cpp
 
 cameraPosition.o: objects/cameraPosition.cpp objects/cameraPosition.h \
-		point.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		exceptions.hpp \
-		vector_impl.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		matrix_impl.hpp
+		base_elems/point.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cameraPosition.o objects/cameraPosition.cpp
 
 compositeObject.o: objects/compositeObject.cpp objects/compositeObject.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp \
+		objects/objectType.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o compositeObject.o objects/compositeObject.cpp
 
 frameModel.o: objects/frameModel.cpp objects/frameModel.h \
-		point.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		exceptions.hpp \
-		vector_impl.hpp \
-		connection.hpp
+		base_elems/point.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp \
+		base_elems/connection.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o frameModel.o objects/frameModel.cpp
 
 model.o: objects/model.cpp objects/model.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		exceptions.hpp \
-		vector_impl.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		matrix_impl.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/object.hpp \
 		objects/frameModel.h \
-		point.hpp \
-		connection.hpp \
+		base_elems/point.hpp \
+		base_elems/connection.hpp \
 		draw/visitor.h \
 		objects/camera.hpp \
 		objects/cameraPosition.h \
@@ -1381,31 +1512,46 @@ model.o: objects/model.cpp objects/model.hpp \
 
 scene.o: objects/scene.cpp objects/scene.hpp \
 		objects/object.hpp \
-		matrix.hpp \
-		base_matrix_class.hpp \
-		exceptions.hpp \
-		matrix_checks.hpp \
-		matrix_constructors_and_iter_methods.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		vector_impl.hpp \
-		matrix_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix_impl.hpp \
 		objects/compositeObject.hpp \
-		objects/objectType.hpp
+		objects/objectType.hpp \
+		draw/visitor.h \
+		objects/camera.hpp \
+		objects/cameraPosition.h \
+		base_elems/point.hpp \
+		objects/model.hpp \
+		objects/frameModel.h \
+		base_elems/connection.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o scene.o objects/scene.cpp
 
-point.o: point.cpp point.hpp \
-		vector.hpp \
-		vectorIterator.hpp \
-		vector_iterator_methods.hpp \
-		vectorConstIterator.hpp \
-		vector_const_iterator_methods.hpp \
-		exceptions.hpp \
-		vector_impl.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o point.o point.cpp
+point.o: base_elems/point.cpp base_elems/point.hpp \
+		base_elems/vector.hpp \
+		base_elems/vectorIterator.hpp \
+		base_elems/vector_iterator_methods.hpp \
+		base_elems/exceptions.hpp \
+		base_elems/vectorConstIterator.hpp \
+		base_elems/vector_const_iterator_methods.hpp \
+		base_elems/vector_impl.hpp \
+		base_elems/matrix.hpp \
+		base_elems/base_matrix_class.hpp \
+		base_elems/matrix_checks.hpp \
+		base_elems/matrix_constructors_and_iter_methods.hpp \
+		base_elems/matrix_impl.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o point.o base_elems/point.cpp
+
+connection.o: base_elems/connection.cpp base_elems/connection.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o connection.o base_elems/connection.cpp
 
 moc_TransformWidget.o: moc_TransformWidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_TransformWidget.o moc_TransformWidget.cpp

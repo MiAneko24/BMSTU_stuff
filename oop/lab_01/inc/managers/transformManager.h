@@ -10,9 +10,12 @@ class TransformManager : public BaseManager
 {
     public:
         TransformManager(std::shared_ptr<SceneManager> manager);
+        
         void move(ObjectType obj_type, Vector<double> &params);
         void scale(ObjectType obj_type, Vector<double> &params);
         void rotate(ObjectType obj_type, Vector<double> &params);
+
+        ~TransformManager();
     
     private:
         std::shared_ptr<SceneManager> sceneManager;

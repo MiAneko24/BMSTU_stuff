@@ -1,8 +1,8 @@
 #include "cameraBuilder.h"
-#include "../point.hpp"
 #include "../objects/camera.hpp"
 #include "../objects/cameraPosition.h"
-#include "../exceptions.hpp"
+#include "../base_elems/point.hpp"
+#include "../base_elems/exceptions.hpp"
 
 bool CameraBuilder::buildCamera(std::ifstream& file)
 {
@@ -34,9 +34,8 @@ bool CameraBuilder::buildAngles(std::ifstream& file)
     if (file >> x >> y >> z)
     {
         std::shared_ptr<Camera> camera = std::dynamic_pointer_cast<Camera>(object);
-        camera->getPosition()->setXAngle(x);
-        camera->getPosition()->setYAngle(y);
-        camera->getPosition()->setZAngle(z);
+        Vector<double> angles = Vector<double>({x, y, z}, 3);
+        camera->getPosition()->setAngles(angles);
     }
     else 
     {

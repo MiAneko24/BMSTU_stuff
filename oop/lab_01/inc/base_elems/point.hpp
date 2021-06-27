@@ -7,22 +7,16 @@
 class Point {
     public:
         Point() = default;
-        Point(double x, double y, double z): pX(x), pY(y), pZ(z) {};
+        Point(double x, double y, double z);
         Point(const Point &) = default;
-        Point(const Vector<double> vector); //?
+        Point(const Vector<double> vector);
         Point &operator =(const Point&) = default;
         
         void transform(const Matrix<double> &transform_matrix);
         
-        double getX() const {
-            return pX;
-        }
-        double getY() const {
-            return pY;
-        }
-        double getZ() const {
-            return pZ;
-        }
+        double getX() const;
+        double getY() const;
+        double getZ() const;
         Vector<double> toVector();
         void setFromVector(Vector<double> &vector);
 
@@ -32,6 +26,5 @@ class Point {
         double pZ;
 };
 
-//убрать потом в cpp потому что это не шаблон!
 
 #endif

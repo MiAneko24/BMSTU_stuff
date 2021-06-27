@@ -1,25 +1,25 @@
-#include "sceneBuilder.h"
+#include "compositeBuilder.h"
 #include "../objects/scene.hpp"
 
-bool SceneBuilder::buildModel(std::ifstream& file)
+bool CompositeBuilder::buildModel(std::ifstream& file)
 {
     if (!object)
-        object.reset(new Scene());
+        object.reset(new CompositeObject());
     if (!modelBuilder)
         modelBuilder.reset(new ModelBuilder());
-    bool state = true;
     int amount = 0;
     if (!(file >> amount && amount > 0))
     {
         time_t t_time = time(NULL);
         throw FileDataError(ctime(&t_time), __FILE__, typeid(*this).name(), __LINE__);
     }
-    std::shared_ptr<Scene> scene = std::dynamic_pointer_cast<Scene>(object);
-    for (int i = 0; i < amount && state; i++)
+    std::shared_ptr<CompositeObject> composite = std::dynamic_pointer_cast<CompositeObject>(object);
+    for (int i = 0; i < amount; i++)
     {
         if (modelBuilder->buildModel(file))
         {
-            scene->add(modelBuilder->getObject());
+
+            composite->add(modelBuilder->getObject());
         }
         else
         {        
@@ -27,14 +27,14 @@ bool SceneBuilder::buildModel(std::ifstream& file)
             throw FileDataError(ctime(&t_time), __FILE__, typeid(*this).name(), __LINE__);
         }
     }
-    
-    return state;
+    object = composite;
+    return true;
 }
 
-bool SceneBuilder::buildCamera(std::ifstream& file)
+bool CompositeBuilder::buildCamera(std::ifstream& file)
 {
     if (!object)
-        object.reset(new Scene());
+        object.reset(new CompositeObject());
     if (!cameraBuilder)
         cameraBuilder.reset(new CameraBuilder());
     bool state = true;
@@ -44,12 +44,12 @@ bool SceneBuilder::buildCamera(std::ifstream& file)
         time_t t_time = time(NULL);
         throw FileDataError(ctime(&t_time), __FILE__, typeid(*this).name(), __LINE__);
     }
-    std::shared_ptr<Scene> scene = std::dynamic_pointer_cast<Scene>(object);
+    std::shared_ptr<CompositeObject> composite = std::dynamic_pointer_cast<CompositeObject>(object);
     for (int i = 0; i < amount && state; i++)
     {
         if (cameraBuilder->buildCamera(file))
         {
-            scene->add(cameraBuilder->getObject());
+            composite->add(cameraBuilder->getObject());
         }
         else
         {
@@ -58,5 +58,6 @@ bool SceneBuilder::buildCamera(std::ifstream& file)
     
         }
     }
+    object = composite;
     return state;
 }

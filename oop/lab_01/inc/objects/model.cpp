@@ -1,6 +1,11 @@
 #include "model.hpp"
 #include "../draw/visitor.h"
 
+Model::Model()
+{
+    frame = std::shared_ptr<FrameModel>(new FrameModel());
+}
+
 Model::Model(const Model &model) : frame(model.frame) {};
 
 Model::Model(Model &&model) noexcept : frame(model.frame) {};
@@ -24,7 +29,17 @@ void Model::transform(const Matrix<double> &transform_matrix)
     frame->transform(transform_matrix);    
 }
 
-void Model::accept(std::shared_ptr<Visitor> visitor)
+void Model::accept(Visitor &visitor)
 {
-    visitor->visit(*this);
+    visitor.visit(*this);
+}
+
+std::shared_ptr<FrameModel> Model::getFrame()
+{
+    return frame;
+}
+
+Model::~Model()
+{
+    frame.reset();
 }

@@ -12,7 +12,7 @@ const Vector<Connection> FrameModel::getConnections()
 
 void FrameModel::fill(Vector<Point> &new_points)
 {
-    points = new_points;
+    points = Vector<Point>(new_points);
 }
 
 void FrameModel::fill(Vector<Connection> &new_connections)

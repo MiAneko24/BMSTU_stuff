@@ -1,9 +1,10 @@
 #include "sceneManagerCreator.h"
 #include "../sceneManager.hpp"
 
-std::shared_ptr<SceneManager> SceneManagerCreator::createManager()
+void SceneManagerCreator::createManager()
 {
-    return std::shared_ptr<SceneManager>(new SceneManager());
+    static std::shared_ptr<SceneManager> mng(new SceneManager());
+    manager = mng;
 }
 
 
@@ -11,7 +12,7 @@ std::shared_ptr<SceneManager> SceneManagerCreator::getManager()
 {
     if (!manager) 
     {
-        manager = createManager();
+        createManager();
     }
     return manager;
 }

@@ -10,7 +10,7 @@ class TransformManagerCreator
         std::shared_ptr<TransformManager> getManager();
     private:
         std::shared_ptr<TransformManager> manager;
-        std::shared_ptr<TransformManager> createManager();
+        void createManager();
     
 };
 

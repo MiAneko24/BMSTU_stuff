@@ -11,7 +11,7 @@ class DrawManagerCreator
 
     private:
         std::shared_ptr<DrawManager> manager;
-        std::shared_ptr<DrawManager> createManager();
+        void createManager();
 };
 
 #endif

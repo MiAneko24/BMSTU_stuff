@@ -15,6 +15,7 @@ class LoadCommand : public BaseCommand
     public:
         LoadCommand(std::shared_ptr<LoadManager> manager, Action method, ObjectType type_obj, std::string file);
         void execute() override;
+        ~LoadCommand() = default;
 };
 
 

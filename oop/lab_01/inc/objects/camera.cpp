@@ -20,3 +20,14 @@ void Camera::transform(const Matrix<double> &mat)
 {
     position->transform(mat);
 }
+
+void Camera::accept(Visitor &visitor)
+{
+
+}
+
+Camera::~Camera()
+{
+    position.reset();
+}
+

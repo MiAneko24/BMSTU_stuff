@@ -1,16 +1,17 @@
 #include "objectManagerCreator.h"
 #include "../objectManager.hpp"
 
-std::shared_ptr<ObjectManager> ObjectManagerCreator::createManager()
+void ObjectManagerCreator::createManager()
 {
-    return std::shared_ptr<ObjectManager>(new ObjectManager(SceneManagerCreator().getManager()));
+    static std::shared_ptr<ObjectManager> mng(new ObjectManager(SceneManagerCreator().getManager()));
+    manager = mng;
 }
 
 std::shared_ptr<ObjectManager> ObjectManagerCreator::getManager()
 {
     if (!manager) 
     {
-        manager = createManager();
+        createManager();
     }
     return manager;
 }

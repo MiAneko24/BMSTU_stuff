@@ -1,13 +1,14 @@
-#ifndef SCENEBUILDER_H
-#define SCENEBUILDER_H
+#ifndef COMPOSITEBUILDER_H
+#define COMPOSITEBUILDER_H
 #include "cameraBuilder.h"
 #include "modelBuilder.h"
 
-class SceneBuilder : public BaseBuilder
+class CompositeBuilder : public BaseBuilder
 {
     public: 
         bool buildModel(std::ifstream &file) override;
         bool buildCamera(std::ifstream &file) override;
+        ~CompositeBuilder() = default;
     
     private:
         std::shared_ptr<CameraBuilder> cameraBuilder;

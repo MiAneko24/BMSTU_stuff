@@ -1,10 +1,26 @@
 #include "point.hpp"
 
+
+Point::Point(double x, double y, double z): pX(x), pY(y), pZ(z) {};
+
+double Point::getX() const {
+    return pX;
+}
+
+double Point::getY() const {
+    return pY;
+}
+
+double Point::getZ() const {
+    return pZ;
+}
+
 void Point::transform(const Matrix<double> &transform_matrix)
 {
     Vector<double> result(4);
     Vector<double> point = toVector();
     result = point * transform_matrix;
+
     setFromVector(result);
 }
 
@@ -22,6 +38,6 @@ Vector<double> Point::toVector()
 void Point::setFromVector(Vector<double> &vector)
 {
     pX = vector[0];
-    pX = vector[1];
-    pX = vector[2];
+    pY = vector[1];
+    pZ = vector[2];
 }

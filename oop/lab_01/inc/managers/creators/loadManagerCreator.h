@@ -11,7 +11,7 @@ class LoadManagerCreator
 
     private:
         std::shared_ptr<LoadManager> manager;
-        std::shared_ptr<LoadManager> createManager();
+        void createManager();
 };
 
 #endif

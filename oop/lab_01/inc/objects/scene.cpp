@@ -2,38 +2,111 @@
 
 Scene::Scene()
 {
-    compositeObject.reset(new CompositeObject());
+    objects = Vector<std::shared_ptr<Object>>(1);
+    objects[0] = std::shared_ptr<CompositeObject>(new CompositeObject());
 }
 
-bool Scene::add(std::shared_ptr<Object> object)
-{
-    return compositeObject->add(std::move(object));
-}
 
-bool Scene::remove(VectorIterator<std::shared_ptr<Object>> &it)
+void Scene::add(ObjectType type_obj, std::shared_ptr<Object> object, int curScene)
 {
-    return compositeObject->remove(it);
-}
-
-VectorIterator<std::shared_ptr<Object>> Scene::getIterator(ObjectType type_obj, int index)
-{
-    bool flag = (type_obj == ObjectType::MODEL);
-    int i = 0;
-    auto it = compositeObject->begin();
-    while (it != compositeObject->end() && i < index)
+    if (type_obj == ObjectType::COMPOSITE)
     {
-        if (flag && (*it)->isVisible() || !(*it)->isVisible())
+        objects.add(object);
+    }
+    else
+    {
+        objects[curScene]->add(object);
+    }
+}
+
+
+VectorIterator<std::shared_ptr<Object>> Scene::getIterator(ObjectType type_obj, int index, int curScene)
+{
+    VectorIterator<std::shared_ptr<Object>> iter;
+    if (type_obj != ObjectType::COMPOSITE)
+    {
+        bool flag_model = (type_obj == ObjectType::MODEL);
+        int i = 0;
+        VectorIterator<std::shared_ptr<Object>> it = objects[curScene]->begin();
+        while (!it.isEnd())
+        {
+            if ((flag_model && (*it)->isVisible()) || (!flag_model && !(*it)->isVisible()))
+            {
+                if (i == index)
+                    break;
+                i++;
+            }
+            it++;
+        }
+        if (it.isEnd())
+        {
+            time_t t_time = time(NULL);
+            throw IndexError(ctime(&t_time), __FILE__, typeid(*this).name(), __LINE__, "Object's index is invalid");
+        }
+        iter = it;
+    }
+    else
+    {
+        int i = 0;
+        VectorIterator<std::shared_ptr<Object>> it = objects.begin();
+        while (!it.isEnd())
+        {
+            if (i == index)
+                break;
             i++;
-        it++;
+            it++;
+        }
+        if (it.isEnd())
+        {
+            time_t t_time = time(NULL);
+            throw IndexError(ctime(&t_time), __FILE__, typeid(*this).name(), __LINE__, "Scene's index is invalid");
+        }   
+        iter = it;
     }
-    if (it == compositeObject->end() && i != index)
-    {
-        //throw error;
-    }
-    return it;
+    return iter;
 }
 
-std::shared_ptr<Object> Scene::getObject(ObjectType type_obj, int index)
+std::shared_ptr<Object> Scene::getObject(ObjectType type_obj, int index, int curScene)
 {
-    return (*getIterator(type_obj, index));
+    return (*getIterator(type_obj, index, curScene));
+}
+
+
+int Scene::getObjectsAmount(ObjectType type_obj, int curScene) {
+    int amount = 0; 
+    if (type_obj != ObjectType::COMPOSITE)
+    {
+        bool flag_model = (type_obj == ObjectType::MODEL);
+        VectorIterator<std::shared_ptr<Object>> it = objects[curScene]->begin(); 
+        while (!it.isEnd())
+        {
+            if ((flag_model && (*it)->isVisible()) || (!flag_model && !(*it)->isVisible()))
+            {
+                amount++;
+            }
+            it++;
+        }
+    }
+    else
+    {
+        VectorIterator<std::shared_ptr<Object>> it = objects.begin(); 
+        while (!it.isEnd())
+        {
+            amount++;
+            it++;
+        }
+    }
+    return amount;
+}
+
+void Scene::remove(ObjectType type_obj, VectorIterator<std::shared_ptr<Object>> &it, int curScene)
+{
+    if (type_obj == ObjectType::COMPOSITE)
+    {
+        objects.remove(it);
+        if (getObjectsAmount(type_obj, curScene) == 0)
+            objects.add(std::shared_ptr<CompositeObject>(new CompositeObject()));
+    }
+    else
+        objects[curScene]->remove(it);
 }

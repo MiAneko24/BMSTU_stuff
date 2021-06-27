@@ -1,7 +1,6 @@
 #ifndef DRAWCOMMAND_H
 #define DRAWCOMMAND_H
 #include "../managers/drawManager.hpp"
-#include "commands.hpp"
 
 class DrawCommand : public BaseCommand
 {
@@ -12,6 +11,7 @@ class DrawCommand : public BaseCommand
     public:
         DrawCommand(std::shared_ptr<DrawManager> manager, Action method);
         void execute() override;
+        ~DrawCommand() = default;
 };
 
 

@@ -216,9 +216,9 @@ void Matrix<T>::make_move_matrix(Vector<T> &params)
 template <typename T>
 void Matrix<T>::make_scale_matrix(Vector<T> &params)
 {
-    for (int i = 0; i < mRows; i++)
+    for (int i = 0; i < mRows - 1; i++)
         (*this)[i][i] = params[i];
-
+    
     (*this)[3][3] = 1;   
 }
 
@@ -229,8 +229,8 @@ void Matrix<T>::make_rotate_matrix(Vector<T> &params)
     Matrix<T> y_rotation = make_rotate_oy_matrix(params[1]);
     Matrix<T> z_rotation = make_rotate_oz_matrix(params[2]);
 
-    (*this) = x_rotation * y_rotation;
-    (*this) *= z_rotation;
+    Matrix<T> res = x_rotation * y_rotation;
+    (*this) = res * z_rotation;
 }
 
 template <typename T>

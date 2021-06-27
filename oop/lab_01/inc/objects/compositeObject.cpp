@@ -1,6 +1,7 @@
 #include "compositeObject.hpp"
 
 #include "../draw/visitor.h"
+#include "objectType.hpp"
 
 bool CompositeObject::isVisible() const 
 {
@@ -40,7 +41,10 @@ VectorIterator<std::shared_ptr<Object>> CompositeObject::end()
     return objects.end();
 }
 
-void CompositeObject::accept(std::shared_ptr<Visitor> visitor)
+void CompositeObject::accept(Visitor &visitor)
 {
-    
+    for (auto obj : objects)
+    {
+        obj->accept(visitor);
+    }
 }

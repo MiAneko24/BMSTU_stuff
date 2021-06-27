@@ -1,8 +1,16 @@
 #include "sceneManager.hpp"
 
-void SceneManager::setScene(std::shared_ptr<Scene> new_scene)
+SceneManager::SceneManager()
 {
-    scene = new_scene;
+    scene = std::shared_ptr<Scene>(new Scene());
+    curCamera = 0;
+    curModel = 0;
+    curScene = 0;
+}
+
+void SceneManager::addScene(std::shared_ptr<Object> new_scene)
+{
+    scene->add(ObjectType::COMPOSITE, new_scene, curScene);
 }
 
 std::shared_ptr<Scene> SceneManager::getScene()
@@ -16,6 +24,8 @@ void SceneManager::setCurrentObjectPos(ObjectType type_obj, int pos)
         curCamera = pos;
     else if (type_obj == ObjectType::MODEL)
         curModel = pos;
+    else if (type_obj == ObjectType::COMPOSITE)
+        curScene = pos;
 }
 
 int SceneManager::getCurrentObjectPos(ObjectType type_obj)
@@ -25,5 +35,17 @@ int SceneManager::getCurrentObjectPos(ObjectType type_obj)
         pos = curCamera;
     else if (type_obj == ObjectType::MODEL)
         pos = curModel;
+    else if (type_obj == ObjectType::COMPOSITE)
+        pos = curScene;
     return pos;
+}
+
+int SceneManager::getObjectsAmount(ObjectType type_obj)
+{
+    return scene->getObjectsAmount(type_obj, curScene);
+}
+
+SceneManager::~SceneManager()
+{
+    scene.reset();
 }

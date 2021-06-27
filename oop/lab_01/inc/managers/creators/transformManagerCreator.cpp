@@ -1,10 +1,10 @@
 #include "transformManagerCreator.h"
 #include "../transformManager.h"
 
-
-std::shared_ptr<TransformManager> TransformManagerCreator::createManager()
+void TransformManagerCreator::createManager()
 {
-    return std::shared_ptr<TransformManager>(new TransformManager(SceneManagerCreator().getManager()));
+    static std::shared_ptr<TransformManager> mng(new TransformManager(SceneManagerCreator().getManager()));
+    manager = mng;
 }
 
 
@@ -12,7 +12,7 @@ std::shared_ptr<TransformManager> TransformManagerCreator::getManager()
 {
     if (!manager) 
     {
-        manager = createManager();
+        createManager();
     }
     return manager;
 }

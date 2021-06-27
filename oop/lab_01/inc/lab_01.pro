@@ -19,25 +19,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Input
 HEADERS += commands/commands.hpp commands/drawCommand.h commands/loadCommand.hpp commands/objectCommands.hpp commands/transformCommands.hpp
-HEADERS += draw/drawer.h draw/drawerFactory.h draw/QTDrawer.h draw/QtDrawerFactory.h draw/visitor.h
+HEADERS += draw/drawer.h draw/drawerFactory.h draw/QTDrawer.h draw/QtDrawerFactory.h draw/visitor.h draw/ObjectsVisitor.h
 HEADERS += facade/facade.hpp
 HEADERS += interface/inc/TransformWidget.h
-HEADERS += load/baseBuilder.hpp load/baseLoader.hpp load/cameraBuilder.h load/director.h load/modelBuilder.h load/sceneBuilder.h
+HEADERS += load/baseBuilder.hpp load/baseLoader.hpp load/cameraBuilder.h load/director.h load/modelBuilder.h load/compositeBuilder.h
 HEADERS += managers/baseManager.hpp managers/drawManager.hpp managers/loadManager.hpp managers/objectManager.hpp managers/sceneManager.hpp managers/transformManager.h
 HEADERS += managers/creators/drawManagerCreator.h managers/creators/loadManagerCreator.h managers/creators/objectManagerCreator.h managers/creators/sceneManagerCreator.h managers/creators/transformManagerCreator.h
 HEADERS += objects/camera.hpp objects/cameraPosition.h objects/compositeObject.hpp objects/frameModel.h objects/model.hpp objects/object.hpp objects/ObjectType.hpp objects/scene.hpp
-HEADERS += base_matrix_class.hpp connection.hpp exceptions.hpp matrix_checks.hpp matrix_constructors_and_iter_methods.hpp matrix_impl.hpp matrix.hpp point.hpp vector_const_iterator_methods.hpp vector_impl.hpp vector_iterator_methods.hpp vector.hpp vectorConstIterator.hpp vectorIterator.hpp
+HEADERS += base_elems/base_matrix_class.hpp base_elems/connection.hpp base_elems/exceptions.hpp base_elems/matrix_checks.hpp base_elems/matrix_constructors_and_iter_methods.hpp base_elems/matrix_impl.hpp base_elems/matrix.hpp base_elems/point.hpp base_elems/vector_const_iterator_methods.hpp base_elems/vector_impl.hpp base_elems/vector_iterator_methods.hpp base_elems/vector.hpp base_elems/vectorConstIterator.hpp base_elems/vectorIterator.hpp
 
 
 SOURCES += commands/drawCommand.cpp commands/loadCommand.cpp commands/objectCommands.cpp commands/transformCommands.cpp
-SOURCES += draw/QtDrawerFactory.cpp draw/QTDrawer.cpp
+SOURCES += draw/QtDrawerFactory.cpp draw/QTDrawer.cpp draw/ObjectsVisitor.cpp
 SOURCES += facade/facade.cpp
 SOURCES += interface/src/TransformWidget.cpp interface/src/interface.cpp
-SOURCES += load/baseBuilder.cpp load/baseLoader.cpp load/cameraBuilder.cpp  load/modelBuilder.cpp load/sceneBuilder.cpp load/director.cpp
+SOURCES += load/baseBuilder.cpp load/baseLoader.cpp load/cameraBuilder.cpp  load/modelBuilder.cpp load/compositeBuilder.cpp load/director.cpp
 SOURCES += managers/drawManager.cpp managers/loadManager.cpp managers/objectManager.cpp managers/sceneManager.cpp managers/transformManager.cpp
 SOURCES += managers/creators/drawManagerCreator.cpp managers/creators/loadManagerCreator.cpp managers/creators/objectManagerCreator.cpp managers/creators/sceneManagerCreator.cpp managers/creators/transformManagerCreator.cpp
 SOURCES += objects/camera.cpp objects/cameraPosition.cpp objects/compositeObject.cpp objects/frameModel.cpp objects/model.cpp objects/scene.cpp
-SOURCES += point.cpp 
+SOURCES += base_elems/point.cpp base_elems/connection.cpp 
 
 # Указываем тип проекта
 TEMPLATE = app # app - Application, прикладная программа

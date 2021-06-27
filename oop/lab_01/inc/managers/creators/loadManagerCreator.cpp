@@ -1,16 +1,17 @@
 #include "loadManagerCreator.h"
 #include "../loadManager.hpp"
 
-std::shared_ptr<LoadManager> LoadManagerCreator::createManager()
+void LoadManagerCreator::createManager()
 {
-    return std::shared_ptr<LoadManager>(new LoadManager(SceneManagerCreator().getManager()));
+    static std::shared_ptr<LoadManager> mng(new LoadManager(SceneManagerCreator().getManager()));
+    manager = mng;
 }
 
 std::shared_ptr<LoadManager> LoadManagerCreator::getManager()
 {
     if (!manager) 
     {
-        manager = createManager();
+        createManager();
     }
     return manager;
 }

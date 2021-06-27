@@ -1,5 +1,5 @@
 #include "baseLoader.hpp"
-#include "../exceptions.hpp"
+#include "../base_elems/exceptions.hpp"
 
 BaseLoader::BaseLoader()
 {
@@ -39,7 +39,7 @@ std::shared_ptr<Object> BaseLoader::loadObject(ObjectType type_obj, std::string 
     }
     else
     {
-        builder.reset(new SceneBuilder());    
+        builder.reset(new CompositeBuilder());    
     }
     std::shared_ptr<Object> obj = nullptr;
     try

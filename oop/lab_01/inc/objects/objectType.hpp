@@ -5,7 +5,7 @@ enum class ObjectType
 {
     MODEL,
     CAMERA,
-    SCENE
+    COMPOSITE
 };
 
 #endif

@@ -13,6 +13,8 @@ class QtDrawer : public Drawer
         void drawLine(Point &point1, Point &point2) override;
         void clear() override;
 
+        ~QtDrawer() = default;
+
     private:
         QGraphicsScene *scene;
 };

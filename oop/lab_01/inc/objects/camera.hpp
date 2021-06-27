@@ -12,10 +12,10 @@ class Camera : public Object
         bool isVisible() const final override;
 
         void transform(const Matrix<double> &mat) override;
-        void accept(std::shared_ptr<Visitor> visitor) override;
+        void accept(Visitor &visitor) override;
         std::shared_ptr<CameraPosition> getPosition();
 
-        ~Camera() = default;
+        ~Camera();
     private:
         std::shared_ptr<CameraPosition> position;
 };

@@ -8,7 +8,7 @@ class Connection
     public:
         Connection() = default;
         Connection(const Connection &) = default;
-        Connection(size_t el_1, size_t el_2);
+        Connection(size_t elem_1, size_t elem_2);
 
         Connection& operator=(const Connection &) = default;
 

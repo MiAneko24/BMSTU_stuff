@@ -15,7 +15,10 @@ class CompositeObject : public Object
         virtual VectorIterator<std::shared_ptr<Object>> begin() override;
         virtual VectorIterator<std::shared_ptr<Object>> end() override;
         void transform(const Matrix<double> &transform_matrix) override;
-        void accept(std::shared_ptr<Visitor> visitor) override;
+        void accept(Visitor &visitor) override;
+
+        ~CompositeObject() = default;
+
     private:
         Vector<std::shared_ptr<Object>> objects;
 };

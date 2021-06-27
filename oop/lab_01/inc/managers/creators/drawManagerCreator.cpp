@@ -1,16 +1,18 @@
 #include "drawManagerCreator.h"
 #include "../drawManager.hpp"
 
-std::shared_ptr<DrawManager> DrawManagerCreator::createManager()
+
+void DrawManagerCreator::createManager()
 {
-    return std::shared_ptr<DrawManager>(new DrawManager(SceneManagerCreator().getManager()));
+    static std::shared_ptr<DrawManager> mng(new DrawManager(SceneManagerCreator().getManager()));
+    manager = mng;
 }
 
 std::shared_ptr<DrawManager> DrawManagerCreator::getManager()
 {
     if (!manager) 
     {
-        manager = createManager();
+        createManager();
     }
     return manager;
 }
