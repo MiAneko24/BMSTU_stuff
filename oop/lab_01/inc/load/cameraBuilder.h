@@ -6,12 +6,15 @@
 class CameraBuilder : public BaseBuilder
 {
     public:
-        bool buildCamera(std::ifstream& file) override;
+        // bool buildCamera(std::ifstream& file) override;
+        bool buildCamera() override;
+        bool buildAngles(Vector<double> &angles) override;
+        bool buildPosition(Point &position) override;
         ~CameraBuilder() = default;
         
     private:
-        bool buildPosition(std::ifstream& file);
-        bool buildAngles(std::ifstream &file);
+        // bool buildPosition(std::ifstream& file);
+        // bool buildAngles(std::ifstream &file);
         std::shared_ptr<CameraPosition> position;
 };
 

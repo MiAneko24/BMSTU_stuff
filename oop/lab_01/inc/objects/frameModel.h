@@ -11,7 +11,7 @@ class FrameModel
         const Vector<Point> getPoints();
         const Vector<Connection> getConnections();
         void fill(Vector<Point> &new_points);
-        void fill(Vector<Connection> &new_connections);
+        void fill(Vector<Connection> &new_connection);
         void transform(const Matrix<double>& transform_matrix);
 
         ~FrameModel() = default;

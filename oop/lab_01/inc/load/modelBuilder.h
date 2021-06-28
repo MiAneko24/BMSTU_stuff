@@ -9,12 +9,12 @@
 class ModelBuilder : public BaseBuilder
 {
     public:
-        bool buildModel(std::ifstream& file) override;
+        bool buildModel() override;
+        bool buildPoints(Vector<Point> &points) override;
+        bool buildConnections(Vector<Connection> &connections) override;
         ~ModelBuilder() = default;
         
     private:
-        bool buildPoints(std::ifstream& file);
-        bool buildConnections(std::ifstream& file);
         std::shared_ptr<FrameModel> frame;
 };
 

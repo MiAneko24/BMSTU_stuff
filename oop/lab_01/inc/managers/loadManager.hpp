@@ -5,6 +5,7 @@
 #include <iostream>
 #include "sceneManager.hpp"
 #include "../load/baseLoader.hpp"
+#include "../load/director.h"
 
 class LoadManager : public BaseManager
 {
@@ -16,6 +17,7 @@ class LoadManager : public BaseManager
     private:
         std::shared_ptr<SceneManager> sceneManager;
         std::shared_ptr<BaseLoader> loader;
+        std::shared_ptr<Director> director;
 };
 
 #endif

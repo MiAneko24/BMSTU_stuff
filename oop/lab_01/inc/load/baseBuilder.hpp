@@ -4,12 +4,19 @@
 #include "../objects/object.hpp"
 #include <fstream>
 #include "../objects/objectType.hpp"
+#include "../base_elems/point.hpp"
+#include "../base_elems/connection.hpp"
 
 class BaseBuilder
 {
     public:
-        virtual bool buildModel(std::ifstream&);
-        virtual bool buildCamera(std::ifstream&);
+        virtual bool buildModel();
+        virtual bool buildCamera();
+        virtual bool buildPoints(Vector<Point> &points);
+        virtual bool buildAngles(Vector<double> &angles);
+        virtual bool buildPosition(Point &pos);
+        virtual bool buildConnections(Vector<Connection> &connections);
+        // virtual bool isBuilt() = 0;
         std::shared_ptr<Object> getObject();
         virtual ~BaseBuilder() = 0;
 

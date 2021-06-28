@@ -2,12 +2,32 @@
 
 BaseBuilder::~BaseBuilder() = default;
 
-bool BaseBuilder::buildCamera(std::ifstream& file)
+bool BaseBuilder::buildAngles(Vector<double> &angles)
 {
     return true;
 }
 
-bool BaseBuilder::buildModel(std::ifstream& file)
+bool BaseBuilder::buildConnections(Vector<Connection> &connection)
+{
+    return true;
+}
+
+bool BaseBuilder::buildPoints(Vector<Point> &points)
+{
+    return true;
+}
+
+bool BaseBuilder::buildPosition(Point &point)
+{
+    return true;
+}
+
+bool BaseBuilder::buildModel()
+{
+    return true;
+}
+
+bool BaseBuilder::buildCamera()
 {
     return true;
 }
