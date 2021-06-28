@@ -6,7 +6,7 @@
 class ObjectsVisitor : public Visitor
 {
     public:
-        ObjectsVisitor(std::shared_ptr<Drawer> draw, std::shared_ptr<Camera> cam);
+        ObjectsVisitor(std::shared_ptr<Drawer> draw, std::shared_ptr<Object> cam);
         void visit(Model &model) override;
         void visit(Camera &camera) override;
         void visit(CompositeObject &composite) override;
@@ -14,7 +14,7 @@ class ObjectsVisitor : public Visitor
     
     protected:
         std::shared_ptr<Drawer> drawer;
-        std::shared_ptr<Camera> camera;
+        std::shared_ptr<Object> camera;
 };
 
 #endif

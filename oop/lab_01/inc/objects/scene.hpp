@@ -15,7 +15,7 @@ class Scene
         void add(ObjectType type_obj, std::shared_ptr<Object> obj, int curScene);
         void remove(ObjectType type_obj, VectorIterator<std::shared_ptr<Object>> &it, int curScene);
         VectorIterator<std::shared_ptr<Object>> getIterator(ObjectType type_obj, int index, int curScene);
-        std::shared_ptr<Object> getObject(ObjectType type_obj, int index, int curScene);
+ //       std::shared_ptr<Object> getObject(ObjectType type_obj, int index, int curScene);
         int getObjectsAmount(ObjectType type_obj, int curScene);
 
         ~Scene();

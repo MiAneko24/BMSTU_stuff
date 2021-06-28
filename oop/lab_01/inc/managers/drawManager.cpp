@@ -21,10 +21,10 @@ void DrawManager::drawModel()
     {
         int pos = sceneManager->getCurrentObjectPos(ObjectType::CAMERA);
         int curScene = sceneManager->getCurrentObjectPos(ObjectType::COMPOSITE);
-        std::shared_ptr<Camera> cam = std::dynamic_pointer_cast<Camera>(sceneManager->getScene()->getObject(ObjectType::CAMERA, pos, curScene));
-        std::shared_ptr<Object> object = sceneManager->getScene()->getObject(ObjectType::COMPOSITE, curScene, curScene);
-        ObjectsVisitor visitor(drawer, cam);
-        object->accept(visitor);
+        auto it_cam = sceneManager->getScene()->getIterator(ObjectType::CAMERA, pos, curScene);
+        auto it = sceneManager->getScene()->getIterator(ObjectType::COMPOSITE, curScene, curScene);
+        ObjectsVisitor visitor(drawer, *it_cam);
+        (*it)->accept(visitor);
     }
 }
 

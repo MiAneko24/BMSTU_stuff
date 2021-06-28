@@ -66,10 +66,10 @@ VectorIterator<std::shared_ptr<Object>> Scene::getIterator(ObjectType type_obj, 
     return iter;
 }
 
-std::shared_ptr<Object> Scene::getObject(ObjectType type_obj, int index, int curScene)
-{
-    return (*getIterator(type_obj, index, curScene));
-}
+// std::shared_ptr<Object> Scene::getObject(ObjectType type_obj, int index, int curScene)
+// {
+//     return (*getIterator(type_obj, index, curScene));
+// }
 
 
 int Scene::getObjectsAmount(ObjectType type_obj, int curScene) {
