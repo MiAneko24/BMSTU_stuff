@@ -6,6 +6,8 @@
 class CameraBuilder : public BaseBuilder
 {
     public:
+        CameraBuilder();
+        bool isBuilt() override;
         // bool buildCamera(std::ifstream& file) override;
         bool buildCamera() override;
         bool buildAngles(Vector<double> &angles) override;

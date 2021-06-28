@@ -7,6 +7,7 @@ class CompositeBuilder : public BaseBuilder
 {
     public: 
         CompositeBuilder();
+        bool isBuilt() override;
         bool buildModel() override;
         bool buildCamera() override;
         bool buildPoints(Vector<Point> &point) override;
@@ -16,6 +17,7 @@ class CompositeBuilder : public BaseBuilder
         ~CompositeBuilder() = default;
     
     private:
+        bool built;
         std::shared_ptr<CameraBuilder> cameraBuilder;
         std::shared_ptr<ModelBuilder> modelBuilder;
 };

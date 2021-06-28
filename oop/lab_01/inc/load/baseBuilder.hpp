@@ -12,15 +12,16 @@ class BaseBuilder
     public:
         virtual bool buildModel();
         virtual bool buildCamera();
+        virtual bool isBuilt() = 0;
         virtual bool buildPoints(Vector<Point> &points);
         virtual bool buildAngles(Vector<double> &angles);
         virtual bool buildPosition(Point &pos);
         virtual bool buildConnections(Vector<Connection> &connections);
-        // virtual bool isBuilt() = 0;
         std::shared_ptr<Object> getObject();
         virtual ~BaseBuilder() = 0;
 
     protected:
+        int builtParts;
         std::shared_ptr<Object> object;
 };
 

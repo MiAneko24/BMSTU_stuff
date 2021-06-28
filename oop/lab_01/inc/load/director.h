@@ -7,7 +7,6 @@ class Director
 {
     public:
         Director() = default;
-        std::shared_ptr<Object> create(ObjectType, std::shared_ptr<BaseBuilder>, std::ifstream& file);
         std::shared_ptr<Object> create(ObjectType, std::shared_ptr<BaseBuilder>, std::string filename);
         void setLoader(std::shared_ptr<BaseLoader> load);
 

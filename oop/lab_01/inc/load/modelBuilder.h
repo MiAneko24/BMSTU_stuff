@@ -9,6 +9,8 @@
 class ModelBuilder : public BaseBuilder
 {
     public:
+        ModelBuilder();
+        bool isBuilt() override;
         bool buildModel() override;
         bool buildPoints(Vector<Point> &points) override;
         bool buildConnections(Vector<Connection> &connections) override;
