@@ -110,3 +110,12 @@ void Scene::remove(ObjectType type_obj, VectorIterator<std::shared_ptr<Object>> 
     else
         objects[curScene]->remove(it);
 }
+
+Scene::~Scene()
+{
+    for (auto &it : objects)
+    {
+        it.reset();
+    }
+    objects.reset();
+}

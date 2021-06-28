@@ -69,8 +69,3 @@ bool ModelBuilder::buildConnections(std::ifstream &file)
     frame->fill(connections);
     return state;
 }
-
-bool ModelBuilder::buildCamera(std::ifstream& file)
-{
-    return BaseBuilder::buildCamera(file);
-}

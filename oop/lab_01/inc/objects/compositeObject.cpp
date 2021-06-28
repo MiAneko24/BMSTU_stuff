@@ -3,9 +3,14 @@
 #include "../draw/visitor.h"
 #include "objectType.hpp"
 
+CompositeObject::CompositeObject()
+{
+    type = ObjectType::COMPOSITE;
+}
+
 ObjectType CompositeObject::getType() const 
 {
-    return ObjectType::COMPOSITE;
+    return type;
 }
 
 bool CompositeObject::add(std::shared_ptr<Object> obj)
@@ -42,4 +47,13 @@ void CompositeObject::accept(Visitor &visitor)
     {
         obj->accept(visitor);
     }
+}
+
+CompositeObject::~CompositeObject()
+{
+    for (auto &it : objects)
+    {
+        it.reset();
+    }
+    objects.reset();
 }

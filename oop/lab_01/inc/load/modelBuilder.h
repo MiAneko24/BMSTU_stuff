@@ -10,7 +10,6 @@ class ModelBuilder : public BaseBuilder
 {
     public:
         bool buildModel(std::ifstream& file) override;
-        bool buildCamera(std::ifstream& file) override;
         ~ModelBuilder() = default;
         
     private:

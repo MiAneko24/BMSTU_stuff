@@ -47,8 +47,3 @@ bool CameraBuilder::buildAngles(std::ifstream& file)
     }
     return state;
 }
-
-bool CameraBuilder::buildModel(std::ifstream& file)
-{
-    return BaseBuilder::buildModel(file);
-}

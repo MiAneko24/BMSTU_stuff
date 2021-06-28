@@ -20,7 +20,8 @@ void ObjectManager::removeObject(ObjectType type_obj)
 
 void ObjectManager::changeCurrentObject(ObjectType type_obj, int new_pos)
 {
-    sceneManager->setCurrentObjectPos(type_obj, new_pos);
+    if (new_pos != -1)
+        sceneManager->setCurrentObjectPos(type_obj, new_pos);
 }
 
 void ObjectManager::addObject(ObjectType type_obj)

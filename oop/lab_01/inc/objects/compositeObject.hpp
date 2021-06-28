@@ -5,7 +5,7 @@
 class CompositeObject : public Object 
 {
     public:
-        CompositeObject() = default;
+        CompositeObject();
 
         ObjectType getType() const override;
         bool add(std::shared_ptr<Object> obj) override;
@@ -16,7 +16,7 @@ class CompositeObject : public Object
         void transform(const Matrix<double> &transform_matrix) override;
         void accept(Visitor &visitor) override;
 
-        ~CompositeObject() = default;
+        ~CompositeObject();
 
     private:
         Vector<std::shared_ptr<Object>> objects;

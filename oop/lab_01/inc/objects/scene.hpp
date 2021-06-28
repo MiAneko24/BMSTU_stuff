@@ -18,7 +18,7 @@ class Scene
         std::shared_ptr<Object> getObject(ObjectType type_obj, int index, int curScene);
         int getObjectsAmount(ObjectType type_obj, int curScene);
 
-        ~Scene() = default;
+        ~Scene();
         
     private:
         Vector<std::shared_ptr<Object>> objects;

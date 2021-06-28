@@ -1,5 +1,7 @@
 #include "baseBuilder.hpp"
 
+BaseBuilder::~BaseBuilder() = default;
+
 bool BaseBuilder::buildCamera(std::ifstream& file)
 {
     return true;
