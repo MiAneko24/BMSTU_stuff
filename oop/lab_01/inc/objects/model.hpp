@@ -6,18 +6,21 @@
 #include "object.hpp"
 #include "frameModel.h"
 
+class ObjectsVisitor;
+
 class Model : public Object
 {
     public:
+        friend ObjectsVisitor;
         Model();
         Model(const Model &);
+        Model(std::shared_ptr<FrameModel> model);
         Model(Model &&) noexcept;
 
-        bool isVisible() const override;
+        ObjectType getType() const override;
 
         Model& operator =(const Model&);
         Model& operator =(Model &&) noexcept;
-        std::shared_ptr<FrameModel> getFrame();
         void transform(const Matrix<double> &transform_matrix) override;
         void accept(Visitor &visitor) override;
 

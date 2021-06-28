@@ -3,9 +3,9 @@
 #include "../draw/visitor.h"
 #include "objectType.hpp"
 
-bool CompositeObject::isVisible() const 
+ObjectType CompositeObject::getType() const 
 {
-    return true;
+    return ObjectType::COMPOSITE;
 }
 
 bool CompositeObject::add(std::shared_ptr<Object> obj)
@@ -17,11 +17,6 @@ bool CompositeObject::add(std::shared_ptr<Object> obj)
 bool CompositeObject::remove(VectorIterator<std::shared_ptr<Object>>& it)
 {
     objects.remove(it);
-    return true;
-}
-
-bool CompositeObject::isComposite() const
-{
     return true;
 }
 

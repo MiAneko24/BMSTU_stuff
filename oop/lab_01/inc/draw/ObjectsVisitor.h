@@ -1,8 +1,7 @@
 #ifndef OBJECTSVISITOR_H
 #define OBJECTSVISITOR_H
-#include "visitor.h"
-#include "../objects/camera.hpp"
 #include "drawer.h"
+#include "visitor.h"
 
 class ObjectsVisitor : public Visitor
 {

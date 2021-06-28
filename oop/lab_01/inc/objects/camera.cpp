@@ -1,24 +1,29 @@
 #include "camera.hpp"
 #include "../draw/visitor.h"
+#include "../draw/ObjectsVisitor.h"
 
 Camera::Camera()
 {
     this->position = std::shared_ptr<CameraPosition>(new CameraPosition());
+    type = ObjectType::CAMERA;
 }
 
-bool Camera::isVisible() const
+Camera::Camera(std::shared_ptr<CameraPosition> pos) : position(pos) 
 {
-    return false;
-}
+    type= ObjectType::CAMERA;
+} 
 
-std::shared_ptr<CameraPosition> Camera::getPosition()
+ObjectType Camera::getType() const
 {
-    return position;
+    return type;
 }
 
 void Camera::transform(const Matrix<double> &mat)
 {
-    position->transform(mat);
+    if (mat.getColumns() == mat.getRows())
+        position->transform(mat);
+    else
+        position->setAngles(mat[0]);
 }
 
 void Camera::accept(Visitor &visitor)

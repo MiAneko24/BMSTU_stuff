@@ -6,8 +6,11 @@
 
 bool CameraBuilder::buildCamera(std::ifstream& file)
 {
-    object.reset(new Camera());
-    return buildPosition(file) && buildAngles(file);
+    position.reset(new CameraPosition());
+    bool flag = buildPosition(file) && buildAngles(file);
+    if (flag)
+        object.reset(new Camera(position));
+    return flag;
 }
 
 bool CameraBuilder::buildPosition(std::ifstream& file)
@@ -17,7 +20,7 @@ bool CameraBuilder::buildPosition(std::ifstream& file)
     if (file >> x >> y >> z)
     {
         std::shared_ptr<Camera> camera = std::dynamic_pointer_cast<Camera>(object);
-        camera->getPosition()->setPosition(Point(x, y, z));
+        position->setPosition(Point(x, y, z));
     }
     else
     {
@@ -34,8 +37,8 @@ bool CameraBuilder::buildAngles(std::ifstream& file)
     if (file >> x >> y >> z)
     {
         std::shared_ptr<Camera> camera = std::dynamic_pointer_cast<Camera>(object);
-        Vector<double> angles = Vector<double>({x, y, z}, 3);
-        camera->getPosition()->setAngles(angles);
+        Vector<double> vect = Vector<double>({x, y, z}, 3);
+        position->setAngles(vect);
     }
     else 
     {

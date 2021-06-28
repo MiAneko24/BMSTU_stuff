@@ -30,7 +30,7 @@ VectorIterator<std::shared_ptr<Object>> Scene::getIterator(ObjectType type_obj, 
         VectorIterator<std::shared_ptr<Object>> it = objects[curScene]->begin();
         while (!it.isEnd())
         {
-            if ((flag_model && (*it)->isVisible()) || (!flag_model && !(*it)->isVisible()))
+            if ((*it)->getType() == type_obj)
             {
                 if (i == index)
                     break;
@@ -80,7 +80,7 @@ int Scene::getObjectsAmount(ObjectType type_obj, int curScene) {
         VectorIterator<std::shared_ptr<Object>> it = objects[curScene]->begin(); 
         while (!it.isEnd())
         {
-            if ((flag_model && (*it)->isVisible()) || (!flag_model && !(*it)->isVisible()))
+            if ((*it)->getType() == type_obj)
             {
                 amount++;
             }

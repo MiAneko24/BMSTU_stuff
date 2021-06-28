@@ -13,13 +13,12 @@ bool CompositeBuilder::buildModel(std::ifstream& file)
         time_t t_time = time(NULL);
         throw FileDataError(ctime(&t_time), __FILE__, typeid(*this).name(), __LINE__);
     }
-    std::shared_ptr<CompositeObject> composite = std::dynamic_pointer_cast<CompositeObject>(object);
     for (int i = 0; i < amount; i++)
     {
         if (modelBuilder->buildModel(file))
         {
 
-            composite->add(modelBuilder->getObject());
+            object->add(modelBuilder->getObject());
         }
         else
         {        
@@ -27,7 +26,6 @@ bool CompositeBuilder::buildModel(std::ifstream& file)
             throw FileDataError(ctime(&t_time), __FILE__, typeid(*this).name(), __LINE__);
         }
     }
-    object = composite;
     return true;
 }
 
@@ -44,12 +42,11 @@ bool CompositeBuilder::buildCamera(std::ifstream& file)
         time_t t_time = time(NULL);
         throw FileDataError(ctime(&t_time), __FILE__, typeid(*this).name(), __LINE__);
     }
-    std::shared_ptr<CompositeObject> composite = std::dynamic_pointer_cast<CompositeObject>(object);
     for (int i = 0; i < amount && state; i++)
     {
         if (cameraBuilder->buildCamera(file))
-        {
-            composite->add(cameraBuilder->getObject());
+        {   
+            object->add(cameraBuilder->getObject());
         }
         else
         {
@@ -58,6 +55,5 @@ bool CompositeBuilder::buildCamera(std::ifstream& file)
     
         }
     }
-    object = composite;
     return state;
 }

@@ -17,12 +17,15 @@ void DrawManager::setDrawer(std::shared_ptr<Drawer> new_drawer)
 void DrawManager::drawModel()
 {
     drawer->clear();
-    int pos = sceneManager->getCurrentObjectPos(ObjectType::CAMERA);
-    int curScene = sceneManager->getCurrentObjectPos(ObjectType::COMPOSITE);
-    std::shared_ptr<Camera> cam = std::dynamic_pointer_cast<Camera>(sceneManager->getScene()->getObject(ObjectType::CAMERA, pos, curScene));
-    std::shared_ptr<Object> object = sceneManager->getScene()->getObject(ObjectType::COMPOSITE, curScene, curScene);
-    ObjectsVisitor visitor(drawer, cam);
-    object->accept(visitor);
+    if (sceneManager->getObjectsAmount(ObjectType::CAMERA) > 0 && sceneManager->getObjectsAmount(ObjectType::MODEL) > 0)
+    {
+        int pos = sceneManager->getCurrentObjectPos(ObjectType::CAMERA);
+        int curScene = sceneManager->getCurrentObjectPos(ObjectType::COMPOSITE);
+        std::shared_ptr<Camera> cam = std::dynamic_pointer_cast<Camera>(sceneManager->getScene()->getObject(ObjectType::CAMERA, pos, curScene));
+        std::shared_ptr<Object> object = sceneManager->getScene()->getObject(ObjectType::COMPOSITE, curScene, curScene);
+        ObjectsVisitor visitor(drawer, cam);
+        object->accept(visitor);
+    }
 }
 
 

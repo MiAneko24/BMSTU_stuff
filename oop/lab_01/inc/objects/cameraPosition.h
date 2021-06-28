@@ -15,7 +15,7 @@ class CameraPosition
         double getYAngle() const;
         double getZAngle() const;
 
-        void setAngles(Vector<double> &new_angles);
+        void setAngles(const Vector<double> &new_angles);
 
         Point getProjection(Point& point);
         void transform(const Matrix<double> &transform_mat);

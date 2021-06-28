@@ -6,8 +6,11 @@
 
 bool ModelBuilder::buildModel(std::ifstream& file)
 {
-    object.reset(new Model());
-    return buildPoints(file) && buildConnections(file);
+    frame.reset(new FrameModel());
+    bool flag = buildPoints(file) && buildConnections(file);
+    if (flag)
+        object.reset(new Model(frame));
+    return flag;
 }
 
 bool ModelBuilder::buildPoints(std::ifstream &file)
@@ -34,7 +37,7 @@ bool ModelBuilder::buildPoints(std::ifstream &file)
         }
     }
     std::shared_ptr<Model> model = std::dynamic_pointer_cast<Model>(object);
-    model->getFrame()->fill(points);
+    frame->fill(points);
     return state;
 }
 
@@ -63,7 +66,7 @@ bool ModelBuilder::buildConnections(std::ifstream &file)
         }
     }
     std::shared_ptr<Model> model = std::dynamic_pointer_cast<Model>(object);
-    model->getFrame()->fill(connections);
+    frame->fill(connections);
     return state;
 }
 

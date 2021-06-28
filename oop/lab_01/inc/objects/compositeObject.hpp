@@ -7,10 +7,9 @@ class CompositeObject : public Object
     public:
         CompositeObject() = default;
 
-        bool isVisible() const override;
+        ObjectType getType() const override;
         bool add(std::shared_ptr<Object> obj) override;
         bool remove(VectorIterator<std::shared_ptr<Object>> &it) override;
-        bool isComposite() const override;
 
         virtual VectorIterator<std::shared_ptr<Object>> begin() override;
         virtual VectorIterator<std::shared_ptr<Object>> end() override;

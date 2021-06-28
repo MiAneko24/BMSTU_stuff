@@ -38,7 +38,9 @@ void TransformManager::rotate(ObjectType type_obj, Vector<double> &params)
     }
     else if (type_obj == ObjectType::CAMERA)
     {
-        std::dynamic_pointer_cast<Camera>(obj)->getPosition()->setAngles(params);
+        Matrix<double> transform_mat = Matrix<double>(1, 3);
+        transform_mat[0] = params;
+        obj->transform(transform_mat);
     }
 }
 

@@ -4,6 +4,7 @@
 #include "../base_elems/point.hpp"
 #include "../base_elems/connection.hpp"
 #include "../base_elems/vector.hpp"
+#include "../objects/frameModel.h"
 
 class ModelBuilder : public BaseBuilder
 {
@@ -15,6 +16,7 @@ class ModelBuilder : public BaseBuilder
     private:
         bool buildPoints(std::ifstream& file);
         bool buildConnections(std::ifstream& file);
+        std::shared_ptr<FrameModel> frame;
 };
 
 #endif

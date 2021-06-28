@@ -4,15 +4,16 @@ ObjectsVisitor::ObjectsVisitor(std::shared_ptr<Drawer> draw, std::shared_ptr<Cam
 
 void ObjectsVisitor::visit(Model &model)
 {
-    Vector<Point> project_points =  model.getFrame()->getPoints();
+    std::shared_ptr<CameraPosition> pos = (*camera).position;
+    Vector<Point> project_points =  model.frame->getPoints();
     Vector<Point> projected = Vector<Point>(0);
     for (auto point : project_points)
     {
-        point = camera->getPosition()->getProjection(point);
+        point = pos->getProjection(point);
         projected.add(point);
     }
     
-    for (auto connection : model.getFrame()->getConnections())
+    for (auto connection : model.frame->getConnections())
     {
         drawer->drawLine(
             projected[connection.getFirst()], projected[connection.getSecond()]

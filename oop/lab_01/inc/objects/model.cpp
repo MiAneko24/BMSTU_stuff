@@ -1,18 +1,26 @@
 #include "model.hpp"
 #include "../draw/visitor.h"
 
+#include "../draw/ObjectsVisitor.h"
+
 Model::Model()
 {
     frame = std::shared_ptr<FrameModel>(new FrameModel());
+    type = ObjectType::MODEL;
+}
+
+Model::Model(std::shared_ptr<FrameModel> model) : frame(model)
+{
+    type = ObjectType::MODEL;
 }
 
 Model::Model(const Model &model) : frame(model.frame) {};
 
 Model::Model(Model &&model) noexcept : frame(model.frame) {};
 
-bool Model::isVisible() const
+ObjectType Model::getType() const
 {
-    return true;
+    return type;
 }
 
 Model& Model::operator =(const Model& model)
@@ -32,11 +40,6 @@ void Model::transform(const Matrix<double> &transform_matrix)
 void Model::accept(Visitor &visitor)
 {
     visitor.visit(*this);
-}
-
-std::shared_ptr<FrameModel> Model::getFrame()
-{
-    return frame;
 }
 
 Model::~Model()

@@ -5,17 +5,14 @@
 #include <memory>
 #include "../base_elems/matrix.hpp"
 #include "../base_elems/vectorIterator.hpp"
+#include "objectType.hpp"
 
 class Visitor;
 
 class Object
 {
     public:
-        virtual bool isVisible() const = 0;
-        virtual bool isComposite() const
-        {
-            return false;
-        }
+        virtual ObjectType getType() const = 0;
         virtual bool add(std::shared_ptr<Object> obj)
         {
             return false;
@@ -40,6 +37,9 @@ class Object
         }
 
         virtual ~Object() = default;
+
+    protected:
+        ObjectType type;
 };
 
 

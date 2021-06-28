@@ -4,16 +4,19 @@
 #include "object.hpp"
 #include "cameraPosition.h"
 
+class ObjectsVisitor;
+
 class Camera : public Object
 {
     public:
+        friend ObjectsVisitor;
         explicit Camera();
+        Camera(std::shared_ptr<CameraPosition> pos);
 
-        bool isVisible() const final override;
+        ObjectType getType() const override;
 
         void transform(const Matrix<double> &mat) override;
         void accept(Visitor &visitor) override;
-        std::shared_ptr<CameraPosition> getPosition();
 
         ~Camera();
     private:

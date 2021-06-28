@@ -32,7 +32,7 @@ double CameraPosition::getZAngle() const
     return angles[2];
 }
 
-void CameraPosition::setAngles(Vector<double> &params)
+void CameraPosition::setAngles(const Vector<double> &params)
 {
     for (int i = 0; i < 3; i++)
     {

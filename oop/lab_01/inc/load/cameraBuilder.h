@@ -1,6 +1,7 @@
 #ifndef CAMERABUILDER_H
 #define CAMERABUILDER_H
 #include "baseBuilder.hpp"
+#include "../objects/cameraPosition.h"
 
 class CameraBuilder : public BaseBuilder
 {
@@ -12,6 +13,7 @@ class CameraBuilder : public BaseBuilder
     private:
         bool buildPosition(std::ifstream& file);
         bool buildAngles(std::ifstream &file);
+        std::shared_ptr<CameraPosition> position;
 };
 
 #endif

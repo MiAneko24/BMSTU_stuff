@@ -235,14 +235,6 @@ TransformWidget::~TransformWidget()
 
 void TransformWidget::drawScene() 
 {
-	if (cameraBox->count() == 0) {
-		QMessageBox::warning(this, "Error", "No cameras are available");
-		return;
-	}
-	if (modelBox->count() == 0) {
-		QMessageBox::warning(this, "Error", "No models are available");
-		return;
-	}
 	std::shared_ptr<DrawManager> draw = DrawManagerCreator().getManager();
 	draw->setDrawer(QtDrawerFactory(scene).createDrawer());
 	std::shared_ptr<DrawCommand> drawCommand(new DrawCommand(draw, &DrawManager::drawModel));
