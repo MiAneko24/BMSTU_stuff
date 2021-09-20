@@ -23,8 +23,14 @@ void ElevatorDoors::beginOpening()
     {
         int prevState = state;
         state = OPENING;
+        int t = 0;
+        if (prevState == CLOSING)
+        {
+            closeTimer.remainingTime();
+            closeTimer.stop();
+        }
         qDebug("    Двери открываются");
-        openTimer.start(moveDoors);
+        openTimer.start(moveDoors-t);
     }
 }
 

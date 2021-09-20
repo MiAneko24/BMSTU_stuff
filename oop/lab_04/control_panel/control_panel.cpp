@@ -5,18 +5,18 @@ ControlPanel::ControlPanel(QObject *parent) : QObject(parent),
                                                         floor(AMOUNT_OF_FLOORS, false),
                                                         state(FREE),
                                                         currentFloor(1),
-                                                        currentTarget(-1){};
+                                                        currentTarget(-1)
+{
+    QObject::connect(this, SIGNAL(stayFree()), this, SLOT(makeFree()));
+    QObject::connect(this, SIGNAL(atFloor(int)), this, SLOT(reachedFloor(int)));
+}
 
 void ControlPanel::setNewTarget(int fl)
 {
+    int old_state = state;
     floor[fl - 1] = true;
-    currentTarget = getClosestTarget();
-    if (currentTarget != -1) 
-    {
-        if (currentTarget != currentFloor)
-            direction = currentTarget > currentFloor ? UP : DOWN;
-        emit call(currentTarget);
-    }
+    state = NEW_TARGET;
+    emit atFloor(currentFloor);
 }
 
 int ControlPanel::getUp()
@@ -68,23 +68,39 @@ int ControlPanel::getClosestTarget()
 
 void ControlPanel::reachedFloor(int fl)
 {
-    state = FREE;
-    currentFloor = fl;
-    floor[fl - 1] = false;
-    currentTarget = getClosestTarget();
-    if (currentTarget != -1)
+    int prev_state = state;
+    if (state != FREE)
     {
-        if (currentTarget != currentFloor)
-            direction = currentTarget > currentFloor ? UP : DOWN;
-        emit call(currentTarget);
+        if (currentTarget == fl && prev_state != NEW_TARGET)
+            floor[fl - 1] = false;
+        state = BUSY;
+        currentFloor = fl;
+        currentTarget = getClosestTarget();
+        if (currentTarget != -1)
+        {
+            Direction new_direction;
+            if (currentTarget != currentFloor)
+            {
+                new_direction = currentTarget > currentFloor ? UP : DOWN;
+            }
+            else
+                new_direction = direction;
+            if (new_direction == direction || direction == MOTIONLESS)
+            {
+                direction = new_direction;
+                emit call(currentTarget);
+            }
+        }
+        else
+            emit stayFree();
     }
-    else
-        direction = MOTIONLESS;
 }
 
-void ControlPanel::passedFloor(int fl)
+void ControlPanel::makeFree()
 {
-    state = BUSY;
-    qDebug("Проезжаем %d этаж", fl);
-    currentFloor = fl + direction;
+    if (state != NEW_TARGET)
+        qDebug("Лифт ожидает на %d этаже", currentFloor);
+    state = FREE;
+    currentTarget = -1;
+    direction = MOTIONLESS;
 }

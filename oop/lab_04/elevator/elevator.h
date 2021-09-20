@@ -10,6 +10,9 @@ class Elevator : public QObject
     public:
         Elevator();
         void call(int floor);
+    
+    signals:
+        void setTarget(int);
 
     private:
         ControlPanel panel;

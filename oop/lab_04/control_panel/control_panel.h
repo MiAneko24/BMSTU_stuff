@@ -7,6 +7,7 @@
 enum PanelState
 {
     FREE, 
+    NEW_TARGET,
     BUSY
 };
 
@@ -16,14 +17,16 @@ class ControlPanel : public QObject
 
     public:
         explicit ControlPanel(QObject *parent = nullptr);
-        void setNewTarget(int fl);
         
     public slots:
         void reachedFloor(int fl);
-        void passedFloor(int fl);
+        void setNewTarget(int fl);
+        void makeFree();
 
     signals:
         void call(int fl);
+        void stayFree();
+        void atFloor(int);
 
     private:
         Direction direction;

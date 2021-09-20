@@ -8,8 +8,9 @@
 enum CabinState 
 {
     moving,
-    waiting,
-    stopped
+    setTarget,
+    stopped, 
+    cabinFree
 };
 
 class Cabin : public QObject
@@ -23,11 +24,12 @@ class Cabin : public QObject
         void move();
         void stand();
         void call(int fl);
+        void freedCabin();
 
     signals:
-        void prepare();
-        void crossingFloor(int floor);
+        void freeCabin();
         void reachTarget(int floor);
+        void openDoors();
         void stop();
     
     private:
