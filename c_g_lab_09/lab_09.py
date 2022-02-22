@@ -1,3 +1,4 @@
+
 from tkinter import *
 from tkinter import colorchooser
 from tkinter import ttk
@@ -7,7 +8,7 @@ from numpy import sign
 from math import trunc
 eps = 1e-3
 
-class CyrusBeckAlg(Frame):
+class SazerlandHodge(Frame):
     img = 0
     font = "Calibria 14"
     ended = False
@@ -17,6 +18,7 @@ class CyrusBeckAlg(Frame):
     points = []
     cutter = []
     cutterFin = False
+    figureFin = False
     normals = []
 
     def __init__(self, parent):
@@ -46,6 +48,7 @@ class CyrusBeckAlg(Frame):
         self.points = []
         self.cutter = []
         self.cutterFin = False
+        self.figureFin = False
         self.normals = []
         
 
@@ -81,29 +84,6 @@ class CyrusBeckAlg(Frame):
                     y += sy
                 e += 2 * dy
 
-    def cancel(self):
-        if len(self.points) == 0 or (len(self.points) == 1 and len(self.points[0]) == 0):
-            box.showinfo("Предупреждение", "Отменять нечего")
-            return
-        if (len(self.points[-1]) == 0):
-                self.points.pop()
-        if len(self.points[-1]) > 1:
-            self.Bresenham_int(self.points[-1][-2][0],
-                        self.points[-1][-2][1],
-                        self.points[-1][-1][0],
-                        self.points[-1][-1][1], self.color_bg)
-            del self.points[-1][-1]
-            self.Bresenham_int(self.points[-1][-1][0],
-                        self.points[-1][-1][1],
-                        self.points[-1][-1][0],
-                        self.points[-1][-1][1], self.color_lines)
-        else:
-            self.Bresenham_int(self.points[-1][0][0],
-                        self.points[-1][0][1],
-                        self.points[-1][0][0],
-                        self.points[-1][0][1], self.color_bg)
-            self.points[-1].pop()
-
  
     def draw_line(self):
         if len(self.points[-1]) > 1:
@@ -113,30 +93,74 @@ class CyrusBeckAlg(Frame):
                         self.points[-1][-1][1], self.color_lines)
 
     def left_click(self, event):
-        if (len(self.points) == 0):
-            self.points.append(list())
-        self.canvas.create_oval(event.x, event.y, event.x, event.y, outline=self.color_lines)
-            
-        self.points[-1].append([event.x, event.y])
-        if (len(self.points[-1]) == 2):
-            self.draw_line()
-            self.points.append(list())
+        if (self.figureFin):
+            box.showerror("Ошибка", "Допустим только один многоугольник")
+            return
+        self.points.append([event.x, event.y])
+        if len(self.points) > 1:
+            self.Bresenham_int(self.points[-2][0],
+                        self.points[-2][1],
+                        self.points[-1][0],
+                        self.points[-1][1], self.color_lines)
+        else:
+            self.canvas.create_oval(self.points[0][0],
+                        self.points[0][1],
+                        self.points[0][0],
+                        self.points[0][1], outline=self.color_lines)
 
     def left_click_horizontal(self, event):
-        if ((len(self.points) == 0 or len(self.points[-1]) == 0)):
-            box.showwarning("Внимание!", "Невозможно провести вертикальную линию без начальной точки")
-            return  
-        self.points[-1].append([event.x, self.points[-1][0][1]])
-        self.draw_line()
-        self.points.append(list())
-        
+        if (self.figureFin):
+            box.showerror("Ошибка", "Допустим только один многоугольник")
+            return
+        if (len(self.points) == 0):
+            box.showwarning("Информация", "Невозможно провести горизонтальную линию без начальной точки")
+            return
+        prev_y = self.points[-1][1]
+        self.points.append([event.x, prev_y])
+        self.Bresenham_int(self.points[-2][0],
+                    self.points[-2][1],
+                    self.points[-1][0],
+                    self.points[-1][1], self.color_lines)
+
     def left_click_vertical(self, event):
-        if ((len(self.points) == 0 or len(self.points[-1]) == 0)):
-            box.showwarning("Внимание!", "Невозможно провести вертикальную линию без начальной точки")
-            return  
-        self.points[-1].append([self.points[-1][0][0], event.y])
-        self.draw_line()
-        self.points.append(list())
+        if (self.figureFin):
+            box.showerror("Ошибка", "Допустим только один многоугольник")
+            return
+        if (len(self.points) == 0):
+            box.showwarning("Информация", "Невозможно провести вертикальную линию без начальной точки")
+            return
+        prev_x = self.points[-1][0]
+        self.points.append([prev_x, event.y])
+        self.Bresenham_int(self.points[-2][0],
+                    self.points[-2][1],
+                    self.points[-1][0],
+                    self.points[-1][1], self.color_lines)
+       
+    def figureEnd(self, event):
+        self.figureFin = True
+        self.Bresenham_int(self.points[0][0],
+                   self.points[0][1],
+                   self.points[-1][0],
+                   self.points[-1][1], self.color_lines)
+
+    def cancel(self):
+        self.figureFin = False
+        if len(self.points) == 0:
+            box.showinfo("Предупреждение", "Отменять нечего")
+            return
+        if len(self.points) > 1:
+            self.Bresenham_int(self.points[-2][0],
+                        self.points[-2][1],
+                        self.points[-1][0],
+                        self.points[-1][1], self.color_bg)
+            self.points.pop()
+        else:
+            self.Bresenham_int(self.points[0][0],
+                        self.points[0][1],
+                        self.points[0][0],
+                        self.points[0][1], self.color_bg)
+            self.points = []
+
 
     def right_click(self, event):
         if (self.cutterFin):
@@ -220,15 +244,18 @@ class CyrusBeckAlg(Frame):
         if len(self.cutter) < 3:
             return False
 
-        prev = sign(self.vectorMultiplication([self.cutter[0][0] - self.cutter[-1][0], self.cutter[0][1] - self.cutter[-1][1]],
-            [self.cutter[-1][0] - self.cutter[-2][0], self.cutter[-1][1] - self.cutter[-2][1]]))
+        prev = self.vectorMultiplication([self.cutter[0][0] - self.cutter[-1][0], self.cutter[0][1] - self.cutter[-1][1]],
+            [self.cutter[-1][0] - self.cutter[-2][0], self.cutter[-1][1] - self.cutter[-2][1]])
+        sign_res = prev
         for i in range(0, len(self.cutter)):
-            cur = sign(self.vectorMultiplication([self.cutter[i][0] - self.cutter[i - 1][0], self.cutter[i][1] - self.cutter[i - 1][1]],
-            [self.cutter[i - 1][0] - self.cutter[i - 2][0], self.cutter[i - 1][1] - self.cutter[i - 2][1]]))
-            if prev != cur:
-                return False
+            cur = self.vectorMultiplication([self.cutter[i][0] - self.cutter[i - 1][0], self.cutter[i][1] - self.cutter[i - 1][1]],
+            [self.cutter[i - 1][0] - self.cutter[i - 2][0], self.cutter[i - 1][1] - self.cutter[i - 2][1]])
+            if sign(prev) != sign(cur):
+                return False, 0
+            sign_res += cur
             prev = cur
-        return True
+        sign_res = sign(sign_res)
+        return True, sign_res
 
     def normal(self, fromPoint,  toPoint, nextCheckPoint):
         vector = [toPoint[0] - fromPoint[0], toPoint[1] - fromPoint[1]]
@@ -248,59 +275,99 @@ class CyrusBeckAlg(Frame):
 
     def setNormals(self):
         length = len(self.cutter)
-        for i in range(len(self.cutter)):
-            self.normals.append(self.normal(self.cutter[i], self.cutter[(i + 1) % length], self.cutter[(i + 2) % length]))
+        for i in range(-1, len(self.cutter) - 1):
+            self.normals.append(self.normal(self.cutter[i], self.cutter[i], self.cutter[(i + 2) % length]))
 
-    def cutLine(self, line):
-        tmin = 0
-        tmax = 1
-        D = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
-        for i in range(len(self.cutter)):
-            w = [line[0][0] - self.cutter[i][0], line[0][1] - self.cutter[i][1]]
-            dScalar = self.scalarMultiplication(D, self.normals[i])
-            wScalar = self.scalarMultiplication(w, self.normals[i])
-            if (dScalar == 0):
-                if (wScalar < 0):
-                    return
-                else:
-                    continue
-            t = - wScalar / dScalar
-            if (dScalar > 0):
-                if (t > 1):
-                    return
-                tmin = max(t, tmin)
+    def drawCuttedFigure(self, result):
+        for i in range(len(result)):
+            self.Bresenham_int(result[i-1][0], result[i-1][1], result[i][0], result[i][1], self.color_mark)
+
+    def isVisible(self, point, fPointOfSide, sPointOfSide):
+        if self.vectorMultiplication([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) < 0:
+            return False
+        else:
+            return True
+
+    def getIntersection(self, start, stop, cutStart, normal):
+        D = [stop[0] - start[0], stop[1] - start[1]]
+        w = [start[0] - cutStart[0], start[1] - cutStart[1]]
+
+        dScal = self.scalarMultiplication(D, normal)
+        wScal = self.scalarMultiplication(w, normal)
+
+        parameter = - wScal / dScal
+        return [start[0] + D[0] * parameter, start[1] + D[1] * parameter]
+
+    def isIntersected(self, start, end, cutStart, cutEnd):
+        visibility1 = self.isVisible(start, cutStart, cutEnd)
+        visibility2 = self.isVisible(end, cutStart, cutEnd)
+        if (not visibility1 and visibility2) or (visibility1 and not visibility2):
+            return True
+        return False            
+
+
+    def cutSide(self):
+        new_result = self.points
+
+        S = []
+        F = []
+        for i in range(-1, len(self.cutter) - 1):
+            Q = []
+            norm = self.normal(self.cutter[i], self.cutter[i + 1], self.cutter[(i + 2) % len(self.cutter)])
+    
+            F = new_result[-1]
+            S = new_result[-1]
+            for j in range(0, len(new_result)):
+                if self.isIntersected(S, new_result[j], self.cutter[i], self.cutter[i + 1]):
+                    I = self.getIntersection(S, new_result[j], self.cutter[i], norm)
+                    Q.append(I)
+
+                S = new_result[j]
+
+                if (self.isVisible(S, self.cutter[i], self.cutter[i + 1])):
+                    Q.append(S)
+            if len(Q) != 0:
+                if self.isIntersected(S, F, self.cutter[i], self.cutter[i + 1]):
+                    I = self.getIntersection(S, F, self.cutter[i], norm)
+                    Q.append(I)
             else:
-                if (t < 0):
-                    return
-                tmax = min(t, tmax)
-        if (tmin <= tmax):
-            self.Bresenham_int(round(line[0][0] + D[0] * tmin), round(line[0][1] + D[1] * tmin), round(line[0][0] + D[0] * tmax), round(line[0][1] + D[1] * tmax), self.color_mark)
-          
-    def CyrusBeckCut(self):
-        for line in self.points:
-            self.cutLine(line)
+                return []
+
+            new_result = Q
+
+        return new_result
+            
+
+
+
+    def SazeralndHodge(self):
+        new_fig = self.cutSide()
+        for i in range(-1, len(new_fig) - 1):
+            self.Bresenham_int(new_fig[i][0], new_fig[i][1], new_fig[i + 1][0], new_fig[i + 1][1], self.color_mark)
 
 
     def start(self):
         if (len(self.points) == 0):
-            box.showerror("Ошибка", "Нечего отсекать")
+            box.showerror("Ошибка", "Необходимо ввести многоугольник")
             return
-        if (len(self.points[-1]) == 1):
-            box.showerror("Ошибка", "Необходимо завершить все отрезки")
+        if (not self.figureFin):
+            box.showerror("Ошибка", "Необходимо замкнуть многоугольник")
             return
         if (len(self.cutter) == 0):
-            box.showerror("Ошибка", "необходимо ввести отсекатель")
+            box.showerror("Ошибка", "Необходимо ввести отсекатель")
             return
         if (not self.cutterFin):
-            box.showerror("Ошибка", "необходимо замкнуть отсекатель")
+            box.showerror("Ошибка", "Необходимо замкнуть отсекатель")
             return
-        if (not self.isConvex()):
+        convex, sign = self.isConvex()
+        if (not convex):
             box.showerror("Ошибка", "Алгоритм работает только с выпуклым отсекателем")
             return
-        self.points.pop()
+        if (sign < 0):
+            self.cutter.reverse()
         self.setNormals()
 
-        self.CyrusBeckCut()
+        self.SazeralndHodge()
 
     def init_ui(self):
         self.color_lines = "#000000"
@@ -328,15 +395,16 @@ class CyrusBeckAlg(Frame):
         self.color_mark_btn = Button(self, bg=self.color_mark, height=1, width=3, command=self.choose_mark_color)
         self.color_mark_btn.grid(row=1, column=3)
         
-        rules_lbl = Label(self, text="""Алгоритм Кируса-Бека
-Для добавления новой точки нажмите левую кнопку мыши
-Для рисования горизонтального отрезка нажмите Ctrl и левую кнопку мыши
-Для рисования вертикального отрезка нажмите Shift и левую кнопку мыши
+        rules_lbl = Label(self, text="""Алгоритм Сазерленда-Ходжмена отсечения многоугольников
+Для добавления новой грани многоугольника нажмите левую кнопку мыши
+Для рисования горизонтальной грани многоугольника нажмите Ctrl и левую кнопку мыши
+Для рисования вертикальной грани многоугольника нажмите Shift и левую кнопку мыши
+Для замыкания многоугольника нажмите Alt и левую кнопку мыши
 Для добавления новой точки отсекателя нажмите правую кнопку мыши
 Для рисования горизонтальной стороны отсекателя нажмите Ctrl и правую кнопку мыши
 Для рисования вертикальной стороны отсекателя Shift и правую кнопку мыши
-Для замыкания отсекателя нажмите Enter""", justify=CENTER, font=self.font)
-        rules_lbl.grid(row=3, column=0, rowspan=8, columnspan=7)
+Для замыкания отсекателя нажмите Alt и правую кнопку мыши""", justify=CENTER, font=self.font)
+        rules_lbl.grid(row=2, column=0, rowspan=9, columnspan=7)
         cancel_btn = Button(self, text="Отменить добавление точки", command=self.cancel, font=self.font)
         cancel_btn.grid(row=11, column=1, columnspan=2)
 
@@ -352,7 +420,8 @@ class CyrusBeckAlg(Frame):
 
         self.canvas.bind('<1>', self.left_click)
         self.canvas.bind('<3>', self.right_click)
-        self.parent.bind("<Return>", self.cutterEnd)
+        self.canvas.bind("<Alt-Button-3>", self.cutterEnd)
+        self.canvas.bind("<Alt-Button-1>", self.figureEnd)
         self.canvas.bind('<Control-Button-3>', self.right_click_horizontal)
         self.canvas.bind('<Shift-Button-3>', self.right_click_vertical)
         self.canvas.bind('<Control-Button-1>', self.left_click_horizontal)
@@ -365,6 +434,6 @@ class CyrusBeckAlg(Frame):
 if __name__ == '__main__':
     Window = Tk()
     Window.title('Закраска')
-    ex = CyrusBeckAlg(Window)
+    ex = SazerlandHodge(Window)
     Window.geometry("1800x1000")
     Window.mainloop()

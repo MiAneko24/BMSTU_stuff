@@ -322,7 +322,7 @@ class MedPointCut(Frame):
         return mul
 
     def start(self):
-        if (len(self.points[-1]) == z1):
+        if (len(self.points[-1]) == 1):
             box.showerror("Ошибка", "Необходимо завершить все отрезки")
             return
         if (len(self.area) == 0):
